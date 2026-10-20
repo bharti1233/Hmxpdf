@@ -172,21 +172,6 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
             if (saved) refreshRecovery()
         }
     }
-    LaunchedEffect(needsOnboarding, documentWindow, currentRoute) {
-        // Do not stack the recovery prompt on top of What's New / onboarding. Once the user lands
-        // on a normal screen, pick up any journal that survived an interrupted save. Only check
-        // once per launch so tapping "Later" is not undone by a tab change.
-        if (recoveryChecked) return@LaunchedEffect
-        if (!needsOnboarding && !documentWindow && currentRoute != null &&
-            currentRoute != com.hmx.pdf.ui.navigation.ROUTE_WHATS_NEW &&
-            currentRoute != com.hmx.pdf.ui.navigation.ROUTE_ONBOARDING
-        ) {
-            recoveryEntry = runCatching {
-                withContext(Dispatchers.IO) { SaveRecovery.pending(context) }
-            }.getOrDefault(emptyList<SaveRecovery.Entry>()).firstOrNull()
-            recoveryChecked = true
-        }
-    }
     val systemDark = isSystemInDarkTheme()
     val isDarkMode = when (themeMode) {
         1 -> false
@@ -287,6 +272,21 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
         }
         var selectedTab by rememberSaveable { mutableIntStateOf(0) }
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+        // Do not stack the recovery prompt on top of What's New / onboarding. Once the user lands
+        // on a normal screen, pick up any journal that survived an interrupted save. Only check
+        // once per launch so tapping "Later" is not undone by a tab change.
+        LaunchedEffect(needsOnboarding, documentWindow, currentRoute) {
+            if (recoveryChecked) return@LaunchedEffect
+            if (!needsOnboarding && !documentWindow && currentRoute != null &&
+                currentRoute != com.hmx.pdf.ui.navigation.ROUTE_WHATS_NEW &&
+                currentRoute != com.hmx.pdf.ui.navigation.ROUTE_ONBOARDING
+            ) {
+                recoveryEntry = runCatching {
+                    withContext(Dispatchers.IO) { SaveRecovery.pending(context) }
+                }.getOrDefault(emptyList<SaveRecovery.Entry>()).firstOrNull()
+                recoveryChecked = true
+            }
+        }
         val showBottomTabs = currentRoute == "home" || currentRoute == "tools" ||
             (currentRoute == "settings" && !com.hmx.pdf.ui.screen.SettingsSubPage.open)
         val onBottomTabSelected: (Int) -> Unit = remember(navController) {

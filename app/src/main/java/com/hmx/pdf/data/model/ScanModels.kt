@@ -39,4 +39,5 @@ data class ScannedDocument(
 internal fun <T> List<T>.toSavePlan(filterOf: (T) -> ScanFilter): List<Pair<T, ScanFilter>> =
     map { it to filterOf(it) }
 
-internal fun List<ScanPage>.toSavePlan(): List<Pair<Uri, ScanFilter>> = toSavePlan { it.filter }
+internal fun List<ScanPage>.toSavePlan(): List<Pair<Uri, ScanFilter>> =
+    toSavePlan { it.filter }.map { (page, filter) -> page.uri to filter }
