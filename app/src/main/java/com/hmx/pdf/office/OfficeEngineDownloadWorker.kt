@@ -1,3 +1,5 @@
+package com.hmx.pdf.office
+
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -27,22 +29,11 @@ import kotlin.coroutines.coroutineContext
 
 /**
  * Downloads, verifies and installs the Office engine (shared by all distribution flavors).
- * 
+ *
  * @SuppressLint("SpecifyForegroundServiceType") - WorkManager creates foreground service internally,
  * which lint cannot verify in manifest since service is created dynamically by WorkManager.
  */
 @SuppressLint("SpecifyForegroundServiceType")
- *
- *  1. Resumable download (HTTP Range) into office-engine/download/<sha256>.part. The bytes already
- *     on disk are re-hashed first so the streaming SHA-256 covers the whole file.
- *  2. The download is accepted only if its size and SHA-256 match [OfficeEngineManifest].
- *  3. tar.xz is unpacked into office-engine/staging (zip-slip checked), then
- *     [OfficeEngineStore.commit] swaps it in atomically. The previous engine is removed only
- *     after that succeeds.
- *
- * Runs as a foreground dataSync worker with a Cancel action. The partial download survives
- * cancellation and failure, so retrying resumes where it stopped.
- */
 class OfficeEngineDownloadWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     companion object {
