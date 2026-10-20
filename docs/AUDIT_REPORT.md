@@ -175,17 +175,17 @@ Each defect is independently serious. Together they create a realistic confident
 
 There are **12 test files** and **65 `@Test` methods**, all JVM unit tests:
 
-- `app/src/test/java/com/chethan616/clearpdf/docx/DocxRoundTripTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/imageeditor/engine/ImageIoSampleSizeTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/office/PptxPlaceholderFixTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/ui/screen/PdfViewerInternalsTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/ui/screen/TextEditSegmentTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/ui/screen/WordSnapTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/ui/selection/PdfViewportTransformTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/utils/xlsx/XlsxColorsTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/utils/xlsx/XlsxDevanagariTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/utils/xlsx/XlsxRefsTest.kt`
-- `app/src/test/java/com/chethan616/clearpdf/utils/xlsx/XlsxWriterTest.kt`
+- `app/src/test/java/com/hmx/pdf/docx/DocxRoundTripTest.kt`
+- `app/src/test/java/com/hmx/pdf/imageeditor/engine/ImageIoSampleSizeTest.kt`
+- `app/src/test/java/com/hmx/pdf/office/PptxPlaceholderFixTest.kt`
+- `app/src/test/java/com/hmx/pdf/ui/screen/PdfViewerInternalsTest.kt`
+- `app/src/test/java/com/hmx/pdf/ui/screen/TextEditSegmentTest.kt`
+- `app/src/test/java/com/hmx/pdf/ui/screen/WordSnapTest.kt`
+- `app/src/test/java/com/hmx/pdf/ui/selection/PdfViewportTransformTest.kt`
+- `app/src/test/java/com/hmx/pdf/utils/xlsx/XlsxColorsTest.kt`
+- `app/src/test/java/com/hmx/pdf/utils/xlsx/XlsxDevanagariTest.kt`
+- `app/src/test/java/com/hmx/pdf/utils/xlsx/XlsxRefsTest.kt`
+- `app/src/test/java/com/hmx/pdf/utils/xlsx/XlsxWriterTest.kt`
 - `pdf-core/src/test/java/com/kyant/pdfcore/text/PdfBidiTest.kt`
 
 There are **no** `androidTest` files, no screenshot tests, no macrobenchmarks, and no end-to-end tests.

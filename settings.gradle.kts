@@ -24,7 +24,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ClearPDF"
+rootProject.name = "HMX-PDF"
 include(":backdrop")
 include(":pdf-core")
 include(":ocr-core")

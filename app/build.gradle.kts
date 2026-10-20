@@ -35,22 +35,33 @@ val hasReleaseSigning = !releaseStoreFilePath.isNullOrBlank() &&
     !releaseKeyAlias.isNullOrBlank() &&
     !releaseKeyPassword.isNullOrBlank()
 
-// A missing key must fail a release artifact build, but not debug/test/lint builds.
+// A missing key must fail a release artifact build, but not debug/test/lint builds. Aggregate
+// tasks (`assemble`, `build`, `bundle`, ...) can produce release artifacts even when the task name
+// never contains "Release", so they are guarded too. Debug-specific tasks remain unaffected.
 val releaseArtifactRequested = gradle.startParameter.taskNames.any { task ->
-    val name = task.substringAfterLast(':')
-    name.contains("Release", ignoreCase = true) &&
-        listOf("assemble", "bundle", "package", "install", "publish").any {
-            name.startsWith(it, ignoreCase = true)
-        }
+    val name = task.substringAfterLast(':').lowercase()
+    val aggregate = name in setOf("assemble", "build", "bundle", "install", "publish", "package")
+    // Tasks that produce an installable/publishable artifact, including flavor aggregates such as
+    // `assemblePlay` or `bundlePlay`, which also build the release variant. Test/lint/compile tasks
+    // are not artifact builds and must not require a signing key.
+    val artifactTask = listOf("assemble", "bundle", "package", "install", "publish")
+    val flavorAggregate = artifactTask.any { name.startsWith(it) } &&
+        !name.contains("debug") &&
+        !name.contains("test")
+    val releaseArtifact = name.contains("release") &&
+        !name.contains("test") &&
+        artifactTask.any { name.startsWith(it) }
+    val signRelease = name.startsWith("sign") && name.contains("release")
+    aggregate || flavorAggregate || releaseArtifact || signRelease
 }
 
 android {
-    namespace = "com.chethan616.clearpdf"
+    namespace = "com.hmx.pdf"
     compileSdk = 36
     buildToolsVersion = "36.1.0"
 
     defaultConfig {
-        applicationId = "com.chethan616.clearpdf"
+        applicationId = "com.hmx.pdf"
         minSdk = 23
         targetSdk = 36
         // Keep this a literal: F-Droid's update checker reads it from this file.

@@ -31,7 +31,7 @@ plugins {
 }
 
 android {
-    namespace = "com.chethan616.clearpdf.office_engine"
+    namespace = "com.hmx.pdf.office_engine"
     compileSdk = 36
 
     defaultConfig {

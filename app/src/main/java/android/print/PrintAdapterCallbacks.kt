@@ -14,7 +14,7 @@ package android.print
  * about them is ordinary public API.
  *
  * This is the one genuinely load-bearing assumption in the .docx pipeline, so its single caller
- * ([com.chethan616.clearpdf.utils.DocxWebRenderer]) treats any `Throwable` from touching these — a
+ * ([com.hmx.pdf.utils.DocxWebRenderer]) treats any `Throwable` from touching these — a
  * verification or access error included — as "this route is unavailable on this device" and falls
  * back to the hand-written converter. A device where the trick fails renders .docx exactly as it
  * did before; it never fails visibly.

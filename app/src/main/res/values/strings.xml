@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ClearPDF</string>
+    <string name="app_name">HMX PDF</string>
 
     <!-- App Shortcuts -->
     <string name="shortcut_open_short">Open PDF</string>
@@ -13,7 +13,7 @@
     <string name="shortcut_create_long">Create a new PDF</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_welcome_title">Welcome to ClearPDF</string>
+    <string name="onboarding_welcome_title">Welcome to HMX PDF</string>
     <string name="onboarding_welcome_subtitle">Your fully offline document companion</string>
     <string name="onboarding_language_title">Choose your language</string>
     <string name="onboarding_language_subtitle">Personalize your experience</string>
@@ -42,7 +42,7 @@
     <string name="settings_replay_onboarding_desc">Replay the welcome tour</string>
 
     <!-- Home Screen -->
-    <string name="home_title">ClearPDF</string>
+    <string name="home_title">HMX PDF</string>
     <string name="home_workspace_label">PDF WORKSPACE</string>
     <string name="home_tagline">PDF work, simply elegant.</string>
     <string name="home_subtitle">Open, scan, and organize your files &#8212; privately on your device.</string>
@@ -214,7 +214,7 @@
     <string name="settings_version">Version 1.1.0</string>
     <string name="settings_made_by">Made by Chethan616 with &#10084;</string>
     <string name="settings_star_github">Star on GitHub</string>
-    <string name="settings_open_source">ClearPDF is open source</string>
+    <string name="settings_open_source">HMX PDF is open source</string>
     <string name="settings_licenses">Open Source Licenses</string>
 
     <!-- PDF Viewer -->
@@ -293,6 +293,8 @@
     <string name="viewer_share_text">Text (.txt)</string>
     <string name="viewer_share_normal">Normal</string>
     <string name="viewer_share_encrypted">Encrypted</string>
+    <string name="viewer_share_original_without_edits">%1$s (without edits)</string>
+    <string name="viewer_share_original_excludes_edits">The original file does not include the edits made in this viewer.</string>
 
     <!-- Signature Pad -->
     <string name="sig_draw_title">Draw your signature</string>
@@ -319,7 +321,7 @@
     <string name="feature_tools_title">Powerful Tools</string>
     <string name="feature_tools_desc">Merge, split, compress, and convert</string>
     <string name="onboarding_ready_title">You\'re all set! &#127881;</string>
-    <string name="onboarding_ready_subtitle">ClearPDF is ready to use.\nAll your documents, always private.</string>
+    <string name="onboarding_ready_subtitle">HMX PDF is ready to use.\nAll your documents, always private.</string>
     <string name="onboarding_privacy_badge">100% offline &#183; No data collection &#183; Open source</string>
 
     <!-- Common -->
@@ -358,7 +360,7 @@
     <string name="dont_ask_again">Don\'t ask again</string>
     <string name="settings_custom_directory">Custom Directory</string>
     <string name="settings_default_directory">Default Directory</string>
-    <string name="settings_default_path">Downloads / ClearPDF</string>
+    <string name="settings_default_path">Download/HMXPDF</string>
     <string name="settings_change_folder">Change Folder</string>
     <string name="settings_reset">Reset</string>
     <string name="settings_bg_gallery">Gallery</string>
@@ -547,6 +549,9 @@
     <string name="add_from_gallery">Add from gallery</string>
     <string name="clear_all">Clear all</string>
     <string name="filter">Filter</string>
+    <string name="scan_filter_all_pages">All pages</string>
+    <string name="scan_filter_page">Page %1$d</string>
+    <string name="scan_filter_hint">Tap a page to change only that page</string>
     <string name="scan_original">Original</string>
     <string name="scan_auto">Auto</string>
     <string name="scan_grayscale">Grayscale</string>
@@ -568,8 +573,8 @@
     <string name="file_type_powerpoint">PowerPoint</string>
     <string name="file_type_images">Images</string>
     <string name="file_type_txt">TXT</string>
-    <string name="star_prompt_title">Support ClearPDF</string>
-    <string name="star_prompt_message">ClearPDF is open source on GitHub.\nWould you like to star the project?</string>
+    <string name="star_prompt_title">Support HMX PDF</string>
+    <string name="star_prompt_message">HMX PDF is open source on GitHub.\nWould you like to star the project?</string>
     <string name="star_prompt_accept">Yes, star it</string>
     <string name="star_prompt_later">Not now</string>
     <string name="star_prompt_never">Do not ask again</string>
@@ -736,6 +741,7 @@
     <string name="sheet_save_as">Save as...</string>
     <string name="sheet_saved">Saved</string>
     <string name="sheet_save_failed">Couldn\'t save the spreadsheet</string>
+    <string name="sheet_share_failed">Couldn\'t prepare the edited spreadsheet to share</string>
     <string name="sheet_unsaved_title">Save changes?</string>
     <string name="sheet_unsaved_body">Your edits to this spreadsheet haven\'t been saved.</string>
     <string name="sheet_discard">Discard</string>
@@ -781,8 +787,17 @@
     <string name="docx_open_as_pdf">Open as PDF</string>
     <string name="docx_readonly_part">This part has tracked changes or fields, so it can\'t be edited here. Open as PDF to see its final layout.</string>
     <string name="docx_read_failed">Couldn\'t read this document.</string>
+    <string name="save_recovery_title">Recover an interrupted save?</string>
+    <string name="save_recovery_body">A save of %1$s was interrupted. HMX PDF kept a recovery copy. Save it as a new file, or discard it.</string>
+    <string name="save_recovery_document">this document</string>
+    <string name="save_recovery_later">Later</string>
+    <string name="save_recovery_discard">Discard</string>
+    <string name="save_recovery_save_copy">Save a copy</string>
+    <string name="save_recovery_saved">Recovered copy saved</string>
+    <string name="save_recovery_failed">Couldn\'t save the recovered copy</string>
     <string name="docx_saved">Saved</string>
     <string name="docx_save_failed">Couldn\'t save the document</string>
+    <string name="docx_share_failed">Couldn\'t prepare the edited document to share</string>
     <string name="docx_unsaved_body">Your changes to this document haven\'t been saved yet.</string>
     <string name="docx_page_of">Page %1$d of %2$d</string>
     <string name="docx_go_to_page">Go to page</string>
@@ -846,7 +861,7 @@
     <string name="whats_new_zoom_title">Sharp at any zoom</string>
     <string name="whats_new_zoom_desc">PDFs, Word and PowerPoint files stay crisp when you zoom in.</string>
     <string name="whats_new_window_title">Its own window</string>
-    <string name="whats_new_window_desc">Files opened from WhatsApp or a file manager open in a separate ClearPDF window.</string>
+    <string name="whats_new_window_desc">Files opened from WhatsApp or a file manager open in a separate HMX PDF window.</string>
     <string name="whats_new_glass_title">Liquid Glass settings</string>
     <string name="whats_new_glass_desc">Tune blur, refraction and tint, or pick a preset.</string>
     <string name="whats_new_share_title">Share in more formats</string>
@@ -865,7 +880,7 @@
     <string name="whats_new_xlsx_title">Spreadsheets as Excel shows them</string>
     <string name="whats_new_xlsx_desc">Pictures and logos appear, text fits its cells, and sheets are white paper with a dark switch.</string>
     <string name="whats_new_lang_title">Arabic, and more of every language</string>
-    <string name="whats_new_lang_desc">ClearPDF now speaks Arabic, and Arabic text copies and searches in the right order.</string>
+    <string name="whats_new_lang_desc">HMX PDF now speaks Arabic, and Arabic text copies and searches in the right order.</string>
     <string name="whats_new_print_title">Print and pick up where you left off</string>
     <string name="whats_new_print_desc">Print Word documents in their real layout, and reopen them at the page you were reading.</string>
     <string name="tour_edit_text_title">Edit the PDF\'s own text</string>
@@ -952,8 +967,8 @@
     <string name="ie_mask_star">Star</string>
 
     <!-- Restart for a language that reads the other way -->
-    <string name="restart_title">Restart ClearPDF?</string>
-    <string name="restart_body">This language reads in the other direction. Restart ClearPDF so every screen switches over.</string>
+    <string name="restart_title">Restart HMX PDF?</string>
+    <string name="restart_body">This language reads in the other direction. Restart HMX PDF so every screen switches over.</string>
     <string name="restart_now">Restart now</string>
     <string name="restart_later">Later</string>
 

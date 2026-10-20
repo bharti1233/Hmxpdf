@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ClearPDF</string>
+    <string name="app_name">HMX PDF</string>
 
     <!-- App Shortcuts -->
     <string name="shortcut_open_short">Apri PDF</string>
@@ -13,7 +13,7 @@
     <string name="shortcut_create_long">Crea un nuovo PDF</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_welcome_title">Benvenuto su ClearPDF</string>
+    <string name="onboarding_welcome_title">Benvenuto su HMX PDF</string>
     <string name="onboarding_welcome_subtitle">Il tuo assistente per i documenti completamente offline</string>
     <string name="onboarding_language_title">Scegli la tua lingua</string>
     <string name="onboarding_language_subtitle">Personalizza la tua esperienza</string>
@@ -42,7 +42,7 @@
     <string name="settings_replay_onboarding_desc">Riproduce nuovamente la schermata di benvenuto</string>
 
     <!-- Home Screen -->
-    <string name="home_title">ClearPDF</string>
+    <string name="home_title">HMX PDF</string>
     <string name="home_workspace_label">SPAZIO DI LAVORO PDF</string>
     <string name="home_tagline">Lavora su PDF, semplicemente elegante.</string>
     <string name="home_subtitle">Apri, scansiona e organizza i tuoi file &#8212; in privato sul tuo dispositivo.</string>
@@ -196,7 +196,7 @@
     <string name="settings_version">Versione 1.1.0</string>
     <string name="settings_made_by">Creato da Chethan616 con &#10084;</string>
     <string name="settings_star_github">Metti una Stella su GitHub</string>
-    <string name="settings_open_source">ClearPDF è open source</string>
+    <string name="settings_open_source">HMX PDF è open source</string>
     <string name="settings_licenses">Licenze Open Source</string>
 
     <!-- PDF Viewer -->
@@ -284,7 +284,7 @@
     <string name="feature_tools_title">Potenti Strumenti</string>
     <string name="feature_tools_desc">Unisci, dividi, comprimi e converti</string>
     <string name="onboarding_ready_title">Sei pronto! &#127881;</string>
-    <string name="onboarding_ready_subtitle">ClearPDF è pronto per l\'uso.\nTutti i tuoi documenti, sempre privati.</string>
+    <string name="onboarding_ready_subtitle">HMX PDF è pronto per l\'uso.\nTutti i tuoi documenti, sempre privati.</string>
     <string name="onboarding_privacy_badge">100% offline &#183; Nessun dato raccolto &#183; Open source</string>
 
     <!-- Common -->
@@ -307,7 +307,7 @@
     <string name="dont_ask_again">Non chiedere nuovamente</string>
     <string name="settings_custom_directory">Cartella Personalizzata</string>
     <string name="settings_default_directory">Cartella Predefinita</string>
-    <string name="settings_default_path">Downloads / ClearPDF</string>
+    <string name="settings_default_path">Download/HMXPDF</string>
     <string name="settings_change_folder">Cambia Cartella</string>
     <string name="settings_reset">Reimposta</string>
     <string name="settings_bg_gallery">Galleria</string>
@@ -516,8 +516,8 @@
     <string name="file_type_powerpoint">PowerPoint</string>
     <string name="file_type_images">Immagini</string>
     <string name="file_type_txt">TXT</string>
-    <string name="star_prompt_title">Sostieni ClearPDF</string>
-    <string name="star_prompt_message">ClearPDF è open source su GitHub.\nVorresti mettere una stella al progetto?</string>
+    <string name="star_prompt_title">Sostieni HMX PDF</string>
+    <string name="star_prompt_message">HMX PDF è open source su GitHub.\nVorresti mettere una stella al progetto?</string>
     <string name="star_prompt_accept">Sì, metti una stella</string>
     <string name="star_prompt_later">Non ora</string>
     <string name="star_prompt_never">Non chiedere nuovamente</string>
@@ -846,7 +846,7 @@
     <string name="whats_new_zoom_title">Nitido a ogni zoom</string>
     <string name="whats_new_zoom_desc">PDF e file Word e PowerPoint restano nitidi quando ingrandisci.</string>
     <string name="whats_new_window_title">Una finestra tutta sua</string>
-    <string name="whats_new_window_desc">I file aperti da WhatsApp o da un gestore di file si aprono in una finestra separata di ClearPDF.</string>
+    <string name="whats_new_window_desc">I file aperti da WhatsApp o da un gestore di file si aprono in una finestra separata di HMX PDF.</string>
     <string name="whats_new_glass_title">Impostazioni Liquid Glass</string>
     <string name="whats_new_glass_desc">Regola sfocatura, rifrazione e tinta, oppure scegli un preset.</string>
     <string name="whats_new_share_title">Condividi in più formati</string>
@@ -865,7 +865,7 @@
     <string name="whats_new_xlsx_title">Fogli di calcolo come in Excel</string>
     <string name="whats_new_xlsx_desc">Compaiono immagini e loghi, il testo sta nelle celle e i fogli sono carta bianca con un interruttore scuro.</string>
     <string name="whats_new_lang_title">Arabo, e più di ogni lingua</string>
-    <string name="whats_new_lang_desc">ClearPDF ora parla arabo, e il testo arabo si copia e si cerca nell\'ordine giusto.</string>
+    <string name="whats_new_lang_desc">HMX PDF ora parla arabo, e il testo arabo si copia e si cerca nell\'ordine giusto.</string>
     <string name="whats_new_print_title">Stampa e riprendi da dove eri</string>
     <string name="whats_new_print_desc">Stampa i documenti Word con il loro layout reale e riaprili alla pagina che stavi leggendo.</string>
     <string name="tour_edit_text_title">Modifica il testo del PDF</string>
@@ -952,8 +952,8 @@
     <string name="ie_mask_star">Stella</string>
 
     <!-- Restart for a language that reads the other way -->
-    <string name="restart_title">Riavviare ClearPDF?</string>
-    <string name="restart_body">Questa lingua si legge nell\'altro verso. Riavvia ClearPDF perché tutte le schermate si adeguino.</string>
+    <string name="restart_title">Riavviare HMX PDF?</string>
+    <string name="restart_body">Questa lingua si legge nell\'altro verso. Riavvia HMX PDF perché tutte le schermate si adeguino.</string>
     <string name="restart_now">Riavvia ora</string>
     <string name="restart_later">Più tardi</string>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ClearPDF</string>
+    <string name="app_name">HMX PDF</string>
     <string name="shortcut_open_short">فتح PDF</string>
     <string name="shortcut_open_long">فتح ملف PDF</string>
     <string name="shortcut_merge_short">دمج ملفات PDF</string>
@@ -10,7 +10,7 @@
     <string name="shortcut_compress_long">ضغط ملف PDF</string>
     <string name="shortcut_create_short">إنشاء PDF</string>
     <string name="shortcut_create_long">إنشاء ملف PDF جديد</string>
-    <string name="onboarding_welcome_title">مرحبًا بك في ClearPDF</string>
+    <string name="onboarding_welcome_title">مرحبًا بك في HMX PDF</string>
     <string name="onboarding_welcome_subtitle">رفيقك للمستندات بلا إنترنت تمامًا</string>
     <string name="onboarding_language_title">اختر لغتك</string>
     <string name="onboarding_language_subtitle">خصّص تجربتك</string>
@@ -37,7 +37,7 @@
     <string name="onboarding_skip">تخطٍّ</string>
     <string name="settings_replay_onboarding">مشاهدة المقدمة مجددًا</string>
     <string name="settings_replay_onboarding_desc">إعادة جولة الترحيب</string>
-    <string name="home_title">ClearPDF</string>
+    <string name="home_title">HMX PDF</string>
     <string name="home_workspace_label">مساحة عمل PDF</string>
     <string name="home_tagline">عمل PDF، بأناقة وبساطة.</string>
     <string name="home_subtitle">افتح ملفاتك وامسحها ضوئيًا ونظّمها — بخصوصية على جهازك.</string>
@@ -203,7 +203,7 @@
     <string name="settings_version">الإصدار 1.1.0</string>
     <string name="settings_made_by">صُنع بواسطة Chethan616 بكل ❤</string>
     <string name="settings_star_github">ضع نجمة على GitHub</string>
-    <string name="settings_open_source">ClearPDF مفتوح المصدر</string>
+    <string name="settings_open_source">HMX PDF مفتوح المصدر</string>
     <string name="settings_licenses">تراخيص المصادر المفتوحة</string>
     <string name="viewer_title">عارض PDF</string>
     <string name="viewer_open_pdf">فتح PDF</string>
@@ -300,7 +300,7 @@
     <string name="feature_tools_title">أدوات قوية</string>
     <string name="feature_tools_desc">الدمج والتقسيم والضغط والتحويل</string>
     <string name="onboarding_ready_title">كل شيء جاهز! 🎉</string>
-    <string name="onboarding_ready_subtitle">ClearPDF جاهز للاستخدام.\nكل مستنداتك، بخصوصية دائمًا.</string>
+    <string name="onboarding_ready_subtitle">HMX PDF جاهز للاستخدام.\nكل مستنداتك، بخصوصية دائمًا.</string>
     <string name="onboarding_privacy_badge">دون إنترنت 100% · بلا جمع للبيانات · مفتوح المصدر</string>
     <string name="back">رجوع</string>
     <string name="done">تم</string>
@@ -337,7 +337,7 @@
     <string name="dont_ask_again">لا تسأل مجددًا</string>
     <string name="settings_custom_directory">مجلد مخصص</string>
     <string name="settings_default_directory">المجلد الافتراضي</string>
-    <string name="settings_default_path">التنزيلات / ClearPDF</string>
+    <string name="settings_default_path">Download/HMXPDF</string>
     <string name="settings_change_folder">تغيير المجلد</string>
     <string name="settings_reset">إعادة التعيين</string>
     <string name="settings_bg_gallery">المعرض</string>
@@ -547,8 +547,8 @@
     <string name="file_type_powerpoint">PowerPoint</string>
     <string name="file_type_images">صور</string>
     <string name="file_type_txt">TXT</string>
-    <string name="star_prompt_title">ادعم ClearPDF</string>
-    <string name="star_prompt_message">ClearPDF مفتوح المصدر على GitHub.\nهل تود وضع نجمة للمشروع؟</string>
+    <string name="star_prompt_title">ادعم HMX PDF</string>
+    <string name="star_prompt_message">HMX PDF مفتوح المصدر على GitHub.\nهل تود وضع نجمة للمشروع؟</string>
     <string name="star_prompt_accept">نعم، ضع نجمة</string>
     <string name="star_prompt_later">ليس الآن</string>
     <string name="star_prompt_never">لا تسأل مجددًا</string>
@@ -816,7 +816,7 @@
     <string name="whats_new_zoom_title">واضح مهما كبّرت</string>
     <string name="whats_new_zoom_desc">تبقى ملفات PDF وWord وPowerPoint واضحة عند التكبير.</string>
     <string name="whats_new_window_title">نافذة خاصة به</string>
-    <string name="whats_new_window_desc">الملفات المفتوحة من واتساب أو مدير الملفات تُفتح في نافذة ClearPDF منفصلة.</string>
+    <string name="whats_new_window_desc">الملفات المفتوحة من واتساب أو مدير الملفات تُفتح في نافذة HMX PDF منفصلة.</string>
     <string name="whats_new_glass_title">إعدادات Liquid Glass</string>
     <string name="whats_new_glass_desc">اضبط التمويه والانكسار والصبغة، أو اختر إعدادًا جاهزًا.</string>
     <string name="whats_new_share_title">المشاركة بصيغ أكثر</string>
@@ -835,7 +835,7 @@
     <string name="whats_new_xlsx_title">جداول كما يعرضها Excel</string>
     <string name="whats_new_xlsx_desc">تظهر الصور والشعارات، ويتسع النص لخلاياه، والأوراق بيضاء كالورق مع مفتاح للوضع الداكن.</string>
     <string name="whats_new_lang_title">العربية، والمزيد من كل لغة</string>
-    <string name="whats_new_lang_desc">أصبح ClearPDF يتحدث العربية، ويُنسخ النص العربي ويُبحث فيه بالترتيب الصحيح.</string>
+    <string name="whats_new_lang_desc">أصبح HMX PDF يتحدث العربية، ويُنسخ النص العربي ويُبحث فيه بالترتيب الصحيح.</string>
     <string name="whats_new_print_title">اطبع وتابع من حيث توقفت</string>
     <string name="whats_new_print_desc">اطبع مستندات Word بتخطيطها الحقيقي، وأعد فتحها على الصفحة التي كنت تقرؤها.</string>
     <string name="tour_edit_text_title">عدّل نص ملف PDF نفسه</string>
@@ -922,8 +922,8 @@
     <string name="ie_mask_star">نجمة</string>
 
     <!-- Restart for a language that reads the other way -->
-    <string name="restart_title">إعادة تشغيل ClearPDF؟</string>
-    <string name="restart_body">تُقرأ هذه اللغة في الاتجاه الآخر. أعد تشغيل ClearPDF لتتبدّل كل الشاشات.</string>
+    <string name="restart_title">إعادة تشغيل HMX PDF؟</string>
+    <string name="restart_body">تُقرأ هذه اللغة في الاتجاه الآخر. أعد تشغيل HMX PDF لتتبدّل كل الشاشات.</string>
     <string name="restart_now">إعادة التشغيل الآن</string>
     <string name="restart_later">لاحقًا</string>
 

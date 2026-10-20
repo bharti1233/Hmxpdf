@@ -45,7 +45,7 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: clearpdf-debug-apk
+          name: hmx-pdf-debug-apk
           path: app/build/outputs/apk/play/debug/*.apk
           if-no-files-found: error
 
@@ -83,20 +83,91 @@ jobs:
           --stacktrace
           -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
           -Pkotlin.daemon.jvmargs=-Xmx4g
-      - name: Verify release APK is not debug-signed
+      - name: Build signed release bundle
+        env:
+          CLEARPDF_UPLOAD_STORE_FILE: ${{ secrets.CLEARPDF_UPLOAD_STORE_FILE }}
+          CLEARPDF_UPLOAD_STORE_PASSWORD: ${{ secrets.CLEARPDF_UPLOAD_STORE_PASSWORD }}
+          CLEARPDF_UPLOAD_KEY_ALIAS: ${{ secrets.CLEARPDF_UPLOAD_KEY_ALIAS }}
+          CLEARPDF_UPLOAD_KEY_PASSWORD: ${{ secrets.CLEARPDF_UPLOAD_KEY_PASSWORD }}
+        run: >
+          ./gradlew bundlePlayRelease
+          --stacktrace
+          -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+          -Pkotlin.daemon.jvmargs=-Xmx4g
+      - name: Verify every release APK is not debug-signed
         run: |
-          APK=$(find app/build/outputs/apk/play/release -name '*.apk' | head -1)
-          test -n "$APK"
+          mapfile -t APKS < <(find app/build/outputs/apk/play/release -name '*.apk' -print)
+          test "${#APKS[@]}" -gt 0
           BUILD_TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
-          CERTS=$("$BUILD_TOOLS/apksigner" verify --print-certs "$APK")
-          echo "$CERTS" | grep -q 'Signer #1 certificate DN:'
-          if echo "$CERTS" | grep -qi 'CN=Android Debug'; then
-            echo "Release APK is debug-signed" >&2
+          for APK in "${APKS[@]}"; do
+            CERTS=$("$BUILD_TOOLS/apksigner" verify --print-certs "$APK")
+            echo "$CERTS" | grep -q 'Signer #1 certificate DN:'
+            if echo "$CERTS" | grep -qi 'CN=Android Debug'; then
+              echo "Release APK is debug-signed: $APK" >&2
+              exit 1
+            fi
+          done
+      - name: Verify release bundle is signed and not debug-signed
+        run: |
+          AAB=$(find app/build/outputs/bundle/playRelease -name '*.aab' | head -1)
+          test -n "$AAB"
+          VERIFY=$(jarsigner -verify -verbose -certs "$AAB" 2>&1) || {
+            echo "Release bundle is not validly signed" >&2
+            echo "$VERIFY" >&2
+            exit 1
+          }
+          echo "$VERIFY" | grep -q 'jar verified' || {
+            echo "Release bundle is not signed" >&2
+            exit 1
+          }
+          if echo "$VERIFY" | grep -qi 'CN=Android Debug'; then
+            echo "Release bundle is debug-signed" >&2
             exit 1
           fi
       - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
-          name: clearpdf-release-apk
+          name: hmx-pdf-release-apk
           path: app/build/outputs/apk/play/release/*.apk
           if-no-files-found: error
+      - name: Upload release bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: hmx-pdf-release-bundle
+          path: app/build/outputs/bundle/playRelease/*.aab
+          if-no-files-found: error
+
+  release-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Release and aggregate tasks must reject missing signing
+        run: |
+          set +e
+          for TASK in :app:assemblePlayRelease :app:assemble :app:build :app:assemblePlay; do
+            OUTPUT=$(./gradlew "$TASK" --dry-run --stacktrace \
+              -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8" \
+              -Pkotlin.daemon.jvmargs=-Xmx4g 2>&1)
+            STATUS=$?
+            echo "$OUTPUT"
+            if [ "$STATUS" -eq 0 ]; then
+              echo "Missing-signing guard did not reject $TASK" >&2
+              exit 1
+            fi
+            echo "$OUTPUT" | grep -q "Release signing is not configured"
+            if [ "$?" -ne 0 ]; then
+              echo "$TASK failed for a reason other than the signing guard" >&2
+              exit 1
+            fi
+          done
+          exit 0

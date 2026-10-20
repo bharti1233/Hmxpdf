@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ClearPDF</string>
+    <string name="app_name">HMX PDF</string>
 
     <!-- App Shortcuts -->
     <string name="shortcut_open_short">Открыть PDF</string>
@@ -13,7 +13,7 @@
     <string name="shortcut_create_long">Создать новый PDF</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_welcome_title">Добро пожаловать в ClearPDF</string>
+    <string name="onboarding_welcome_title">Добро пожаловать в HMX PDF</string>
     <string name="onboarding_welcome_subtitle">Ваш полностью офлайн-помощник для документов</string>
     <string name="onboarding_language_title">Выберите язык</string>
     <string name="onboarding_language_subtitle">Настройте приложение под себя</string>
@@ -42,7 +42,7 @@
     <string name="settings_replay_onboarding_desc">Показать приветственный тур ещё раз</string>
 
     <!-- Home Screen -->
-    <string name="home_title">ClearPDF</string>
+    <string name="home_title">HMX PDF</string>
     <string name="home_workspace_label">РАБОЧАЯ ОБЛАСТЬ PDF</string>
     <string name="home_tagline">Работа с PDF — просто и элегантно.</string>
     <string name="home_subtitle">Открывайте, сканируйте и систематизируйте файлы &#8212; приватно, на вашем устройстве.</string>
@@ -200,7 +200,7 @@
     <string name="settings_version">Версия 1.1.0</string>
     <string name="settings_made_by">Разработано Chethan616 с &#10084;</string>
     <string name="settings_star_github">Поставить звезду на GitHub</string>
-    <string name="settings_open_source">ClearPDF — проект с открытым исходным кодом</string>
+    <string name="settings_open_source">HMX PDF — проект с открытым исходным кодом</string>
     <string name="settings_licenses">Лицензии открытого ПО</string>
 
     <!-- PDF Viewer -->
@@ -303,7 +303,7 @@
     <string name="feature_tools_title">Мощные инструменты</string>
     <string name="feature_tools_desc">Объединяйте, разделяйте, сжимайте и конвертируйте</string>
     <string name="onboarding_ready_title">Всё готово! &#127881;</string>
-    <string name="onboarding_ready_subtitle">ClearPDF готов к работе.\nВсе ваши документы всегда остаются приватными.</string>
+    <string name="onboarding_ready_subtitle">HMX PDF готов к работе.\nВсе ваши документы всегда остаются приватными.</string>
     <string name="onboarding_privacy_badge">100% офлайн &#183; Без сбора данных &#183; Открытый код</string>
 
     <!-- Common -->
@@ -326,7 +326,7 @@
     <string name="dont_ask_again">Больше не спрашивать</string>
     <string name="settings_custom_directory">Выбранная папка</string>
     <string name="settings_default_directory">Папка по умолчанию</string>
-    <string name="settings_default_path">Downloads / ClearPDF</string>
+    <string name="settings_default_path">Download/HMXPDF</string>
     <string name="settings_change_folder">Изменить папку</string>
     <string name="settings_reset">Сбросить</string>
     <string name="settings_bg_gallery">Галерея</string>
@@ -535,8 +535,8 @@
     <string name="file_type_powerpoint">PowerPoint</string>
     <string name="file_type_images">Изображения</string>
     <string name="file_type_txt">TXT</string>
-    <string name="star_prompt_title">Поддержите ClearPDF</string>
-    <string name="star_prompt_message">ClearPDF — проект с открытым исходным кодом на GitHub.\nХотите поставить звезду проекту?</string>
+    <string name="star_prompt_title">Поддержите HMX PDF</string>
+    <string name="star_prompt_message">HMX PDF — проект с открытым исходным кодом на GitHub.\nХотите поставить звезду проекту?</string>
     <string name="star_prompt_accept">Да, поставить звезду</string>
     <string name="star_prompt_later">Не сейчас</string>
     <string name="star_prompt_never">Больше не спрашивать</string>
@@ -846,7 +846,7 @@
     <string name="whats_new_zoom_title">Чётко при любом масштабе</string>
     <string name="whats_new_zoom_desc">PDF, Word и PowerPoint остаются чёткими при увеличении.</string>
     <string name="whats_new_window_title">Своё окно</string>
-    <string name="whats_new_window_desc">Файлы из WhatsApp или файлового менеджера открываются в отдельном окне ClearPDF.</string>
+    <string name="whats_new_window_desc">Файлы из WhatsApp или файлового менеджера открываются в отдельном окне HMX PDF.</string>
     <string name="whats_new_glass_title">Настройки Liquid Glass</string>
     <string name="whats_new_glass_desc">Настройте размытие, преломление и оттенок или выберите пресет.</string>
     <string name="whats_new_share_title">Больше форматов для отправки</string>
@@ -865,7 +865,7 @@
     <string name="whats_new_xlsx_title">Таблицы как в Excel</string>
     <string name="whats_new_xlsx_desc">Видны рисунки и логотипы, текст помещается в ячейки, а лист — белая бумага с тёмным переключателем.</string>
     <string name="whats_new_lang_title">Арабский и больше каждого языка</string>
-    <string name="whats_new_lang_desc">ClearPDF теперь говорит по-арабски, а арабский текст копируется и ищется в правильном порядке.</string>
+    <string name="whats_new_lang_desc">HMX PDF теперь говорит по-арабски, а арабский текст копируется и ищется в правильном порядке.</string>
     <string name="whats_new_print_title">Печать и продолжение с места остановки</string>
     <string name="whats_new_print_desc">Печатайте документы Word в их настоящей вёрстке и открывайте их на странице, где остановились.</string>
     <string name="tour_edit_text_title">Правка собственного текста PDF</string>
@@ -952,8 +952,8 @@
     <string name="ie_mask_star">Звезда</string>
 
     <!-- Restart for a language that reads the other way -->
-    <string name="restart_title">Перезапустить ClearPDF?</string>
-    <string name="restart_body">Этот язык читается в другую сторону. Перезапустите ClearPDF, чтобы все экраны перестроились.</string>
+    <string name="restart_title">Перезапустить HMX PDF?</string>
+    <string name="restart_body">Этот язык читается в другую сторону. Перезапустите HMX PDF, чтобы все экраны перестроились.</string>
     <string name="restart_now">Перезапустить</string>
     <string name="restart_later">Позже</string>
 
