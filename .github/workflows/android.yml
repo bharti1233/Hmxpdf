@@ -26,6 +26,7 @@ jobs:
       - name: Run JVM unit tests
         run: >
           ./gradlew testPlayDebugUnitTest :pdf-core:test :ocr-core:test
+          --rerun-tasks
           --stacktrace
           -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
           -Pkotlin.daemon.jvmargs=-Xmx4g
