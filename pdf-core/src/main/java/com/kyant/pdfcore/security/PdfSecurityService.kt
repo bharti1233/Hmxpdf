@@ -71,7 +71,7 @@ object PdfSecurityService {
         activeDecryptedPaths()
     )
 
-    internal fun cleanupStaleDecryptedFiles(
+    fun cleanupStaleDecryptedFiles(
         directory: File,
         cutoffMillis: Long,
         activePaths: Set<String> = activeDecryptedPaths()
