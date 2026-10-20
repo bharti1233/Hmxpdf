@@ -27,7 +27,7 @@ import java.security.MessageDigest
 import kotlin.coroutines.coroutineContext
 
 /**
- * foss flavor: downloads, verifies and installs the Office engine.
+ * Downloads, verifies and installs the Office engine (shared by all distribution flavors).
  *
  *  1. Resumable download (HTTP Range) into office-engine/download/<sha256>.part. The bytes already
  *     on disk are re-hashed first so the streaming SHA-256 covers the whole file.

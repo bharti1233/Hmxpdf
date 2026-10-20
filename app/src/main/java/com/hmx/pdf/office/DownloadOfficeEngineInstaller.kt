@@ -15,13 +15,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/** foss flavor: the engine is downloaded from the pinned release by [OfficeEngineDownloadWorker]. */
-internal object OfficeEngineFlavor {
-    const val available: Boolean = true
-    fun createInstaller(context: Context): OfficeEngineInstaller = DownloadOfficeEngineInstaller(context)
-}
-
-private class DownloadOfficeEngineInstaller(private val context: Context) : OfficeEngineInstaller {
+/**
+ * Shared installer: downloads, verifies and installs the Office engine from the pinned
+ * GitHub release. Works for all distribution flavors (play, foss, fdroid) without
+ * requiring Google Play Feature Delivery.
+ */
+class DownloadOfficeEngineInstaller(private val context: Context) : OfficeEngineInstaller {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val workManager = WorkManager.getInstance(context)

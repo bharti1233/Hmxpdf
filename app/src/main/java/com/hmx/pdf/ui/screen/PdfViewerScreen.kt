@@ -209,13 +209,9 @@ private fun copyWithVerification(
     source: android.net.Uri,
     target: android.net.Uri
 ): String? {
+    // Prevent writing when source and target refer to the same document.
+    // Some providers return different URIs for the same file; compare digests to detect this.
     val cr = context.contentResolver
-    val backupDir = java.io.File(context.noBackupFilesDir, "save_copy_recovery").apply { mkdirs() }
-    if (!backupDir.isDirectory) {
-        return "Could not prepare a safe copy; nothing was written."
-    }
-    val backup = java.io.File(backupDir, "copy_${System.currentTimeMillis()}_${System.nanoTime()}.bak")
-
     fun digestOf(uri: android.net.Uri): ByteArray? = runCatching {
         cr.openInputStream(uri)?.use { input ->
             val digest = java.security.MessageDigest.getInstance("SHA-256")
@@ -228,6 +224,18 @@ private fun copyWithVerification(
             digest.digest()
         }
     }.getOrNull()
+
+    val sourceDigest = digestOf(source) ?: return "Could not read the source document."
+    val targetDigest = digestOf(target)
+    if (targetDigest != null && java.security.MessageDigest.isEqual(sourceDigest, targetDigest)) {
+        return "Source and destination are the same file. Nothing was written."
+    }
+
+    val backupDir = java.io.File(context.noBackupFilesDir, "save_copy_recovery").apply { mkdirs() }
+    if (!backupDir.isDirectory) {
+        return "Could not prepare a safe copy; nothing was written."
+    }
+    val backup = java.io.File(backupDir, "copy_${System.currentTimeMillis()}_${System.nanoTime()}.bak")
 
     fun backupTarget(): ByteArray? = runCatching {
         val input = cr.openInputStream(target) ?: return@runCatching null

@@ -254,8 +254,8 @@ dependencies {
     // A real XmlPullParser for JVM tests; android.jar only carries stubs of it.
     testImplementation("net.sf.kxml:kxml2:2.3.0")
 
-    // Optional Office engine (powered by LibreOffice) — installer differs per distribution.
+    // Optional Office engine (powered by LibreOffice) — installer shared by all distributions.
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.xz)
     "playImplementation"(libs.play.feature.delivery.ktx)
-    "fossImplementation"(libs.androidx.work.runtime.ktx)
-    "fossImplementation"(libs.xz)
 }
