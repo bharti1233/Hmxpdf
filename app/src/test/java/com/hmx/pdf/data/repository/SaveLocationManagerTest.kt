@@ -6,7 +6,7 @@ import org.junit.Test
 class SaveLocationManagerTest {
 
     @Test
-    fun `new exports use the HMXPDF folder below Download`() {
+    fun newExportsUseTheHMXPDFFolderBelowDownload() {
         assertEquals("HMXPDF", SaveLocationManager.DEFAULT_EXPORT_FOLDER)
         assertEquals(
             "Download/HMXPDF",
@@ -16,7 +16,7 @@ class SaveLocationManagerTest {
     }
 
     @Test
-    fun `a custom save destination keeps its own label`() {
+    fun aCustomSaveDestinationKeepsItsOwnLabel() {
         assertEquals(
             "content://com.example/tree/MyDocs",
             SaveLocationManager.displaySavePath("content://com.example/tree/MyDocs")
@@ -24,7 +24,7 @@ class SaveLocationManagerTest {
     }
 
     @Test
-    fun `clearing the custom destination falls back to Download HMXPDF`() {
+    fun clearingTheCustomDestinationFallsBackToDownloadHMXPDF() {
         assertEquals(
             "Download/HMXPDF",
             SaveLocationManager.displaySavePath(null)

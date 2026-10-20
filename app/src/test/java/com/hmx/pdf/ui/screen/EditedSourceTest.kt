@@ -7,7 +7,7 @@ import org.junit.Test
 class EditedSourceTest {
 
     @Test
-    fun `edited export uses the edited copy`() {
+    fun editedExportUsesTheEditedCopy() {
         assertEquals(
             "edited.pdf",
             editedSourceOrThrow(
@@ -20,7 +20,7 @@ class EditedSourceTest {
     }
 
     @Test
-    fun `failed edited export throws instead of returning the original`() {
+    fun failedEditedExportThrowsInsteadOfReturningTheOriginal() {
         assertThrows(IllegalStateException::class.java) {
             editedSourceOrThrow(
                 hasEdits = true,
@@ -32,7 +32,7 @@ class EditedSourceTest {
     }
 
     @Test
-    fun `unedited export uses the original`() {
+    fun uneditedExportUsesTheOriginal() {
         assertEquals(
             "original.pdf",
             editedSourceOrThrow(
@@ -45,7 +45,7 @@ class EditedSourceTest {
     }
 
     @Test
-    fun `choosing original keeps the original even with edits`() {
+    fun choosingOriginalKeepsTheOriginalEvenWithEdits() {
         assertEquals(
             "original.pdf",
             editedSourceOrThrow(

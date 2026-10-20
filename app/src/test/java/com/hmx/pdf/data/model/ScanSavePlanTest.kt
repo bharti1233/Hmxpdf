@@ -6,7 +6,7 @@ import org.junit.Test
 class ScanSavePlanTest {
 
     @Test
-    fun `mixed filters stay paired with their page in order`() {
+    fun mixedFiltersStayPairedWithTheirPageInOrder() {
         val pages = listOf("page-1", "page-2", "page-3")
         val filters = mapOf(
             "page-1" to ScanFilter.AUTO,

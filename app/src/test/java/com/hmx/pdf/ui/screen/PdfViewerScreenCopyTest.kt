@@ -12,10 +12,9 @@ import java.security.MessageDigest
 
 class PdfViewerScreenCopyTest {
 
-    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
-
     @Test
     fun copyWithVerificationRejectsSameContentSourceAndTarget() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val dir = File(context.cacheDir, "copytest-${System.nanoTime()}").apply { mkdirs() }
         val source = File(dir, "source.pdf")
         val target = File(dir, "target.pdf")
@@ -53,6 +52,7 @@ class PdfViewerScreenCopyTest {
 
     @Test
     fun saveRecoveryPreventsOverwritingSameDocument() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val dir = File(context.noBackupFilesDir, "recovery-test-${System.nanoTime()}").apply { mkdirs() }
         val original = File(dir, "original.docx")
         val prepared = File(dir, "prepared.docx")

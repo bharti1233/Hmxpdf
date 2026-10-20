@@ -1,7 +1,6 @@
 package com.hmx.pdf.office
 
 import android.content.Context
-import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.hmx.pdf.R
 import org.junit.Assert.*
@@ -17,8 +16,6 @@ import java.security.MessageDigest
  * These tests verify the core logic without requiring network or device.
  */
 class OfficeEngineDownloadTest {
-
-    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
     fun bundleForDeviceReturnsCorrectBundleForSupportedAbis() {
@@ -54,6 +51,7 @@ class OfficeEngineDownloadTest {
 
     @Test
     fun downloadDirAndStagingDirAreInNoBackupFilesDir() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val downloadDir = OfficeEngineStore.downloadDir(context)
         val stagingDir = OfficeEngineStore.stagingDir(context)
         val rootDir = OfficeEngineStore.root(context)
@@ -77,11 +75,12 @@ class OfficeEngineDownloadTest {
 
     @Test
     fun sha256VerificationLogic() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val testFile = File(context.cacheDir, "sha256-test-${System.nanoTime()}.tmp")
         val content = "test content for sha256".toByteArray()
         FileOutputStream(testFile).use { it.write(content) }
 
-        val md = MessageDigest.getInstance("SHA-256")
+        val md = java.security.MessageDigest.getInstance("SHA-256")
         testFile.inputStream().use { input ->
             val buf = ByteArray(1 shl 16)
             while (true) {
@@ -103,10 +102,9 @@ class OfficeEngineDownloadTest {
  */
 class OfficeEngineDownloadWorkerIntegrationTest {
 
-    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
-
     @Test
     fun engineArchiveLayoutExtractTarValidatesZipSlipProtection() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: return
 
@@ -120,6 +118,7 @@ class OfficeEngineDownloadWorkerIntegrationTest {
 
     @Test
     fun officeEngineStoreIsInstalledReturnsFalseForFreshInstall() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         OfficeEngineStore.delete(context)
         assertFalse(OfficeEngineStore.isInstalled(context))
         assertNull(OfficeEngineStore.installedDir(context))
@@ -128,6 +127,7 @@ class OfficeEngineDownloadWorkerIntegrationTest {
 
     @Test
     fun officeEngineStoreDeleteRemovesAllEngineData() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val root = OfficeEngineStore.root(context)
         root.mkdirs()
         File(root, "dummy").writeText("test")
@@ -141,10 +141,9 @@ class OfficeEngineDownloadWorkerIntegrationTest {
  */
 class DownloadOfficeEngineInstallerTest {
 
-    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
-
     @Test
     fun installerInitialStateReflectsInstalledStatus() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val installer = DownloadOfficeEngineInstaller(context)
         val state = installer.state.value
         when (state) {
@@ -157,24 +156,28 @@ class DownloadOfficeEngineInstallerTest {
 
     @Test
     fun cancelOnNonExistentWorkDoesNotCrash() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val installer = DownloadOfficeEngineInstaller(context)
         installer.cancel()
     }
 
     @Test
     fun uninstallCleansUpWorkAndEngine() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val installer = DownloadOfficeEngineInstaller(context)
         installer.uninstall()
     }
 
     @Test
     fun refreshDoesNotCrash() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val installer = DownloadOfficeEngineInstaller(context)
         installer.refresh()
     }
 
     @Test
     fun usesNotificationIsTrueForDownloadInstaller() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val installer = DownloadOfficeEngineInstaller(context)
         assertTrue(installer.usesNotification)
     }
@@ -185,12 +188,11 @@ class DownloadOfficeEngineInstallerTest {
  */
 class EngineArchiveLayoutTest {
 
-    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
-    private val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
-
     @Test
     fun destinationForAcceptsValidLibPaths() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val staging = OfficeEngineStore.resetStaging(context)
+        val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "lib/$abi/liblo-native-code.so")
         assertNotNull(dest)
         assertTrue(dest!!.absolutePath.contains("lib/$abi/"))
@@ -198,7 +200,9 @@ class EngineArchiveLayoutTest {
 
     @Test
     fun destinationForAcceptsValidAssetPaths() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val staging = OfficeEngineStore.resetStaging(context)
+        val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "assets/lo/program/fundamentalrc")
         assertNotNull(dest)
         assertTrue(dest!!.absolutePath.contains("program/"))
@@ -206,14 +210,18 @@ class EngineArchiveLayoutTest {
 
     @Test
     fun destinationForRejectsDirectoryTraversal() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val staging = OfficeEngineStore.resetStaging(context)
+        val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "../../../etc/passwd")
         assertNull(dest)
     }
 
     @Test
     fun destinationForRejectsAbsolutePaths() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val staging = OfficeEngineStore.resetStaging(context)
+        val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "/etc/passwd")
         assertNull(dest)
     }

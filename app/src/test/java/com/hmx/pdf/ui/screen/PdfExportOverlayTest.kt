@@ -12,7 +12,7 @@ import org.junit.Test
 class PdfExportOverlayTest {
 
     @Test
-    fun `missing page layout fails instead of silently dropping the edit`() {
+    fun missingPageLayoutFailsInsteadOfSilentlyDroppingTheEdit() {
         val result = buildExportOverlays(
             annotationsByPage = mapOf(
                 2 to listOf(
@@ -34,7 +34,7 @@ class PdfExportOverlayTest {
     }
 
     @Test
-    fun `missing OCR block fails instead of dropping a highlight`() {
+    fun missingOcrBlockFailsInsteadOfDroppingAHighlight() {
         val result = buildExportOverlays(
             annotationsByPage = mapOf(
                 0 to listOf(
@@ -55,7 +55,7 @@ class PdfExportOverlayTest {
     }
 
     @Test
-    fun `empty annotations are a genuine empty export`() {
+    fun emptyAnnotationsAreAGenuineEmptyExport() {
         val result = buildExportOverlays(
             annotationsByPage = emptyMap(),
             ocrBlocksByPage = emptyMap(),
@@ -68,7 +68,7 @@ class PdfExportOverlayTest {
     }
 
     @Test
-    fun `blank text box is a no-op rather than a failure`() {
+    fun blankTextBoxIsANoOpRatherThanAFailure() {
         val result = buildExportOverlays(
             annotationsByPage = mapOf(
                 0 to listOf(
@@ -90,7 +90,7 @@ class PdfExportOverlayTest {
     }
 
     @Test
-    fun `unchanged in-place text edit is a no-op rather than a failure`() {
+    fun unchangedInPlaceTextEditIsANoOpRatherThanAFailure() {
         val result = buildExportOverlays(
             annotationsByPage = mapOf(
                 0 to listOf(

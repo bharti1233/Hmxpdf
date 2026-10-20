@@ -10,10 +10,9 @@ import java.io.FileOutputStream
 
 class SaveRecoverySameUriTest {
 
-    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
-
     @Test
     fun destinationChangedSinceBackupReturnsFalseWhenDestinationMatchesBackup() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val dir = File(context.noBackupFilesDir, "recovery-test-${System.nanoTime()}").apply { mkdirs() }
         val file = File(dir, "test.docx")
         val content = "PK\u0003\u0004 valid docx".toByteArray()
@@ -36,6 +35,7 @@ class SaveRecoverySameUriTest {
 
     @Test
     fun restoreIfSafeReturnsUnsafeWhenDestinationIsValidButDifferent() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<Context>()
         val dir = File(context.noBackupFilesDir, "recovery-test-${System.nanoTime()}").apply { mkdirs() }
         val original = File(dir, "original.docx")
         val prepared = File(dir, "prepared.docx")

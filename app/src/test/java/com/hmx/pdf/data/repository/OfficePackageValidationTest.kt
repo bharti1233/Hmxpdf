@@ -10,25 +10,25 @@ import java.util.zip.ZipOutputStream
 class OfficePackageValidationTest {
 
     @Test
-    fun `docx with content types and document part is valid`() {
+    fun docxWithContentTypesAndDocumentPartIsValid() {
         val file = packageFile("docx", "word/document.xml")
         assertTrue(SaveRecovery.validateOfficePackage(file, "docx"))
     }
 
     @Test
-    fun `xlsx with content types and workbook part is valid`() {
+    fun xlsxWithContentTypesAndWorkbookPartIsValid() {
         val file = packageFile("xlsx", "xl/workbook.xml")
         assertTrue(SaveRecovery.validateOfficePackage(file, "xlsx"))
     }
 
     @Test
-    fun `package without its main document part is rejected`() {
+    fun packageWithoutItsMainDocumentPartIsRejected() {
         val file = packageFile("docx", "word/styles.xml")
         assertFalse(SaveRecovery.validateOfficePackage(file, "docx"))
     }
 
     @Test
-    fun `empty package is rejected`() {
+    fun emptyPackageIsRejected() {
         val file = File(tempDir("clearpdf-office-validation"), "empty.docx").apply { writeText("") }
         assertFalse(SaveRecovery.validateOfficePackage(file, "docx"))
     }

@@ -7,7 +7,7 @@ import org.junit.Test
 class OfficeShareSourceTest {
 
     @Test
-    fun `clean document shares the original`() {
+    fun cleanDocumentSharesTheOriginal() {
         assertEquals(
             "original.docx",
             officeShareSource(
@@ -19,7 +19,7 @@ class OfficeShareSourceTest {
     }
 
     @Test
-    fun `dirty document shares the edited copy`() {
+    fun dirtyDocumentSharesTheEditedCopy() {
         assertEquals(
             "edited.docx",
             officeShareSource(
@@ -31,7 +31,7 @@ class OfficeShareSourceTest {
     }
 
     @Test
-    fun `failed edited export never falls back to the original`() {
+    fun failedEditedExportNeverFallsBackToTheOriginal() {
         assertNull(
             officeShareSource<String>(
                 hasEdits = true,

@@ -6,7 +6,7 @@ import org.junit.Test
 class ShareFormatTest {
 
     @Test
-    fun `clean converted document keeps the original default`() {
+    fun cleanConvertedDocumentKeepsTheOriginalDefault() {
         assertEquals(
             ShareFormat.ORIGINAL,
             defaultShareFormat(pdfOnly = false, hasUnsavedEdits = false)
@@ -14,7 +14,7 @@ class ShareFormatTest {
     }
 
     @Test
-    fun `pending edits never default to the original document`() {
+    fun pendingEditsNeverDefaultToTheOriginalDocument() {
         assertEquals(
             ShareFormat.PDF,
             defaultShareFormat(pdfOnly = false, hasUnsavedEdits = true)
@@ -22,7 +22,7 @@ class ShareFormatTest {
     }
 
     @Test
-    fun `plain PDFs always default to PDF`() {
+    fun plainPdfsAlwaysDefaultToPdf() {
         assertEquals(
             ShareFormat.PDF,
             defaultShareFormat(pdfOnly = true, hasUnsavedEdits = false)
