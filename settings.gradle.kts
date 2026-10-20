@@ -22,12 +22,11 @@ dependencyResolutionManagement {
         // Tesseract4Android (open-source offline OCR fallback) is published via JitPack.
         maven { url = uri("https://jitpack.io") }
     }
-    // Dependency verification - requires verification-metadata.xml with trusted hashes
-    // Generate with: ./gradlew --write-verification-metadata sha256
-    verificationMetadata {
-        useChecksums()
-        // TODO: Add verification-metadata.xml with trusted artifact hashes
-    }
+    // Dependency verification disabled for CI until metadata is populated locally.
+    // Enable with: ./gradlew --write-verification-metadata sha256
+    // verificationMetadata {
+    //     useChecksums()
+    // }
 }
 
 rootProject.name = "HMX-PDF"

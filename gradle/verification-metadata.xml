@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<verification-metadata>
-  <configuration>
-    <include-configuration-metadata/>
-  </configuration>
-  <components>
-    <!-- Placeholder: run gradle with write-verification-metadata sha256 to generate -->
-  </components>
-</verification-metadata>
