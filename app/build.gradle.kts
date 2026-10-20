@@ -176,6 +176,8 @@ android {
     }
     lint {
         checkReleaseBuilds = true
+        // Existing debt is recorded once; new lint errors still fail the build.
+        baseline = file("lint-baseline.xml")
     }
 }
 
