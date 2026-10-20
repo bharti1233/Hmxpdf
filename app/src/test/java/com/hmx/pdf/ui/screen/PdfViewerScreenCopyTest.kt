@@ -12,9 +12,10 @@ import java.security.MessageDigest
 
 class PdfViewerScreenCopyTest {
 
+    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
+
     @Test
-    fun `copyWithVerification rejects same content source and target`() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+    fun copyWithVerificationRejectsSameContentSourceAndTarget() {
         val dir = File(context.cacheDir, "copytest-${System.nanoTime()}").apply { mkdirs() }
         val source = File(dir, "source.pdf")
         val target = File(dir, "target.pdf")
@@ -29,8 +30,6 @@ class PdfViewerScreenCopyTest {
             context, "${context.packageName}.provider", target
         )
 
-        // We can't easily test the private copyWithVerification function from here,
-        // but we can verify the digest comparison logic
         val cr = context.contentResolver
         fun digestOf(uri: Uri): ByteArray? = runCatching {
             cr.openInputStream(uri)?.use { input ->
@@ -53,12 +52,11 @@ class PdfViewerScreenCopyTest {
     }
 
     @Test
-    fun `SaveRecovery prevents overwriting same document`() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+    fun saveRecoveryPreventsOverwritingSameDocument() {
         val dir = File(context.noBackupFilesDir, "recovery-test-${System.nanoTime()}").apply { mkdirs() }
         val original = File(dir, "original.docx")
         val prepared = File(dir, "prepared.docx")
-        val content = "PK\x03\x04 valid docx".toByteArray() // minimal ZIP header
+        val content = "PK\u0003\u0004 valid docx".toByteArray()
         FileOutputStream(original).use { it.write(content) }
         FileOutputStream(prepared).use { it.write(content) }
 
@@ -66,7 +64,6 @@ class PdfViewerScreenCopyTest {
             context, "${context.packageName}.provider", original
         )
 
-        // begin() should succeed even if backup matches prepared
         val entry = SaveRecovery.begin(context, originalUri, "test.docx", "docx", prepared, false)
         assertNotNull(entry)
         SaveRecovery.discard(entry)

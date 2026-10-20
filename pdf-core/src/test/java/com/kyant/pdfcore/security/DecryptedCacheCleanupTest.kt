@@ -9,7 +9,7 @@ import java.io.File
 class DecryptedCacheCleanupTest {
 
     @Test
-    fun `only stale unlocked files are deleted`() {
+    fun onlyStaleUnlockedFilesAreDeleted() {
         val dir = tempDir("clearpdf-decrypted")
         val now = System.currentTimeMillis()
         val old = File(dir, "unlocked_old.pdf").apply {
@@ -37,7 +37,7 @@ class DecryptedCacheCleanupTest {
     }
 
     @Test
-    fun `old file owned by a live session is preserved`() {
+    fun oldFileOwnedByLiveSessionIsPreserved() {
         val dir = tempDir("clearpdf-decrypted-live")
         val now = System.currentTimeMillis()
         val live = File(dir, "unlocked_live.pdf").apply {
@@ -61,7 +61,7 @@ class DecryptedCacheCleanupTest {
     }
 
     @Test
-    fun `recent session sidecar preserves an old file`() {
+    fun recentSessionSidecarPreservesAnOldFile() {
         val dir = tempDir("clearpdf-decrypted-sidecar")
         val now = System.currentTimeMillis()
         val pdf = File(dir, "unlocked_sidecar.pdf").apply {

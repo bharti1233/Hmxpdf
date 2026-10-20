@@ -1,6 +1,7 @@
 package com.hmx.pdf.office
 
 import android.content.Context
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.hmx.pdf.R
 import org.junit.Assert.*
@@ -18,7 +19,7 @@ class OfficeEngineErrorHandlingTest {
     private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
-    fun `SHA256 mismatch detection`() {
+    fun sha256MismatchDetection() {
         val testFile = File(context.cacheDir, "checksum-test-${System.nanoTime()}.tmp")
         FileOutputStream(testFile).use { it.write("original content".toByteArray()) }
 
@@ -33,10 +34,8 @@ class OfficeEngineErrorHandlingTest {
         }
         val correctSha = md.digest().joinToString("") { "%02x".format(it) }
 
-        // Modify the file
         FileOutputStream(testFile).use { it.write("modified content".toByteArray()) }
 
-        // Verify mismatch detection
         val md2 = MessageDigest.getInstance("SHA-256")
         testFile.inputStream().use { input ->
             val buf = ByteArray(1 shl 16)
@@ -53,7 +52,7 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `size mismatch detection`() {
+    fun sizeMismatchDetection() {
         val testFile = File(context.cacheDir, "size-test-${System.nanoTime()}.tmp")
         FileOutputStream(testFile).use { it.write("short".toByteArray()) }
         assertEquals(5L, testFile.length())
@@ -62,15 +61,13 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `corrupt tar.xz archive detection`() {
-        // Create a fake corrupt .tar.xz file
+    fun corruptTarXzArchiveDetection() {
         val testFile = File(context.cacheDir, "corrupt-${System.nanoTime()}.tar.xz")
         FileOutputStream(testFile).use { it.write("not a valid xz archive".toByteArray()) }
 
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
 
-        // The worker uses XZInputStream which will throw on corrupt data
         var threw = false
         try {
             org.tukaani.xz.XZInputStream(testFile.inputStream()).use { }
@@ -82,13 +79,12 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `empty archive rejection`() {
+    fun emptyArchiveRejection() {
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
 
-        // Create an empty archive
         val testFile = File(context.cacheDir, "empty-${System.nanoTime()}.tar.xz")
-        testFile.writeBytes(emptyByteArray())
+        testFile.writeBytes(ByteArray(0))
 
         var threw = false
         try {
@@ -101,11 +97,10 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `staging directory validation requires liblo-native-code.so`() {
+    fun stagingDirectoryValidationRequiresLibloNativeCodeSo() {
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val libDir = File(staging, "lib/$abi").apply { mkdirs() }
-        // Don't create liblo-native-code.so
 
         var threw = false
         try {
@@ -118,7 +113,7 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `staging directory validation requires libc++_shared.so`() {
+    fun stagingDirectoryValidationRequiresLibcxxSharedSo() {
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val libDir = File(staging, "lib/$abi").apply { mkdirs() }
@@ -135,13 +130,12 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `staging directory validation requires program/fundamentalrc`() {
+    fun stagingDirectoryValidationRequiresProgramFundamentalrc() {
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val libDir = File(staging, "lib/$abi").apply { mkdirs() }
         File(libDir, "liblo-native-code.so").writeText("fake")
         File(libDir, "libc++_shared.so").writeText("fake")
-        // Don't create program/fundamentalrc
 
         var threw = false
         try {
@@ -154,11 +148,10 @@ class OfficeEngineErrorHandlingTest {
     }
 
     @Test
-    fun `atomic commit preserves previous engine on failure`() {
+    fun atomicCommitPreservesPreviousEngineOnFailure() {
         val root = OfficeEngineStore.root(context)
         root.deleteRecursively()
 
-        // Install a valid "previous" engine first
         val oldVersion = "lo-lite-1.0"
         val oldAbi = "arm64-v8a"
         val oldDir = File(root, "$oldVersion-$oldAbi")
@@ -173,12 +166,10 @@ class OfficeEngineErrorHandlingTest {
         assertTrue(OfficeEngineStore.isInstalled(context))
         assertEquals(oldVersion, OfficeEngineStore.installedVersion(context))
 
-        // Attempt to commit a new invalid engine
         val staging = OfficeEngineStore.resetStaging(context)
         val newAbi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
         val newLibDir = File(staging, "lib/$newAbi").apply { mkdirs() }
         File(newLibDir, "liblo-native-code.so").writeText("new")
-        // Missing libc++_shared.so and program/fundamentalrc - commit should fail
 
         var threw = false
         try {
@@ -188,14 +179,13 @@ class OfficeEngineErrorHandlingTest {
         }
         assertTrue(threw)
 
-        // Verify old engine is still intact
         assertTrue(OfficeEngineStore.isInstalled(context))
         assertEquals(oldVersion, OfficeEngineStore.installedVersion(context))
         assertTrue(oldDir.exists())
     }
 
     @Test
-    fun `download part file cleanup on checksum mismatch`() {
+    fun downloadPartFileCleanupOnChecksumMismatch() {
         val downloadDir = OfficeEngineStore.downloadDir(context)
         downloadDir.deleteRecursively()
         downloadDir.mkdirs()
@@ -204,15 +194,11 @@ class OfficeEngineErrorHandlingTest {
         val partFile = File(downloadDir, "${bundle.sha256}.part")
         partFile.writeText("partial download")
 
-        // Simulate checksum verification failure - the worker deletes the part file
-        // when verification fails
         val md = MessageDigest.getInstance("SHA-256")
         val sha = md.digest("wrong content".toByteArray()).joinToString("") { "%02x".format(it) }
         assertNotEquals(bundle.sha256, sha)
 
-        // The worker would delete the part file on mismatch
-        // (we can't easily test the private download function, but we verify the logic)
-        assertTrue(partFile.exists()) // Still exists before manual deletion
+        assertTrue(partFile.exists())
         partFile.delete()
         assertFalse(partFile.exists())
     }
@@ -226,19 +212,18 @@ class OfficeEngineRetryTest {
     private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
-    fun `repeated install calls are idempotent`() {
+    fun repeatedInstallCallsAreIdempotent() {
         val installer = DownloadOfficeEngineInstaller(context)
         installer.install()
-        installer.install() // Second call should not create duplicate work
+        installer.install()
         installer.cancel()
     }
 
     @Test
-    fun `cancel after install clears state`() {
+    fun cancelAfterInstallClearsState() {
         val installer = DownloadOfficeEngineInstaller(context)
         installer.install()
         installer.cancel()
-        // State should return to installed/not-installed
         val state = installer.state.value
         when (state) {
             is OfficeEngineState.NotInstalled -> assertTrue(true)
@@ -249,19 +234,17 @@ class OfficeEngineRetryTest {
     }
 
     @Test
-    fun `uninstall then install starts fresh`() {
+    fun uninstallThenInstallStartsFresh() {
         val installer = DownloadOfficeEngineInstaller(context)
         installer.uninstall()
         installer.install()
         installer.cancel()
-        // Should not crash
     }
 
     @Test
-    fun `state flow emits correct values`() {
+    fun stateFlowEmitsCorrectValues() {
         val installer = DownloadOfficeEngineInstaller(context)
         val initialState = installer.state.value
-        // Initial state should be a valid terminal state
         when (initialState) {
             is OfficeEngineState.Unsupported,
              is OfficeEngineState.NotInstalled,
@@ -280,14 +263,14 @@ class BuiltInFallbackTest {
     private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
-    fun `OfficeEngine.tryConvert returns null when engine not installed`() {
+    fun tryConvertReturnsNullWhenEngineNotInstalled() {
         OfficeEngineStore.delete(context)
         val result = OfficeEngine.tryConvert(context, Uri.parse("content://test"), "test.docx")
         assertNull(result)
     }
 
     @Test
-    fun `OfficeEngine.tryConvert returns null when engine disabled`() {
+    fun tryConvertReturnsNullWhenEngineDisabled() {
         OfficeEngine.setUseForOfficeFiles(context, false)
         val result = OfficeEngine.tryConvert(context, Uri.parse("content://test"), "test.docx")
         assertNull(result)
@@ -295,7 +278,7 @@ class BuiltInFallbackTest {
     }
 
     @Test
-    fun `OfficeEngine.isOfficeFile detects office extensions`() {
+    fun isOfficeFileDetectsOfficeExtensions() {
         val officeFiles = listOf("test.doc", "test.docx", "test.xls", "test.xlsx", "test.ppt", "test.pptx", "test.odt", "test.ods", "test.odp")
         for (f in officeFiles) {
             assertTrue("Should detect $f", OfficeEngine.isOfficeFile(f))
@@ -307,7 +290,7 @@ class BuiltInFallbackTest {
     }
 
     @Test
-    fun `OfficeEngine.isActive requires both installed and enabled`() {
+    fun isActiveRequiresBothInstalledAndEnabled() {
         OfficeEngineStore.delete(context)
         OfficeEngine.setUseForOfficeFiles(context, true)
         assertFalse(OfficeEngine.isActive(context))

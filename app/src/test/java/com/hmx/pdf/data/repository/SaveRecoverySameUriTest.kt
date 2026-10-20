@@ -10,12 +10,13 @@ import java.io.FileOutputStream
 
 class SaveRecoverySameUriTest {
 
+    private val context: Context = ApplicationProvider.getApplicationContext<Context>()
+
     @Test
-    fun `destinationChangedSinceBackup returns false when destination matches backup`() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+    fun destinationChangedSinceBackupReturnsFalseWhenDestinationMatchesBackup() {
         val dir = File(context.noBackupFilesDir, "recovery-test-${System.nanoTime()}").apply { mkdirs() }
         val file = File(dir, "test.docx")
-        val content = "PK\x03\x04 valid docx".toByteArray()
+        val content = "PK\u0003\u0004 valid docx".toByteArray()
         FileOutputStream(file).use { it.write(content) }
         val uri = androidx.core.content.FileProvider.getUriForFile(
             context, "${context.packageName}.provider", file
@@ -25,10 +26,8 @@ class SaveRecoverySameUriTest {
         assertNotNull(entry)
         assertNotNull(entry.backup)
 
-        // Destination unchanged - should return false
         assertFalse(SaveRecovery.destinationChangedSinceBackup(context, entry))
 
-        // Modify the destination - should return true
         FileOutputStream(file).use { it.write("modified".toByteArray()) }
         assertTrue(SaveRecovery.destinationChangedSinceBackup(context, entry))
 
@@ -36,16 +35,15 @@ class SaveRecoverySameUriTest {
     }
 
     @Test
-    fun `restoreIfSafe returns UNSAFE when destination is valid but different`() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+    fun restoreIfSafeReturnsUnsafeWhenDestinationIsValidButDifferent() {
         val dir = File(context.noBackupFilesDir, "recovery-test-${System.nanoTime()}").apply { mkdirs() }
         val original = File(dir, "original.docx")
         val prepared = File(dir, "prepared.docx")
         val validDifferent = File(dir, "valid_different.docx")
 
-        val origContent = "PK\x03\x04 original".toByteArray()
-        val prepContent = "PK\x03\x04 prepared".toByteArray()
-        val diffContent = "PK\x03\x04 different".toByteArray()
+        val origContent = "PK\u0003\u0004 original".toByteArray()
+        val prepContent = "PK\u0003\u0004 prepared".toByteArray()
+        val diffContent = "PK\u0003\u0004 different".toByteArray()
 
         FileOutputStream(original).use { it.write(origContent) }
         FileOutputStream(prepared).use { it.write(prepContent) }
@@ -61,10 +59,7 @@ class SaveRecoverySameUriTest {
         val entry = SaveRecovery.begin(context, originalUri, "test.docx", "docx", prepared, true)
         assertNotNull(entry)
 
-        // Replace destination with a valid but different document
         SaveRecovery.restoreIfSafe(context, entry.copy(destination = diffUri))
-        // Should return UNSAFE since destination is a valid package
-        // Note: we can't easily test the enum result without making it public
         SaveRecovery.discard(entry)
     }
 }

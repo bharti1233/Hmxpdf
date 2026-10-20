@@ -1,6 +1,7 @@
 package com.hmx.pdf.office
 
 import android.content.Context
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.hmx.pdf.R
 import org.junit.Assert.*
@@ -10,7 +11,6 @@ import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
-import kotlin.test.assertFailsWith
 
 /**
  * Unit tests for the Office engine download and installation flow.
@@ -21,7 +21,7 @@ class OfficeEngineDownloadTest {
     private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
-    fun `bundleForDevice returns correct bundle for supported ABIs`() {
+    fun bundleForDeviceReturnsCorrectBundleForSupportedAbis() {
         val bundle = OfficeEngineManifest.bundleForDevice()
         if (bundle != null) {
             assertEquals("arm64-v8a", bundle.abi)
@@ -32,10 +32,9 @@ class OfficeEngineDownloadTest {
     }
 
     @Test
-    fun `bundle definitions have valid SHA-256 format`() {
+    fun bundleDefinitionsHaveValidSha256Format() {
         for (bundle in OfficeEngineManifest.bundles) {
             assertEquals(64, bundle.sha256.length)
-            // Verify it's valid hex
             bundle.sha256.toCharArray().forEach { c ->
                 assertTrue("Invalid hex char: $c", c in '0'..'9' || c in 'a'..'f')
             }
@@ -43,18 +42,18 @@ class OfficeEngineDownloadTest {
     }
 
     @Test
-    fun `APPROX_DOWNLOAD_BYTES matches arm64 bundle size`() {
+    fun approxDownloadBytesMatchesArm64BundleSize() {
         assertEquals(47_521_152L, OfficeEngineManifest.APPROX_DOWNLOAD_BYTES)
     }
 
     @Test
-    fun `version constants are consistent`() {
+    fun versionConstantsAreConsistent() {
         assertEquals("lo-lite-2.0", OfficeEngineManifest.VERSION)
         assertEquals("2.0", OfficeEngineManifest.DISPLAY_VERSION)
     }
 
     @Test
-    fun `downloadDir and stagingDir are in noBackupFilesDir`() {
+    fun downloadDirAndStagingDirAreInNoBackupFilesDir() {
         val downloadDir = OfficeEngineStore.downloadDir(context)
         val stagingDir = OfficeEngineStore.stagingDir(context)
         val rootDir = OfficeEngineStore.root(context)
@@ -65,19 +64,19 @@ class OfficeEngineDownloadTest {
     }
 
     @Test
-    fun `isSupported returns true for supported ABIs`() {
+    fun isSupportedReturnsTrueForSupportedAbis() {
         val supported = OfficeEngine.isSupported()
         val bundle = OfficeEngineManifest.bundleForDevice()
         assertEquals(bundle != null, supported)
     }
 
     @Test
-    fun `RELOCATE_FROM constant is set`() {
+    fun relocateFromConstantIsSet() {
         assertEquals("/data/data/vasuki.istanpdf/files", OfficeEngineManifest.RELOCATE_FROM)
     }
 
     @Test
-    fun `SHA256 verification logic`() {
+    fun sha256VerificationLogic() {
         val testFile = File(context.cacheDir, "sha256-test-${System.nanoTime()}.tmp")
         val content = "test content for sha256".toByteArray()
         FileOutputStream(testFile).use { it.write(content) }
@@ -107,12 +106,10 @@ class OfficeEngineDownloadWorkerIntegrationTest {
     private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
-    fun `EngineArchiveLayout.extractTar validates zip-slip protection`() {
-        // The extractTar function is package-private, test via layout helper
+    fun engineArchiveLayoutExtractTarValidatesZipSlipProtection() {
         val staging = OfficeEngineStore.resetStaging(context)
         val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: return
 
-        // Test that destinationFor rejects unsafe paths
         val safe = EngineArchiveLayout.destinationFor(staging, abi, "lib/$abi/libtest.so")
         assertNotNull(safe)
         assertTrue(safe!!.absolutePath.startsWith(staging.absolutePath))
@@ -122,7 +119,7 @@ class OfficeEngineDownloadWorkerIntegrationTest {
     }
 
     @Test
-    fun `OfficeEngineStore.isInstalled returns false for fresh install`() {
+    fun officeEngineStoreIsInstalledReturnsFalseForFreshInstall() {
         OfficeEngineStore.delete(context)
         assertFalse(OfficeEngineStore.isInstalled(context))
         assertNull(OfficeEngineStore.installedDir(context))
@@ -130,7 +127,7 @@ class OfficeEngineDownloadWorkerIntegrationTest {
     }
 
     @Test
-    fun `OfficeEngineStore.delete removes all engine data`() {
+    fun officeEngineStoreDeleteRemovesAllEngineData() {
         val root = OfficeEngineStore.root(context)
         root.mkdirs()
         File(root, "dummy").writeText("test")
@@ -147,10 +144,9 @@ class DownloadOfficeEngineInstallerTest {
     private val context: Context = ApplicationProvider.getApplicationContext<Context>()
 
     @Test
-    fun `installer initial state reflects installed status`() {
+    fun installerInitialStateReflectsInstalledStatus() {
         val installer = DownloadOfficeEngineInstaller(context)
         val state = installer.state.value
-        // Should be either Unsupported, NotInstalled, or Installed
         when (state) {
             is OfficeEngineState.Unsupported -> assertTrue(true)
             is OfficeEngineState.NotInstalled -> assertTrue(true)
@@ -160,25 +156,25 @@ class DownloadOfficeEngineInstallerTest {
     }
 
     @Test
-    fun `cancel on non-existent work does not crash`() {
+    fun cancelOnNonExistentWorkDoesNotCrash() {
         val installer = DownloadOfficeEngineInstaller(context)
-        installer.cancel() // Should not throw
+        installer.cancel()
     }
 
     @Test
-    fun `uninstall cleans up work and engine`() {
+    fun uninstallCleansUpWorkAndEngine() {
         val installer = DownloadOfficeEngineInstaller(context)
-        installer.uninstall() // Should not throw
+        installer.uninstall()
     }
 
     @Test
-    fun `refresh does not crash`() {
+    fun refreshDoesNotCrash() {
         val installer = DownloadOfficeEngineInstaller(context)
-        installer.refresh() // Should not throw
+        installer.refresh()
     }
 
     @Test
-    fun `usesNotification is true for download installer`() {
+    fun usesNotificationIsTrueForDownloadInstaller() {
         val installer = DownloadOfficeEngineInstaller(context)
         assertTrue(installer.usesNotification)
     }
@@ -193,7 +189,7 @@ class EngineArchiveLayoutTest {
     private val abi = OfficeEngineManifest.bundleForDevice()?.abi ?: "arm64-v8a"
 
     @Test
-    fun `destinationFor accepts valid lib paths`() {
+    fun destinationForAcceptsValidLibPaths() {
         val staging = OfficeEngineStore.resetStaging(context)
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "lib/$abi/liblo-native-code.so")
         assertNotNull(dest)
@@ -201,7 +197,7 @@ class EngineArchiveLayoutTest {
     }
 
     @Test
-    fun `destinationFor accepts valid asset paths`() {
+    fun destinationForAcceptsValidAssetPaths() {
         val staging = OfficeEngineStore.resetStaging(context)
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "assets/lo/program/fundamentalrc")
         assertNotNull(dest)
@@ -209,14 +205,14 @@ class EngineArchiveLayoutTest {
     }
 
     @Test
-    fun `destinationFor rejects directory traversal`() {
+    fun destinationForRejectsDirectoryTraversal() {
         val staging = OfficeEngineStore.resetStaging(context)
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "../../../etc/passwd")
         assertNull(dest)
     }
 
     @Test
-    fun `destinationFor rejects absolute paths`() {
+    fun destinationForRejectsAbsolutePaths() {
         val staging = OfficeEngineStore.resetStaging(context)
         val dest = EngineArchiveLayout.destinationFor(staging, abi, "/etc/passwd")
         assertNull(dest)
@@ -229,7 +225,7 @@ class EngineArchiveLayoutTest {
 class OfficeEngineRelocationTest {
 
     @Test
-    fun `aliasFor generates correct length alias`() {
+    fun aliasForGeneratesCorrectLengthAlias() {
         val needle = "/data/data/vasuki.istanpdf/files"
         val alias = OfficeEngineRelocation.aliasFor(needle)
         assertEquals(needle.length, alias.length)
@@ -237,7 +233,7 @@ class OfficeEngineRelocationTest {
     }
 
     @Test
-    fun `aliasFor works with even padding`() {
+    fun aliasForWorksWithEvenPadding() {
         val needle = "/data/data/com.example.app/files"
         val alias = OfficeEngineRelocation.aliasFor(needle)
         assertEquals(needle.length, alias.length)
