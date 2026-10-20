@@ -36,6 +36,9 @@ jobs:
           --stacktrace
           -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
           -Pkotlin.daemon.jvmargs=-Xmx4g
+      - name: Show lint report on failure
+        if: failure()
+        run: cat app/build/intermediates/lint_intermediate_text_report/playDebug/lintReportPlayDebug/lint-results-playDebug.txt
       - name: Build debug APK
         run: >
           ./gradlew assemblePlayDebug
