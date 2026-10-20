@@ -206,6 +206,7 @@ dependencies {
     testImplementation("androidx.test:core:1.5.0")
     testImplementation("androidx.test.ext:junit:1.1.5")
     testImplementation("androidx.test:rules:1.5.0")
+    implementation("androidx.annotation:annotation:1.7.0")
     implementation(libs.androidx.core.ktx)
     // Per-app language (LocaleHelper). Declared directly: the play / foss builds used to get it
     // only transitively through Google's libraries, which the F-Droid build doesn't have.
