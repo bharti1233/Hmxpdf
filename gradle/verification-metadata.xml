@@ -4,6 +4,6 @@
     <include-configuration-metadata/>
   </configuration>
   <components>
-    <!-- Placeholder - run './gradlew --write-verification-metadata sha256' to generate -->
+    <!-- Placeholder: run './gradlew --write-verification-metadata sha256' to generate -->
   </components>
 </verification-metadata>
