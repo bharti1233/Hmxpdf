@@ -1,0 +1,90 @@
+name: Android build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Run JVM unit tests
+        run: >
+          ./gradlew testPlayDebugUnitTest :pdf-core:test :ocr-core:test
+          --stacktrace
+          -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+          -Pkotlin.daemon.jvmargs=-Xmx4g
+      - name: Run Android lint
+        run: >
+          ./gradlew lintPlayDebug
+          --stacktrace
+          -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+          -Pkotlin.daemon.jvmargs=-Xmx4g
+      - name: Build debug APK
+        run: >
+          ./gradlew assemblePlayDebug
+          --stacktrace
+          -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+          -Pkotlin.daemon.jvmargs=-Xmx4g
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: clearpdf-debug-apk
+          path: app/build/outputs/apk/play/debug/*.apk
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Require release signing configuration
+        env:
+          STORE_FILE: ${{ secrets.CLEARPDF_UPLOAD_STORE_FILE }}
+          STORE_PASSWORD: ${{ secrets.CLEARPDF_UPLOAD_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.CLEARPDF_UPLOAD_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.CLEARPDF_UPLOAD_KEY_PASSWORD }}
+        run: |
+          test -n "$STORE_FILE" && test -n "$STORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD"
+      - name: Build signed release APK
+        env:
+          CLEARPDF_UPLOAD_STORE_FILE: ${{ secrets.CLEARPDF_UPLOAD_STORE_FILE }}
+          CLEARPDF_UPLOAD_STORE_PASSWORD: ${{ secrets.CLEARPDF_UPLOAD_STORE_PASSWORD }}
+          CLEARPDF_UPLOAD_KEY_ALIAS: ${{ secrets.CLEARPDF_UPLOAD_KEY_ALIAS }}
+          CLEARPDF_UPLOAD_KEY_PASSWORD: ${{ secrets.CLEARPDF_UPLOAD_KEY_PASSWORD }}
+        run: >
+          ./gradlew assemblePlayRelease
+          --stacktrace
+          -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+          -Pkotlin.daemon.jvmargs=-Xmx4g
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: clearpdf-release-apk
+          path: app/build/outputs/apk/play/release/*.apk
+          if-no-files-found: error
