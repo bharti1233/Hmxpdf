@@ -25,9 +25,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
 import kotlin.coroutines.coroutineContext
+import androidx.annotation.SuppressLint
 
 /**
  * Downloads, verifies and installs the Office engine (shared by all distribution flavors).
+ * 
+ * @SuppressLint("SpecifyForegroundServiceType") - WorkManager creates foreground service internally,
+ * which lint cannot verify in manifest since service is created dynamically by WorkManager.
+ */
+@SuppressLint("SpecifyForegroundServiceType")
  *
  *  1. Resumable download (HTTP Range) into office-engine/download/<sha256>.part. The bytes already
  *     on disk are re-hashed first so the streaming SHA-256 covers the whole file.
