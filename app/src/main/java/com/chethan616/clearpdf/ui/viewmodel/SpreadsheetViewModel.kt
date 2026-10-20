@@ -347,7 +347,7 @@ class SpreadsheetViewModel : ViewModel() {
             WriteResult.Success
         } catch (e: Throwable) {
             val restored = if (hadBackup) runCatching {
-                cr.openOutputStream(uri, "wt")?.use { o -> backup.inputStream().use { it.copyTo(it) } }
+                cr.openOutputStream(uri, "wt")?.use { o -> backup.inputStream().use { it.copyTo(o) } }
                     ?: error("Destination unavailable")
             }.isSuccess else false
             if (hadBackup && !restored) {
