@@ -513,7 +513,6 @@
     <string name="scan_more">Сканировать ещё</string>
     <string name="add_from_gallery">Добавить из галереи</string>
     <string name="clear_all">Очистить всё</string>
-    <string name="filter">Фильтр</string>
     <string name="scan_original">Оригинал</string>
     <string name="scan_auto">Авто</string>
     <string name="scan_grayscale">Оттенки серого</string>
