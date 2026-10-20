@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
     <!-- Exclude decrypted PDF plaintext cache from backup (privacy) -->
-    <exclude domain="cache" path="decrypted_pdfs/" />
+    <exclude domain="file" path="cache/decrypted_pdfs/" />
     <!-- Exclude shared export temp files from backup -->
-    <exclude domain="cache" path="shared/" />
+    <exclude domain="file" path="cache/shared/" />
     <!-- Exclude save-copy recovery backups (plaintext content) -->
     <exclude domain="file" path="save_copy_recovery/" />
     <!-- Exclude Office save recovery journals (may contain plaintext) -->

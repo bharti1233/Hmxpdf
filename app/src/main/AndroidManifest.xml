@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <!-- Legacy write access for pre-scoped-storage devices only. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <!-- POST_NOTIFICATIONS required for foreground service notifications on Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <!-- ML Kit subject segmentation (image editor → auto background removal) declares minSdk 24.
          The app stays on 23; BackgroundRemover gates the call at runtime (API < 24 → unavailable). -->
@@ -185,7 +187,8 @@
         <service
             android:name=".office.OfficeEngineService"
             android:exported="false"
-            android:process=":office" />
+            android:process=":office"
+            android:foregroundServiceType="dataSync" />
 
         <!-- Local-content WebViews block external loads. URL-to-PDF intentionally loads the
              address entered by the user. Disable Safe Browsing lookups and WebView metrics. -->
