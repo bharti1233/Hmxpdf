@@ -1,5 +1,4 @@
-package com.hmx.pdf.office
-
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -25,7 +24,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.security.MessageDigest
 import kotlin.coroutines.coroutineContext
-import androidx.annotation.SuppressLint
 
 /**
  * Downloads, verifies and installs the Office engine (shared by all distribution flavors).
