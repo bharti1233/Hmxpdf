@@ -548,7 +548,6 @@
     <string name="scan_more">Scan more</string>
     <string name="add_from_gallery">Add from gallery</string>
     <string name="clear_all">Clear all</string>
-    <string name="filter">Filter</string>
     <string name="scan_filter_all_pages">All pages</string>
     <string name="scan_filter_page">Page %1$d</string>
     <string name="scan_filter_hint">Tap a page to change only that page</string>

@@ -2,6 +2,7 @@ package com.hmx.pdf.data.repository
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -292,7 +293,7 @@ internal object SaveRecovery {
                 directory = directory,
                 destination = properties.getProperty("destination")
                     ?.takeIf { it.isNotBlank() }
-                    ?.let { Uri.parse(it) },
+                    ?.toUri(),
                 displayName = properties.getProperty("displayName").orEmpty(),
                 kind = kind,
                 backup = child("backup"),

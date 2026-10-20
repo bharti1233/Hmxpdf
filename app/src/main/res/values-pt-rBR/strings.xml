@@ -967,4 +967,21 @@
     <string name="motion_reset">Redefinir movimento</string>
     <string name="settings_invert_share_morph">Trocar compartilhar e abrir</string>
     <string name="settings_invert_share_morph_desc">No visualizador, toque no botão redondo para compartilhar o documento e toque, segure e deslize para cima para abrir outro arquivo.</string>
+
+    <string name="viewer_share_original_without_edits">%1$s (sem edições)</string>
+    <string name="viewer_share_original_excludes_edits">O arquivo original não inclui as edições feitas neste visualizador.</string>
+    <string name="scan_filter_all_pages">Todas as páginas</string>
+    <string name="scan_filter_page">Página %1$d</string>
+    <string name="scan_filter_hint">Toque em uma página para mudar apenas ela</string>
+    <string name="sheet_share_failed">Não foi possível preparar a planilha editada para compartilhar</string>
+    <string name="save_recovery_title">Recuperar um salvamento interrompido?</string>
+    <string name="save_recovery_body">Um salvamento de %1$s foi interrompido. O HMX PDF manteve uma cópia de recuperação. Salve como um novo arquivo ou descarte.</string>
+    <string name="save_recovery_document">este documento</string>
+    <string name="save_recovery_later">Mais tarde</string>
+    <string name="save_recovery_discard">Descartar</string>
+    <string name="save_recovery_save_copy">Salvar uma cópia</string>
+    <string name="save_recovery_saved">Cópia de recuperação salva</string>
+    <string name="save_recovery_failed">Não foi possível salvar a cópia de recuperação</string>
+    <string name="docx_share_failed">Não foi possível preparar o documento editado para compartilhar</string>
+
 </resources>

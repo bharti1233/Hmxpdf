@@ -974,4 +974,21 @@
     <string name="motion_reset">Сбросить движение</string>
     <string name="settings_invert_share_morph">Поменять «Поделиться» и «Открыть»</string>
     <string name="settings_invert_share_morph_desc">В просмотрщике нажмите круглую кнопку, чтобы поделиться документом, а нажмите, удерживайте и проведите вверх, чтобы открыть другой файл.</string>
+
+    <string name="viewer_share_original_without_edits">%1$s (без изменений)</string>
+    <string name="viewer_share_original_excludes_edits">Исходный файл не включает изменения, сделанные в этом просмотрщике.</string>
+    <string name="scan_filter_all_pages">Все страницы</string>
+    <string name="scan_filter_page">Страница %1$d</string>
+    <string name="scan_filter_hint">Нажмите страницу, чтобы изменить только её</string>
+    <string name="sheet_share_failed">Не удалось подготовить изменённую таблицу к отправке</string>
+    <string name="save_recovery_title">Восстановить прерванное сохранение?</string>
+    <string name="save_recovery_body">Сохранение %1$s было прервано. HMX PDF сохранил копию для восстановления. Сохраните её как новый файл или удалите.</string>
+    <string name="save_recovery_document">этот документ</string>
+    <string name="save_recovery_later">Позже</string>
+    <string name="save_recovery_discard">Отменить</string>
+    <string name="save_recovery_save_copy">Сохранить копию</string>
+    <string name="save_recovery_saved">Восстановленная копия сохранена</string>
+    <string name="save_recovery_failed">Не удалось сохранить восстановленную копию</string>
+    <string name="docx_share_failed">Не удалось подготовить изменённый документ к отправке</string>
+
 </resources>

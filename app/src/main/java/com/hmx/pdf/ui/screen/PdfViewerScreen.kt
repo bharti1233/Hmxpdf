@@ -344,6 +344,10 @@ fun PdfViewerScreen(
     val accent         = LiquidGlassColors.Blue
     val uiSensor       = rememberUISensor()
     val context        = LocalContext.current
+    val exportFailedText = stringResource(R.string.viewer_export_failed)
+    val saveCopyFailedText = stringResource(R.string.viewer_save_copy_failed)
+    val saveCopyDoneText = stringResource(R.string.viewer_save_copy_done)
+    val printFailedText = stringResource(R.string.docx_print_failed)
     val bookmarkUri    = state.originalUri ?: state.document?.uri
     val clipboard      = LocalClipboardManager.current
     val focusManager   = LocalFocusManager.current
@@ -2523,7 +2527,7 @@ fun PdfViewerScreen(
                     exitAfterSave = false
                     android.widget.Toast.makeText(
                         context,
-                        built.failures.firstOrNull() ?: context.getString(R.string.viewer_export_failed),
+                        built.failures.firstOrNull() ?: exportFailedText,
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 } else if (built.overlays.isNotEmpty()) {
@@ -2651,11 +2655,11 @@ fun PdfViewerScreen(
                         val (src, _) = buildSharePayload(req.first, req.second, req.third).getOrThrow()
                         shareMultiple = emptyList()
                         copyWithVerification(context, src, target)
-                    }.getOrElse { it.message ?: context.getString(R.string.viewer_save_copy_failed) }
+                    }.getOrElse { it.message ?: saveCopyFailedText }
                 }
                 android.widget.Toast.makeText(
                     context,
-                    error ?: context.getString(R.string.viewer_save_copy_done),
+                    error ?: saveCopyDoneText,
                     if (error == null) android.widget.Toast.LENGTH_SHORT else android.widget.Toast.LENGTH_LONG
                 ).show()
             }
@@ -2680,7 +2684,7 @@ fun PdfViewerScreen(
                         if (!printed) android.widget.Toast.makeText(
                             context,
                             result.exceptionOrNull()?.message
-                                ?: context.getString(R.string.docx_print_failed),
+                                ?: printFailedText,
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -2717,7 +2721,7 @@ fun PdfViewerScreen(
                         android.widget.Toast.makeText(
                             context,
                             result.exceptionOrNull()?.message
-                                ?: context.getString(R.string.viewer_export_failed),
+                                ?: exportFailedText,
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                         return@launch

@@ -944,4 +944,21 @@
     <string name="motion_reset">إعادة ضبط الحركة</string>
     <string name="settings_invert_share_morph">تبديل المشاركة والفتح</string>
     <string name="settings_invert_share_morph_desc">في العارض، انقر الزر الدائري لمشاركة المستند، واضغط مطولًا ثم اسحب لأعلى لفتح ملف آخر.</string>
+
+    <string name="viewer_share_original_without_edits">%1$s (بدون تعديلكل)</string>
+    <string name="viewer_share_original_excludes_edits">الملف الأصلي لا يتضمن التغييرات التي تمت في هذا العارض.</string>
+    <string name="scan_filter_all_pages">كل الصفحات</string>
+    <string name="scan_filter_page">صفحة %1$d</string>
+    <string name="scan_filter_hint">اضغط صفحة لتغييرها فقط</string>
+    <string name="sheet_share_failed">تعذّر تجهيز ورقة العمل المعدلة للمشاركة</string>
+    <string name="save_recovery_title">استعادة حفض مقطوع؟</string>
+    <string name="save_recovery_body">تم قطع الحفظ ل%1$s. احتفظ HMX PDF بنسخة استرداد. حافظ على ملف جديد أو تخل عنه.</string>
+    <string name="save_recovery_document">هذا المستند</string>
+    <string name="save_recovery_later">لاحقًا</string>
+    <string name="save_recovery_discard">تجاهل</string>
+    <string name="save_recovery_save_copy">حفظ نسخة</string>
+    <string name="save_recovery_saved">تم حفظ النسخة المستردة</string>
+    <string name="save_recovery_failed">تعذر حفظ النسخة المستردة</string>
+    <string name="docx_share_failed">تعذر تجهيز المستند المعدل للمشاركة</string>
+
 </resources>
