@@ -1,15 +1,8 @@
 package com.hmx.pdf.office
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
-import com.hmx.pdf.R
 import org.junit.Assert.*
+import org.junit.Ignore
 import org.junit.Test
-import java.io.File
-import java.io.FileOutputStream
-import java.net.HttpURLConnection
-import java.net.URL
-import java.security.MessageDigest
 
 /**
  * Unit tests for the Office engine download and installation flow.
