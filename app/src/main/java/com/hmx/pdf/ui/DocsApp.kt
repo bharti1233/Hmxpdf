@@ -96,7 +96,12 @@ private tailrec fun android.content.Context.findActivity(): android.app.Activity
  * Provides the wallpaper backdrop, floating bottom tabs, and navigation host.
  */
 @Composable
-fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = null, documentWindow: Boolean = false) {
+fun DocsApp(
+    shortcutRoute: String? = null,
+    incomingPdfUri: android.net.Uri? = null,
+    incomingDocumentName: String? = null,
+    documentWindow: Boolean = false
+) {
     val context = LocalContext.current
     var selectedLocale by rememberSaveable { mutableStateOf<String>(OnboardingManager.getSelectedLocale(context)) }
     val localizedContext = remember(context, selectedLocale) {
@@ -187,6 +192,9 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
         !needsOnboarding && shortcutRoute == null && incomingPdfUri == null &&
             OnboardingManager.shouldShowWhatsNew(context)
     }
+    // Only document windows start on the viewer. A MainActivity forwarding fallback keeps the
+    // original Home-first path, so its back navigation still has a Home entry to return to.
+    val documentStartRoute = shortcutRoute.takeIf { documentWindow && incomingPdfUri != null }
 
     // A finished task only reports that a good moment happened; the ask itself waits for a calm
     // screen (below). It no longer pops up at launch.
@@ -256,7 +264,7 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
         // Home, and instead of showing Home inside the document's window we close the window,
         // returning to the app that opened the file.
         if (documentWindow) {
-            val activity = LocalContext.current as? android.app.Activity
+            val activity = context.findActivity()
             LaunchedEffect(navController) {
                 var shownDocument = false
                 navController.currentBackStackEntryFlow.collect { entry ->
@@ -290,25 +298,33 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
                 recoveryChecked = true
             }
         }
-        val showBottomTabs = currentRoute == "home" || currentRoute == "tools" ||
-            (currentRoute == "settings" && !com.hmx.pdf.ui.screen.SettingsSubPage.open)
+        // A document window has no Home entry to anchor tab switches, so it keeps the app tab bar
+        // out of its viewer/settings stack.
+        val showBottomTabs = !documentWindow && (
+            currentRoute == "home" || currentRoute == "tools" ||
+                (currentRoute == "settings" && !com.hmx.pdf.ui.screen.SettingsSubPage.open)
+        )
         val onBottomTabSelected: (Int) -> Unit = remember(navController) {
             { index ->
+                val target = when (index) {
+                    0 -> "home"
+                    1 -> "tools"
+                    else -> "settings"
+                }
+                // The tab pill and route are already where the user pointed. Re-navigating would
+                // pop and rebuild the destination for no reason.
                 selectedTab = index
-                when (index) {
-                    0 -> navController.navigate("home") {
-                        popUpTo("home") { inclusive = true }
-                        launchSingleTop = true
-                    }
-
-                    1 -> navController.navigate("tools") {
-                        popUpTo("home")
-                        launchSingleTop = true
-                    }
-
-                    2 -> navController.navigate("settings") {
-                        popUpTo("home")
-                        launchSingleTop = true
+                if (navController.currentDestination?.route != target) {
+                    if (index == 0) {
+                        // Return to the existing Home entry instead of removing and recreating it.
+                        if (!navController.popBackStack("home", inclusive = false)) {
+                            navController.navigate("home") { launchSingleTop = true }
+                        }
+                    } else {
+                        navController.navigate(target) {
+                            popUpTo("home")
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
@@ -316,8 +332,9 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
 
         // Handle app shortcut deep links. Guarded on the gate so a shortcut can never fire on top of
         // the tour — though `needsOnboarding` is already false whenever a shortcut is present.
-        LaunchedEffect(shortcutRoute) {
-            if (shortcutRoute != null && !needsOnboarding) {
+        LaunchedEffect(shortcutRoute, incomingPdfUri, documentStartRoute) {
+            // An incoming document window already starts on its viewer route below.
+            if (shortcutRoute != null && documentStartRoute == null && !needsOnboarding) {
                 navController.navigate(shortcutRoute) { launchSingleTop = true }
             }
         }
@@ -461,10 +478,18 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
                         }
                     },
                     incomingPdfUri = incomingPdfUri,
+                    incomingDocumentName = incomingDocumentName,
+                    // External document windows skip Home entirely: the viewer route is already
+                    // known from the validated intent and can consume incomingPdfUri itself.
                     startDestination = when {
                         needsOnboarding -> ROUTE_ONBOARDING
                         showWhatsNew -> com.hmx.pdf.ui.navigation.ROUTE_WHATS_NEW
+                        documentStartRoute != null -> documentStartRoute
                         else -> "home"
+                    },
+                    documentWindow = documentWindow,
+                    onCloseDocumentWindow = {
+                        context.findActivity()?.finishAndRemoveTask()
                     },
                     // In place: persist + update the hoisted state, which re-provides LocalResources
                     // above, so every `stringResource` in the flow re-resolves. No recreate, or the

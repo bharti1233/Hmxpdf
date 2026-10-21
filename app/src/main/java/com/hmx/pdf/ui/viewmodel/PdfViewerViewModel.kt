@@ -305,7 +305,12 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
         private const val FORM_SCAN_SIZE_LIMIT_BYTES = 150L * 1024 * 1024
     }
 
-    fun openPdf(context: Context, uri: Uri, password: String? = null) {
+    fun openPdf(
+        context: Context,
+        uri: Uri,
+        password: String? = null,
+        nameHint: String? = null
+    ) {
         val generation = ++openGeneration
         runCatching { _uiState.value.document?.let { openPdfUseCase.close(it) } }
         cleanupDecryptedTemp()
@@ -348,7 +353,11 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                 // or a durable local copy this app saved the first time it *was* good. `uri` itself
                 // stays the identity used for naming and for the Recents entry.
                 val readableUri = withContext(Dispatchers.IO) {
-                    LocalDocumentMirror.resolve(context, uri, extensionOf(context, uri))
+                    val extension = nameHint?.takeIf { it.isNotBlank() }
+                        ?.substringAfterLast('.', "pdf")
+                        ?.lowercase()
+                        ?: extensionOf(context, uri)
+                    LocalDocumentMirror.resolve(context, uri, extension)
                 }
                 if (generation != openGeneration) return@launch
 
@@ -385,7 +394,8 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                 // decode are blocking, so both happen off the main thread.
                 val (displayName, resumePage) = withContext(Dispatchers.IO) {
                     val recents = RecentFilesManager.getRecents(context)
-                    val name = queryFileName(context, uri)
+                    val name = nameHint?.takeIf { it.isNotBlank() }
+                        ?: queryFileName(context, uri)
                         ?: recents.firstOrNull { it.uriString == uri.toString() }?.name
                         ?: doc.name
                     val page = recents.firstOrNull { it.uriString == uri.toString() }

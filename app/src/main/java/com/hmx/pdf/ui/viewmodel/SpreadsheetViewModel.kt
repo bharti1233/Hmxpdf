@@ -72,7 +72,7 @@ class SpreadsheetViewModel : ViewModel() {
     /** `applied.size` at the last save, or -1 when that state is no longer reachable by undo. */
     private var savedAt = 0
 
-    fun load(context: Context, uri: Uri) {
+    fun load(context: Context, uri: Uri, nameHint: String? = null) {
         if (started) return
         started = true
         viewModelScope.launch {
@@ -82,7 +82,7 @@ class SpreadsheetViewModel : ViewModel() {
             runCatching {
                 context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             }
-            val name = withContext(Dispatchers.IO) {
+            val name = nameHint?.takeIf { it.isNotBlank() } ?: withContext(Dispatchers.IO) {
                 runCatching { queryName(context, uri) }.getOrNull()
                     ?: RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.name
                     ?: uri.lastPathSegment ?: "Spreadsheet"

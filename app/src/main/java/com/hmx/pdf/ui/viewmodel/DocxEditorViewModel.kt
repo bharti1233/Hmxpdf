@@ -78,7 +78,7 @@ class DocxEditorViewModel : ViewModel() {
     private var lastKey: String? = null
     private var lastAt = 0L
 
-    fun load(context: Context, uri: Uri) {
+    fun load(context: Context, uri: Uri, nameHint: String? = null) {
         if (started) return
         started = true
         viewModelScope.launch {
@@ -87,7 +87,7 @@ class DocxEditorViewModel : ViewModel() {
             resumePage = withContext(Dispatchers.IO) {
                 runCatching { RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.currentPage }.getOrNull() ?: 0
             }
-            val name = withContext(Dispatchers.IO) {
+            val name = nameHint?.takeIf { it.isNotBlank() } ?: withContext(Dispatchers.IO) {
                 runCatching { queryName(context, uri) }.getOrNull()
                     ?: RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.name
                     ?: uri.lastPathSegment ?: "Document.docx"

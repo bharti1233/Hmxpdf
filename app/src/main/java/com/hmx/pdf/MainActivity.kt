@@ -95,6 +95,11 @@ open class MainActivity : ComponentActivity() {
         // Route an incoming document by its kind: spreadsheets → interactive grid, images → image
         // editor, .docx → the Word editor, everything else → the PDF viewer.
         val incomingName = incomingPdfUri?.let { queryDisplayName(it) }
+        // Only reuse a provider-supplied name. The last-path fallback is kept for routing and the
+        // task label, but is not necessarily a better display name than the viewer's own fallback.
+        val incomingDisplayNameHint = incomingPdfUri?.let { uri ->
+            incomingName?.takeIf { it != uri.lastPathSegment }
+        }
         val effectiveRoute = if (incomingPdfUri != null) {
             when (com.hmx.pdf.utils.docKindOf(incomingName)) {
                 com.hmx.pdf.utils.DocKind.Excel -> "spreadsheet"
@@ -115,7 +120,12 @@ open class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            DocsApp(shortcutRoute = effectiveRoute, incomingPdfUri = incomingPdfUri, documentWindow = isDocumentWindow)
+            DocsApp(
+                shortcutRoute = effectiveRoute,
+                incomingPdfUri = incomingPdfUri,
+                incomingDocumentName = incomingDisplayNameHint,
+                documentWindow = isDocumentWindow
+            )
         }
     }
 
