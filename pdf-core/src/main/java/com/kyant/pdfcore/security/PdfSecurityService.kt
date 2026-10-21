@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.kyant.pdfcore.internal.PdfBox
+import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
 import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
@@ -50,7 +51,7 @@ object PdfSecurityService {
         PdfBox.ensureInitialized(context)
         return try {
             context.contentResolver.openInputStream(uri)?.use { stream ->
-                PDDocument.load(stream).use { document -> document.isEncrypted }
+                PDDocument.load(stream, MemoryUsageSetting.setupTempFileOnly()).use { document -> document.isEncrypted }
             } ?: false
         } catch (error: Exception) {
             if (isPasswordError(error)) true else throw error
@@ -129,7 +130,7 @@ object PdfSecurityService {
         val sidecar = sidecarFor(output)
         try {
             context.contentResolver.openInputStream(uri)?.use { input ->
-                PDDocument.load(input, password).use { document ->
+                PDDocument.load(input, password, MemoryUsageSetting.setupTempFileOnly()).use { document ->
                     document.setAllSecurityToBeRemoved(true)
                     output.outputStream().use { document.save(it) }
                 }
@@ -179,7 +180,7 @@ object PdfSecurityService {
         PdfBox.ensureInitialized(context)
         try {
             context.contentResolver.openInputStream(sourceUri)?.use { input ->
-                PDDocument.load(input, password).use { document ->
+                PDDocument.load(input, password, MemoryUsageSetting.setupTempFileOnly()).use { document ->
                     document.setAllSecurityToBeRemoved(true)
                     context.contentResolver.openOutputStream(destinationUri)?.use { output ->
                         document.save(output)

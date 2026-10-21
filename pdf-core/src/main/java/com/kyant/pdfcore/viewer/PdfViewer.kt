@@ -79,7 +79,12 @@ class PdfViewerImpl : PdfViewer {
 
         val fd = context.contentResolver.openFileDescriptor(uri, "r")
             ?: throw IllegalArgumentException("Cannot open file: $uri")
-        val renderer = android.graphics.pdf.PdfRenderer(fd)
+        val renderer = try {
+            android.graphics.pdf.PdfRenderer(fd)
+        } catch (t: Throwable) {
+            runCatching { fd.close() }
+            throw t
+        }
         fds[uri] = fd
         renderers[uri] = renderer
 

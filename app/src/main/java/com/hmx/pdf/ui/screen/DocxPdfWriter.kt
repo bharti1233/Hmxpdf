@@ -37,7 +37,7 @@ import com.hmx.pdf.docx.DocxObjects
 import com.hmx.pdf.docx.DocxPackage
 import com.hmx.pdf.docx.ObjInfo
 import com.hmx.pdf.docx.RProps
-import com.hmx.pdf.docx.XmlScan
+import com.hmx.pdf.docx.tableGridBefore
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.roundToInt
@@ -300,8 +300,7 @@ private class Exporter(context: Context, private val pkg: DocxPackage, private v
         val tl = tableLookOf(table, pkg, lk, availWidth.dp)
         val cellLook = lk.scaled(tl.scale)
         val lastRow = rowIndex == table.rows.lastIndex
-        val gridBefore = if (row.trPr.isEmpty()) 0
-        else XmlScan.scan(row.trPr).children.firstOrNull()?.child("gridBefore")?.attr(row.trPr, "val")?.toIntOrNull() ?: 0
+        val gridBefore = tableGridBefore(row.trPr)
         val header = tl.firstRow && rowIndex == 0
         val banded = tl.bands && tl.bandFill != null && !header && (rowIndex - if (tl.firstRow) 1 else 0) % 2 == 0
         val line = lk.ink.copy(0.55f)

@@ -242,7 +242,8 @@ internal fun PdfContinuousPage(
     // that has ever rendered knows its own shape; anything else borrows the first page that does,
     // since documents are near enough uniform. Only the very first page of a fresh document falls
     // through to the A4 guess.
-    val placeholderAspect = if (bitmap != null) null else {
+    val drawableBitmap = bitmap?.takeIf { !it.isRecycled }
+    val placeholderAspect = if (drawableBitmap != null) null else {
         (pageBitmapSizes[page] ?: pageBitmapSizes.values.firstOrNull { it.width > 0f && it.height > 0f })
             ?.takeIf { it.width > 0f && it.height > 0f }
             ?.let { it.width / it.height }
@@ -258,17 +259,19 @@ internal fun PdfContinuousPage(
             .padding(vertical = 6.dp)
             // The placeholder is trimmed too, so the page keeps its height when the bitmap lands.
             .then(if (crop != null) Modifier.trimToContent(crop) else Modifier)
-            .then(if (bitmap == null) Modifier.aspectRatio(placeholderAspect ?: (1f / 1.414f)) else Modifier)
+            .then(if (drawableBitmap == null) Modifier.aspectRatio(placeholderAspect ?: (1f / 1.414f)) else Modifier)
             .background(Color(0xFF15181E))
             // Page-local coordinates for the text selection's screen mapping (see PdfViewportTransform).
             .onGloballyPositioned { textSelection.registerPage(page, it); pageLayout[0] = it }
             .then(pageTextSemantics)
             .onSizeChanged { sz ->
                 pageCanvasSizes[page] = Size(sz.width.toFloat(), sz.height.toFloat())
-                if (bitmap != null) pageBitmapSizes[page] = Size(bitmap.width.toFloat(), bitmap.height.toFloat())
+                if (drawableBitmap != null) {
+                    pageBitmapSizes[page] = Size(drawableBitmap.width.toFloat(), drawableBitmap.height.toFloat())
+                }
             }
     ) {
-        if (bitmap == null) {
+        if (drawableBitmap == null) {
             Box(Modifier.matchParentSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = LiquidGlassColors.Blue, strokeWidth = 2.dp)
             }
@@ -276,7 +279,7 @@ internal fun PdfContinuousPage(
         }
 
         Image(
-            bitmap = bitmap.asImageBitmap(),
+            bitmap = drawableBitmap.asImageBitmap(),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.fillMaxWidth(),
@@ -289,8 +292,8 @@ internal fun PdfContinuousPage(
             val frame = Rect(0f, 0f, size.width, size.height)
 
             // Night: photographs go back to how they were printed (the page around them stays turned).
-            if (darkPageAppearance && !bitmap.isRecycled) {
-                nightPhotos.forEach { r -> drawRegion(bitmap, Rect(0f, 0f, 1f, 1f), r) }
+            if (darkPageAppearance) {
+                nightPhotos.forEach { r -> drawRegion(drawableBitmap, Rect(0f, 0f, 1f, 1f), r) }
             }
 
             // Sharp zoom: the visible part of the page at screen resolution, over the page bitmap.
@@ -1008,6 +1011,7 @@ private val InvertColorFilter = NightPaper.filter
  * of the page, unfiltered at its place on this page.
  */
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawRegion(source: Bitmap, sourceRegion: Rect, part: Rect) {
+    if (source.isRecycled) return
     val sw = sourceRegion.width.takeIf { it > 0f } ?: return
     val sh = sourceRegion.height.takeIf { it > 0f } ?: return
     val sx = ((part.left - sourceRegion.left) / sw * source.width).roundToInt().coerceIn(0, source.width - 1)

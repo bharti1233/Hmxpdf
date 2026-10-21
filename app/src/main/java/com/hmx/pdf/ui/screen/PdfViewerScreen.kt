@@ -479,8 +479,16 @@ fun PdfViewerScreen(
     // the same engine as the page (PdfTextEditPreview), and the band around every edited line is
     // laid over the page. Until a band arrives the page shows the quick system-font preview.
     val textEditPatches = remember { mutableStateMapOf<Long, TextEditPatch>() }
+    DisposableEffect(Unit) {
+        onDispose {
+            // Release without mutating the maps: disposal happens after the composition is gone.
+            detailTiles.values.forEach { if (!it.bitmap.isRecycled) it.bitmap.recycle() }
+            textEditPatches.values.forEach { if (!it.bitmap.isRecycled) it.bitmap.recycle() }
+        }
+    }
     val textEditDocUri = state.document?.uri
     LaunchedEffect(textEditDocUri) {
+        textEditPatches.recycleTextEditPatches()
         val uri = textEditDocUri ?: return@LaunchedEffect
         val rendered = HashMap<Int, List<Pair<Long, String>>>()
         snapshotFlow {
@@ -501,7 +509,10 @@ fun PdfViewerScreen(
                     com.kyant.pdfcore.text.PdfTextEditPreview.render(context, uri, page, edits, bands, widthPx)
                 }
                 marks.forEachIndexed { i, m ->
-                    bitmaps.getOrNull(i)?.let { textEditPatches[m.id] = TextEditPatch(m.text, bands[i], it) }
+                    bitmaps.getOrNull(i)?.let { bitmap ->
+                        val old = textEditPatches.put(m.id, TextEditPatch(m.text, bands[i], bitmap))
+                        if (old != null && old.bitmap !== bitmap && !old.bitmap.isRecycled) old.bitmap.recycle()
+                    }
                 }
                 rendered[page] = signature
             }
@@ -1081,7 +1092,7 @@ fun PdfViewerScreen(
     // make the light surface actually opaque enough to stand on its own (78%, below) instead of
     // throwing away a correct luminance reading. Dark ink on that holds up over the black band and
     // over the page alike.
-    val currentPageBitmap = state.pageBitmaps.getOrNull(currentPageIndex)
+    val currentPageBitmap = state.pageBitmaps.getOrNull(currentPageIndex)?.takeIf { !it.isRecycled }
     // Whole-page luminance still drives the DIALOG panels (chromePanel / panelFg): those sit over a
     // scrim on an opaque surface, not over the live document, so a single global reading is right.
     // The floating BARS no longer use this — they sample the content directly behind each bar
@@ -1152,7 +1163,9 @@ fun PdfViewerScreen(
             .collect { idx ->
                 viewModel.trimBitmapCache(idx)
                 state.originalUri?.let { uri ->
-                    RecentFilesManager.updateProgress(context, uri, idx, safePageCount)
+                    withContext(Dispatchers.IO) {
+                        RecentFilesManager.updateProgress(context, uri, idx, safePageCount)
+                    }
                 }
             }
     }
@@ -1229,12 +1242,12 @@ fun PdfViewerScreen(
         // rendered at exact screen resolution and laid over the page, so text and fine diagrams stay
         // crisp at any zoom instead of being a stretched page bitmap. Cleared again near 1x.
         LaunchedEffect(state.document?.uri) {
-            detailTiles.clear()
+            detailTiles.recycleDetailTiles()
             snapshotFlow { Triple(scale, offsetX, listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset) }
                 .distinctUntilChanged()
                 .debounce(160)
                 .collectLatest { (s, ox, _) ->
-                    if (s < 1.15f) { detailTiles.clear(); return@collectLatest }
+                    if (s < 1.15f) { detailTiles.recycleDetailTiles(); return@collectLatest }
                     val cw = containerWidthPx.toFloat()
                     val ch = containerHeightPx.toFloat()
                     if (cw <= 0f || ch <= 0f) return@collectLatest
@@ -1258,10 +1271,13 @@ fun PdfViewerScreen(
                         val w = ((r - l) * s).roundToInt().coerceIn(1, 4096)
                         val h = ((b - t) * s).roundToInt().coerceIn(1, 4096)
                         val bmp = viewModel.renderRegion(p, region, sz.width * s, w, h) ?: continue
-                        detailTiles[p] = PageDetailTile(region, bmp)
+                        val old = detailTiles.put(p, PageDetailTile(region, bmp))
+                        if (old != null && old.bitmap !== bmp && !old.bitmap.isRecycled) old.bitmap.recycle()
                         keep += p
                     }
-                    detailTiles.keys.retainAll(keep)
+                    detailTiles.keys.filter { it !in keep }.forEach { p ->
+                        detailTiles.remove(p)?.bitmap?.let { if (!it.isRecycled) it.recycle() }
+                    }
                 }
         }
 
@@ -2841,6 +2857,18 @@ private fun ViewerLoadingCurtain(isLight: Boolean, darkPage: Boolean = false) {
                 .background(sheet)
         )
     }
+}
+
+/** Releases the sharp-zoom tile bitmaps when the map itself is cleared or replaced. */
+private fun MutableMap<Int, PageDetailTile>.recycleDetailTiles() {
+    values.forEach { if (!it.bitmap.isRecycled) it.bitmap.recycle() }
+    clear()
+}
+
+/** Releases exact text-edit preview bitmaps when they are replaced or the document changes. */
+private fun MutableMap<Long, TextEditPatch>.recycleTextEditPatches() {
+    values.forEach { if (!it.bitmap.isRecycled) it.bitmap.recycle() }
+    clear()
 }
 
 /**

@@ -217,10 +217,10 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
     private val renderedPageWidths = mutableMapOf<Int, Int>()
     private val textLoadingPages = mutableSetOf<Int>()
 
-    // Text extraction loads the ENTIRE document with PdfBox per page (PdfTextService.extractPage), so
-    // several pages extracting at once — the eager first-pages pass, or a fast scroll — stack multiple
-    // full-document copies in RAM and can OOM a large / decrypted PDF. This serializes them to one at a
-    // time, capping the peak to a single in-flight copy. Pages still extract lazily; they just queue.
+    // Text extraction and OCR both load/rasterize large data (PdfTextService parses the whole
+    // document per page; OCR rasterizes a full page), so several at once can stack multiple copies
+    // in RAM and OOM a large / decrypted PDF. This serializes both to one in-flight operation,
+    // capping the peak. Pages still extract lazily; they just queue.
     private val textExtractionMutex = Mutex()
 
     /**
@@ -376,19 +376,24 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                     openedDoc = null
                     return@launch
                 }
+                if (doc.pageCount <= 0) throw IllegalStateException("PDF has no pages")
                 // A revoked share-intent grant fails the DISPLAY_NAME query on `uri` exactly the way
                 // it fails a read — falling straight to `doc.name` would then show the mirror's own
                 // "<hash>.pdf" filename. The name this document was already saved under in Recents
                 // (set the first time it opened, when the query still worked) is what a returning
-                // "Failed to open" file should still show.
-                val displayName = queryFileName(context, uri)
-                    ?: RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.name
-                    ?: doc.name
-                val resumePage = RecentFilesManager.getRecents(context)
-                    .firstOrNull { it.uriString == uri.toString() }
-                    ?.currentPage
-                    ?.coerceIn(0, (doc.pageCount - 1).coerceAtLeast(0))
-                    ?: 0
+                // "Failed to open" file should still show. Provider queries and the recents JSON
+                // decode are blocking, so both happen off the main thread.
+                val (displayName, resumePage) = withContext(Dispatchers.IO) {
+                    val recents = RecentFilesManager.getRecents(context)
+                    val name = queryFileName(context, uri)
+                        ?: recents.firstOrNull { it.uriString == uri.toString() }?.name
+                        ?: doc.name
+                    val page = recents.firstOrNull { it.uriString == uri.toString() }
+                        ?.currentPage
+                        ?.coerceIn(0, (doc.pageCount - 1).coerceAtLeast(0))
+                        ?: 0
+                    name to page
+                }
                 // First paint rides along with the document: the page the reader lands on is
                 // rasterised here, at a quick preview width, BEFORE the viewer is told the document
                 // exists — so the viewer appears with its page instead of a dark curtain waiting for a
@@ -478,20 +483,26 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                 // The original uri is the identity of the thing the user opened. Re-opening from
                 // recents re-runs the conversion, which is correct: the converted file is a cache
                 // artifact, not the document.
-                RecentFilesManager.addRecent(context, RecentFile(
-                    name = displayName,
-                    uriString = uri.toString(),
-                    timestamp = System.currentTimeMillis(),
-                    pageCount = doc.pageCount,
-                    sizeBytes = doc.sizeBytes
-                ))
-                if (GitHubStarPromptManager.recordDocumentOpened(context)) {
+                // Recent-file prefs and the star-prompt counter both touch SharedPreferences;
+                // keep their read/encode work off the main thread.
+                val promptForStar = withContext(Dispatchers.IO) {
+                    RecentFilesManager.addRecent(context, RecentFile(
+                        name = displayName,
+                        uriString = uri.toString(),
+                        timestamp = System.currentTimeMillis(),
+                        pageCount = doc.pageCount,
+                        sizeBytes = doc.sizeBytes
+                    ))
+                    GitHubStarPromptManager.recordDocumentOpened(context)
+                }
+                if (promptForStar) {
                     StarPromptEventBus.requestPrompt()
                 }
-                renderPage(context, 0, DEFAULT_RENDER_WIDTH)
-                // Eagerly load text for first 5 pages without waiting for bitmaps
-                val eager = minOf(5, doc.pageCount)
-                for (p in 0 until eager) loadTextPage(context, doc, p)
+                renderPage(context, resumePage, DEFAULT_RENDER_WIDTH)
+                // Text is loaded lazily as pages render. Only the page we actually landed on is
+                // requested here; the old five-page eager pass parsed the whole document five
+                // times before the reader did anything.
+                loadTextPage(context, doc, resumePage)
             } catch (e: PdfSecurityService.PasswordRequiredException) {
                 if (generation == openGeneration && !adopted) {
                     cleanupDecryptedTemp()
@@ -669,8 +680,9 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                 // is to place the bitmap it just rendered.
                 if (bitmap != null) {
                     val bitmaps = currentState.pageBitmaps.toMutableList()
-                    val previous = bitmaps[pageIndex]
-                    if (previous != null && previous != bitmap && !previous.isRecycled) previous.recycle()
+                    // Do not recycle the replaced bitmap here: the current composition may still
+                    // draw it until this state update lands. Dropping the reference lets GC reclaim
+                    // it safely; explicit recycles are only for pages evicted far from the viewport.
                     bitmaps[pageIndex] = bitmap
                     renderedPageWidths[pageIndex] = renderWidth
                     _uiState.value = currentState.copy(pageBitmaps = bitmaps)
@@ -703,18 +715,23 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
 
         viewModelScope.launch {
             val blocks = withContext(AppDispatchers.pdf) {
-                // One full-document PdfBox parse at a time — see [textExtractionMutex].
-                val pdfBlocks = textExtractionMutex.withLock {
-                    runCatching {
+                // One full-document PdfBox parse OR one OCR raster/recognize at a time. OCR is
+                // suspend and can take seconds, so lock/unlock explicitly around the whole
+                // operation; withLock's action is non-suspending.
+                textExtractionMutex.lock()
+                try {
+                    val pdfBlocks = runCatching {
                         textService.extractPage(context, doc.uri, pageIndex)
                     }.getOrElse { emptyList() }
-                }
-                if (pdfBlocks.isNotEmpty()) {
-                    pdfBlocks.map { it.toOcrBlock() }
-                } else {
-                    // No digital text layer (scanned/image-only page) — fall back to
-                    // on-device OCR, cached to disk so re-opening the doc is instant.
-                    loadOcrFallbackBlocks(context, doc, pageIndex)
+                    if (pdfBlocks.isNotEmpty()) {
+                        pdfBlocks.map { it.toOcrBlock() }
+                    } else {
+                        // No digital text layer (scanned/image-only page) — fall back to
+                        // on-device OCR, cached to disk so re-opening the doc is instant.
+                        loadOcrFallbackBlocks(context, doc, pageIndex)
+                    }
+                } finally {
+                    textExtractionMutex.unlock()
                 }
             }
             val current = _uiState.value
@@ -854,13 +871,16 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
         val lower = query.trim().lowercase()
         viewModelScope.launch {
             val matches = withContext(Dispatchers.IO) {
-                runCatching {
-                    textService.searchAll(context, doc.uri, query, doc.pageCount)
-                        .map { FindMatch(it.pageIndex, it.left, it.top, it.right, it.bottom) }
-                }.getOrElse {
-                    // Fallback: search in-memory extracted blocks (word-precise).
-                    _uiState.value.ocrBlocksByPage.entries.sortedBy { it.key }.flatMap { (page, blocks) ->
-                        blocks.sortedBy { it.top }.flatMap { it.findMatches(lower, page) }
+                // SearchAll parses the whole document; serialize it with page text/OCR work.
+                textExtractionMutex.withLock {
+                    runCatching {
+                        textService.searchAll(context, doc.uri, query, doc.pageCount)
+                            .map { FindMatch(it.pageIndex, it.left, it.top, it.right, it.bottom) }
+                    }.getOrElse {
+                        // Fallback: search in-memory extracted blocks (word-precise).
+                        _uiState.value.ocrBlocksByPage.entries.sortedBy { it.key }.flatMap { (page, blocks) ->
+                            blocks.sortedBy { it.top }.flatMap { it.findMatches(lower, page) }
+                        }
                     }
                 }
             }
@@ -986,7 +1006,10 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
     fun extractAllText(context: Context, pdf: Uri): String {
         com.kyant.pdfcore.internal.PdfBox.ensureInitialized(context)
         return context.contentResolver.openInputStream(pdf)?.use { input ->
-            com.tom_roush.pdfbox.pdmodel.PDDocument.load(input).use { d ->
+            com.tom_roush.pdfbox.pdmodel.PDDocument.load(
+                input,
+                com.tom_roush.pdfbox.io.MemoryUsageSetting.setupTempFileOnly()
+            ).use { d ->
                 com.tom_roush.pdfbox.text.PDFTextStripper().apply { sortByPosition = true }.getText(d)
             }
         }.orEmpty()

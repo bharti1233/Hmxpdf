@@ -3,6 +3,7 @@ package com.kyant.pdfcore.text
 import android.content.Context
 import android.net.Uri
 import com.kyant.pdfcore.internal.PdfBox
+import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
 import com.tom_roush.pdfbox.text.TextPosition
@@ -59,7 +60,7 @@ class PdfTextServiceImpl : PdfTextService {
         PdfBox.ensureInitialized(context)
         return runCatching {
             context.contentResolver.openInputStream(uri)?.use { stream ->
-                PDDocument.load(stream).use { doc ->
+                PDDocument.load(stream, MemoryUsageSetting.setupTempFileOnly()).use { doc ->
                     if (pageIndex !in 0 until doc.numberOfPages) return@runCatching emptyList()
                     extractPageBlocks(doc, pageIndex)
                 }
@@ -78,7 +79,7 @@ class PdfTextServiceImpl : PdfTextService {
         val lower = query.trim().lowercase()
         return runCatching {
             context.contentResolver.openInputStream(uri)?.use { stream ->
-                PDDocument.load(stream).use { doc ->
+                PDDocument.load(stream, MemoryUsageSetting.setupTempFileOnly()).use { doc ->
                     buildList {
                         for (pageIdx in 0 until min(doc.numberOfPages, pageCount)) {
                             extractPageBlocks(doc, pageIdx).forEach { block ->

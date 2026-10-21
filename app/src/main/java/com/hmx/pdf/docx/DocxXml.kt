@@ -138,8 +138,12 @@ internal object XmlScan {
                         ent == "gt" -> ">"
                         ent == "quot" -> "\""
                         ent == "apos" -> "'"
-                        ent.startsWith("#x") -> ent.drop(2).toIntOrNull(16)?.let { String(Character.toChars(it)) }
-                        ent.startsWith("#") -> ent.drop(1).toIntOrNull()?.let { String(Character.toChars(it)) }
+                        ent.startsWith("#x") -> ent.drop(2).toIntOrNull(16)
+                            ?.takeIf { it in 0..0x10FFFF }
+                            ?.let { String(Character.toChars(it)) }
+                        ent.startsWith("#") -> ent.drop(1).toIntOrNull()
+                            ?.takeIf { it in 0..0x10FFFF }
+                            ?.let { String(Character.toChars(it)) }
                         else -> null
                     }
                     if (rep != null) { sb.append(rep); i = semi + 1; continue }

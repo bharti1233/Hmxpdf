@@ -185,6 +185,7 @@ import com.hmx.pdf.docx.XNode
 import com.hmx.pdf.docx.XmlScan
 import com.hmx.pdf.docx.findPara
 import com.hmx.pdf.docx.forEachPara
+import com.hmx.pdf.docx.tableGridBefore
 import com.hmx.pdf.ui.components.rememberAdaptiveInk
 import com.hmx.pdf.ui.components.GlassBackButton
 import com.hmx.pdf.ui.components.GlassColorPicker
@@ -1709,9 +1710,7 @@ private fun TableRowBlock(table: DocTable, row: DocRow, rowIndex: Int, look: Doc
     val tl = remember(table, look, availWidth) { tableLookOf(table, env.pkg, look, availWidth) }
     val cellLook = look.scaled(tl.scale)
     val lastRow = rowIndex == table.rows.lastIndex
-    val gridBefore = remember(row.trPr) {
-        if (row.trPr.isEmpty()) 0 else XmlScan.scan(row.trPr).children.firstOrNull()?.child("gridBefore")?.attr(row.trPr, "val")?.toIntOrNull() ?: 0
-    }
+    val gridBefore = remember(row.trPr) { tableGridBefore(row.trPr) }
     val header = tl.firstRow && rowIndex == 0
     val banded = tl.bands && tl.bandFill != null && !header && (rowIndex - if (tl.firstRow) 1 else 0) % 2 == 0
     val line = if (tl.borders) look.ink.copy(0.55f) else if (env.editMode) look.ink.copy(0.14f) else Color.Transparent

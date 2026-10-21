@@ -47,6 +47,9 @@ object RecentFilesManager {
         }
     }
 
+    // Called off the main thread now; serialize the read-modify-write with progress updates so
+    // one cannot overwrite the other's list.
+    @Synchronized
     fun addRecent(context: Context, file: RecentFile) {
         if (!AppSettingsManager.getRememberRecentFiles(context)) return
         val current = getRecents(context).toMutableList()
@@ -77,6 +80,7 @@ object RecentFilesManager {
     }
 
     /** Stores reading progress without changing the entry's recency or pinned state. */
+    @Synchronized
     fun updateProgress(context: Context, uri: Uri, currentPage: Int, pageCount: Int) {
         if (!AppSettingsManager.getRememberRecentFiles(context)) return
         val target = uri.toString()

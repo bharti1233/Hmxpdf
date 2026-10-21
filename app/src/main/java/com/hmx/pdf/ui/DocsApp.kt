@@ -207,9 +207,7 @@ fun DocsApp(shortcutRoute: String? = null, incomingPdfUri: android.net.Uri? = nu
     }
 
     // Clean up stale decrypted PDF plaintext cache on startup (process death recovery).
-    LaunchedEffect(context) {
-        com.kyant.pdfcore.security.PdfSecurityService.cleanupStaleDecryptedFiles(context)
-    }
+    // MainActivity already performs this on a background thread; do not scan twice on main.
 
     // ── Locale-switch choreography ──────────────────────────────────────────────────────────────
     // The switch still restarts the Activity (see LocaleHelper.markLocaleFadePending), but the two

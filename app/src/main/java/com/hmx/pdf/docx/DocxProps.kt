@@ -481,6 +481,20 @@ class DocxNumbering(
     }
 }
 
+/**
+ * Word's table row `gridBefore` is a column count. Malformed documents can carry a negative
+ * value, which must not reach the column fraction index (a negative array index).
+ */
+internal fun tableGridBefore(trPr: String): Int {
+    if (trPr.isEmpty()) return 0
+    return XmlScan.scan(trPr).children.firstOrNull()
+        ?.child("gridBefore")
+        ?.attr(trPr, "val")
+        ?.toIntOrNull()
+        ?.coerceAtLeast(0)
+        ?: 0
+}
+
 /** The theme's heading and body fonts. */
 class DocxTheme(val major: String?, val minor: String?) {
     fun resolve(themeRef: String?): String? = when {

@@ -94,8 +94,8 @@ open class MainActivity : ComponentActivity() {
 
         // Route an incoming document by its kind: spreadsheets → interactive grid, images → image
         // editor, .docx → the Word editor, everything else → the PDF viewer.
+        val incomingName = incomingPdfUri?.let { queryDisplayName(it) }
         val effectiveRoute = if (incomingPdfUri != null) {
-            val incomingName = queryDisplayName(incomingPdfUri)
             when (com.hmx.pdf.utils.docKindOf(incomingName)) {
                 com.hmx.pdf.utils.DocKind.Excel -> "spreadsheet"
                 com.hmx.pdf.utils.DocKind.Image -> "image_editor"
@@ -107,7 +107,7 @@ open class MainActivity : ComponentActivity() {
 
         if (isDocumentWindow && incomingPdfUri != null) {
             // Recents shows the document's name for its window.
-            val label = queryDisplayName(incomingPdfUri)
+            val label = incomingName
             if (label != null) runCatching {
                 @Suppress("DEPRECATION")
                 setTaskDescription(android.app.ActivityManager.TaskDescription(label))
