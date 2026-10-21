@@ -39,7 +39,7 @@ object LocalDocumentMirror {
     // Durability copies are maintenance, not part of opening the document. Keep them off the
     // caller's thread so a 100 MB PDF does not wait for a second 100 MB write before page one.
     private val mirrorScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val mirroring = ConcurrentHashMap.newKeySet<String>()
+    private val mirroring = ConcurrentHashMap<String, Boolean>()
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -130,7 +130,7 @@ object LocalDocumentMirror {
         if (!AppSettingsManager.getKeepLocalCopies(context)) return
         val appContext = context.applicationContext
         val id = key(original)
-        if (!mirroring.add(id)) return
+        if (mirroring.putIfAbsent(id, true) != null) return
         mirrorScope.launch {
             try {
                 val size = runCatching {
