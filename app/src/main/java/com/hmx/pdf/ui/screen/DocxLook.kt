@@ -33,6 +33,7 @@ import com.hmx.pdf.docx.Props
 import com.hmx.pdf.docx.RProps
 import com.hmx.pdf.docx.XmlScan
 import com.hmx.pdf.docx.forEachPara
+import com.hmx.pdf.docx.layoutTwips
 
 /** How one paragraph sits on the page. Lengths already scaled to the screen. */
 internal class ParaLook(
@@ -125,10 +126,7 @@ internal class DocxLook(
             mult in 0.98f..1.02f -> androidx.compose.ui.unit.TextUnit.Unspecified
             else -> (1.2f * mult).em
         }
-        val left = (pp.left ?: 0).coerceAtLeast(0)
-        val hangingTw = if (numId != null) (pp.hanging ?: 360) else 0
-        val firstLine = if (numId == null) (pp.firstLine ?: 0) - (pp.hanging ?: 0) else 0
-        val startTw = if (numId != null) (left - hangingTw).coerceAtLeast(0) else left + minOf(firstLine, 0)
+        val geo = pp.layoutTwips()
         val align = when (pp.align) {
             "center" -> TextAlign.Center
             "right", "end" -> if (pp.bidi == true) TextAlign.Left else TextAlign.End
@@ -146,15 +144,15 @@ internal class DocxLook(
             lineHeight = lineHeight,
             lineHeightStyle = if (lineHeight != androidx.compose.ui.unit.TextUnit.Unspecified)
                 LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.None) else null,
-            textIndent = if (firstLine > 0) TextIndent(firstLine = (firstLine / 20f * sp).sp) else null
+            textIndent = if (geo.firstLine != 0) TextIndent(firstLine = (geo.firstLine / 20f * sp).sp) else null
         )
         val look = ParaLook(
             style = style,
-            padStart = tw(startTw),
+            padStart = tw(geo.start),
             padEnd = tw((pp.right ?: 0).coerceAtLeast(0)),
-            before = tw(pp.before ?: 0),
-            after = tw(pp.after ?: 0),
-            hanging = if (numId != null) tw(hangingTw).coerceAtLeast((sizePt * scale * 1.1f).dp) else 0.dp,
+            before = tw(geo.before),
+            after = tw(geo.after),
+            hanging = if (numId != null) tw(geo.hanging).coerceAtLeast((sizePt * scale * 1.1f).dp) else 0.dp,
             shading = fillOf(pp.shading),
             rtl = pp.bidi == true,
             borderBottom = pp.borderBottom == true,

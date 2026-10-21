@@ -59,6 +59,34 @@ data class PProps(
     )
 }
 
+/**
+ * Paragraph geometry in twips, ready for Compose. Every value used as padding is non-negative.
+ * A hanging indent outside a numbered list is a negative first-line offset, which Compose draws
+ * with `TextIndent` instead of padding (Compose rejects negative padding).
+ */
+internal data class ParaTwips(
+    val start: Int,
+    val firstLine: Int,
+    val hanging: Int,
+    val before: Int,
+    val after: Int
+)
+
+internal fun PProps.layoutTwips(): ParaTwips {
+    val left = (left ?: 0).coerceAtLeast(0)
+    val list = (numId ?: 0) != 0
+    val hang = if (list) (hanging ?: 360).coerceAtLeast(0) else 0
+    return ParaTwips(
+        start = if (list) (left - hang).coerceAtLeast(0) else left,
+        firstLine = if (list) 0 else (this.firstLine ?: 0) - (hanging ?: 0).coerceAtLeast(0),
+        hanging = hang,
+        // Compose padding cannot be negative. Negative Word spacing (overlap) has no padding
+        // equivalent, so it is dropped; hanging indents keep their signed first-line offset above.
+        before = (before ?: 0).coerceAtLeast(0),
+        after = (after ?: 0).coerceAtLeast(0)
+    )
+}
+
 /** Word's named highlight colours. */
 val HighlightColors: Map<String, Int> = linkedMapOf(
     "yellow" to 0xFFFFFF00.toInt(), "green" to 0xFF00FF00.toInt(), "cyan" to 0xFF00FFFF.toInt(),
