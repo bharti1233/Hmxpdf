@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <!-- POST_NOTIFICATIONS required for foreground service notifications on Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Foreground service permissions for WorkManager foreground workers (Android 14+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <!-- ML Kit subject segmentation (image editor → auto background removal) declares minSdk 24.
          The app stays on 23; BackgroundRemover gates the call at runtime (API < 24 → unavailable). -->
@@ -43,6 +46,11 @@
         android:theme="@style/Theme.HMXPDF"
         android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
+        <!-- WorkManager's SystemForegroundService needs dataSync foreground service type for foreground workers -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
         <!-- A document opened from another app gets its own window (task + Recents entry);
              MainActivity forwards every VIEW / SEND here. -->
         <activity
