@@ -482,9 +482,11 @@ fun DocsApp(
                     // External document windows skip Home entirely: the viewer route is already
                     // known from the validated intent and can consume incomingPdfUri itself.
                     startDestination = when {
+                        // A file handed to us by another app must open the file, not a first-run
+                        // tour/What's New in a document window. Those belong to the launcher flow.
+                        documentStartRoute != null -> documentStartRoute
                         needsOnboarding -> ROUTE_ONBOARDING
                         showWhatsNew -> com.hmx.pdf.ui.navigation.ROUTE_WHATS_NEW
-                        documentStartRoute != null -> documentStartRoute
                         else -> "home"
                     },
                     documentWindow = documentWindow,

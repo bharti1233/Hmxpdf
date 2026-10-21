@@ -163,8 +163,13 @@ fun ToolsScreen(
         )
     )
 
-    var isVisible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { isVisible = true }
+    // First visit: full cascade. Later tab visits: the NavHost fade is the transition; replaying
+    // this 0.6 s stagger before the grid reaches full opacity made every switch feel slow.
+    var isVisible by remember { mutableStateOf(com.hmx.pdf.ui.utils.TabEntranceState.toolsShown) }
+    LaunchedEffect(Unit) {
+        com.hmx.pdf.ui.utils.TabEntranceState.toolsShown = true
+        isVisible = true
+    }
     // One transition, one frame clock. Sections stagger via delayMillis instead of each running its
     // own animateFloatAsState.
     val entrance = updateTransition(isVisible, label = "toolsEntrance")

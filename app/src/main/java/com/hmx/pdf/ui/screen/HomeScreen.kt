@@ -230,8 +230,13 @@ fun HomeScreen(
         }
     }
 
-    var isVisible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { isVisible = true }
+    // Only the first visit pays for the staggered glass entrance. Returning to Home is a tab
+    // switch, already carried by the NavHost fade; replaying this was the visible blank delay.
+    var isVisible by remember { mutableStateOf(com.hmx.pdf.ui.utils.TabEntranceState.homeShown) }
+    LaunchedEffect(Unit) {
+        com.hmx.pdf.ui.utils.TabEntranceState.homeShown = true
+        isVisible = true
+    }
 
     // One transition for the whole entrance — one frame clock with a per-section delay, so the
     // sections can't drift apart on a busy frame.

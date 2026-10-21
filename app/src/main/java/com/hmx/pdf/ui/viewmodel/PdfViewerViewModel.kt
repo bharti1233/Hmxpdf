@@ -30,6 +30,7 @@ import com.kyant.pdfcore.raster.PdfRasterizer
 import com.kyant.pdfcore.security.PdfSecurityService
 import com.kyant.pdfcore.text.PdfTextBlock
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -340,24 +341,25 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
             var openedDoc: PdfDocument? = null
             var adopted = false
             try {
-                try {
-                    context.contentResolver.takePersistableUriPermission(
-                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    )
-                } catch (_: Exception) {}
-
                 // `uri` may be a share-intent grant that is about to be revoked (many senders never
-                // attach a persistable flag, so the line above throws and is swallowed above) — this
+                // attach a persistable flag, so the permission call throws and is swallowed) — this
                 // is what turns "opened once from WhatsApp/Gmail" into "Failed to open PDF." the next
                 // time it's tapped from Recents. `readableUri` is the original when it's still good,
                 // or a durable local copy this app saved the first time it *was* good. `uri` itself
-                // stays the identity used for naming and for the Recents entry.
+                // stays the identity used for naming and for the Recents entry. Both the binder call
+                // and any lookup stay off the main thread.
+                // When the caller already has a name, reuse its extension; otherwise the later
+                // background mirror resolves it. Do not query the provider before opening.
+                val extension = nameHint?.takeIf { it.isNotBlank() }
+                    ?.substringAfterLast('.', "pdf")
+                    ?.lowercase()
                 val readableUri = withContext(Dispatchers.IO) {
-                    val extension = nameHint?.takeIf { it.isNotBlank() }
-                        ?.substringAfterLast('.', "pdf")
-                        ?.lowercase()
-                        ?: extensionOf(context, uri)
-                    LocalDocumentMirror.resolve(context, uri, extension)
+                    runCatching {
+                        context.contentResolver.takePersistableUriPermission(
+                            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                    }
+                    LocalDocumentMirror.resolve(context, uri)
                 }
                 if (generation != openGeneration) return@launch
 
@@ -390,19 +392,20 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                 // it fails a read — falling straight to `doc.name` would then show the mirror's own
                 // "<hash>.pdf" filename. The name this document was already saved under in Recents
                 // (set the first time it opened, when the query still worked) is what a returning
-                // "Failed to open" file should still show. Provider queries and the recents JSON
-                // decode are blocking, so both happen off the main thread.
-                val (displayName, resumePage) = withContext(Dispatchers.IO) {
-                    val recents = RecentFilesManager.getRecents(context)
-                    val name = nameHint?.takeIf { it.isNotBlank() }
+                // "Failed to open" file should still show. The recents read is cached; the provider
+                // query runs alongside the first-page raster instead of ahead of it.
+                val recents = withContext(Dispatchers.IO) {
+                    runCatching { RecentFilesManager.getRecents(context) }.getOrDefault(emptyList())
+                }
+                val resumePage = recents.firstOrNull { it.uriString == uri.toString() }
+                    ?.currentPage
+                    ?.coerceIn(0, (doc.pageCount - 1).coerceAtLeast(0))
+                    ?: 0
+                val displayNameJob = async(Dispatchers.IO) {
+                    nameHint?.takeIf { it.isNotBlank() }
                         ?: queryFileName(context, uri)
                         ?: recents.firstOrNull { it.uriString == uri.toString() }?.name
                         ?: doc.name
-                    val page = recents.firstOrNull { it.uriString == uri.toString() }
-                        ?.currentPage
-                        ?.coerceIn(0, (doc.pageCount - 1).coerceAtLeast(0))
-                        ?: 0
-                    name to page
                 }
                 // First paint rides along with the document: the page the reader lands on is
                 // rasterised here, at a quick preview width, BEFORE the viewer is told the document
@@ -411,12 +414,16 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
                 val firstPaint = withContext(AppDispatchers.pdf) {
                     runCatching { openPdfUseCase.renderPage(doc, resumePage, MIN_RENDER_WIDTH) }.getOrNull()
                 }
+                val displayName = displayNameJob.await()
                 if (generation != openGeneration) {
                     firstPaint?.recycle()
                     runCatching { openPdfUseCase.close(doc) }
                     openedDoc = null
                     return@launch
                 }
+                // The first page is already in hand, so the provider is no longer on the opening
+                // critical path; refresh the durable copy now.
+                LocalDocumentMirror.mirrorLater(context, uri, extension)
                 if (firstPaint != null) renderedPageWidths[resumePage] = MIN_RENDER_WIDTH
                 _uiState.value = _uiState.value.copy(
                     fileName = displayName,
@@ -1312,12 +1319,6 @@ class PdfViewerViewModel(private val openPdfUseCase: OpenPdfUseCase) : ViewModel
             if (!file.exists()) file.createNewFile()
             FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
         }
-    }
-
-    /** Best-effort real file extension, so a mirrored copy still sniffs as the right format. */
-    private fun extensionOf(context: Context, uri: Uri): String {
-        val name = queryFileName(context, uri) ?: uri.lastPathSegment.orEmpty()
-        return name.substringAfterLast('.', "pdf").lowercase()
     }
 
     private fun queryFileName(context: Context, uri: Uri): String? = runCatching {
