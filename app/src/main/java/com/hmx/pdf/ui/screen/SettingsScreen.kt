@@ -95,7 +95,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hmx.pdf.R
 import com.hmx.pdf.data.repository.AppSettingsManager
-import com.hmx.pdf.data.repository.GitHubStarPromptManager
 import com.hmx.pdf.data.repository.SaveLocationManager
 import com.hmx.pdf.office.OfficeEngine
 import com.hmx.pdf.ui.components.AccentIconTile
@@ -157,7 +156,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val uiSensor = rememberUISensor()
     val settingsScope = rememberCoroutineScope()
-    val openRepo = remember(context) { { openExternalLink(context, GitHubStarPromptManager.REPO_URL) } }
+    val openRepo = remember(context) { { openExternalLink(context, "https://github.com/HMXPANEL/HMXPDF.git") } }
 
     var autoCompress by remember { mutableStateOf(AppSettingsManager.getAutoCompress(context)) }
     var keepOriginal by remember { mutableStateOf(AppSettingsManager.getKeepOriginal(context)) }
