@@ -78,23 +78,32 @@ class DocxEditorViewModel : ViewModel() {
     private var lastKey: String? = null
     private var lastAt = 0L
 
-    fun load(context: Context, uri: Uri) {
+    fun load(context: Context, uri: Uri, nameHint: String? = null) {
         if (started) return
         started = true
         viewModelScope.launch {
-            runCatching { context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
-            runCatching { context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
-            resumePage = withContext(Dispatchers.IO) {
-                runCatching { RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.currentPage }.getOrNull() ?: 0
-            }
-            val name = withContext(Dispatchers.IO) {
-                runCatching { queryName(context, uri) }.getOrNull()
-                    ?: RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.name
+            // One recents read feeds both the display name fallback and the resume page. The old
+            // path decoded the same JSON twice on first open. The permission binder calls go to
+            // IO with the rest of the open work instead of running before the first frame.
+            val (name, page) = withContext(Dispatchers.IO) {
+                runCatching { context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+                runCatching { context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
+                val recent = runCatching {
+                    RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }
+                }.getOrNull()
+                val resolved = nameHint?.takeIf { it.isNotBlank() }
+                    ?: runCatching { queryName(context, uri) }.getOrNull()
+                    ?: recent?.name
                     ?: uri.lastPathSegment ?: "Document.docx"
+                resolved to (recent?.currentPage ?: 0)
             }
+            resumePage = page
             val loaded = withContext(Dispatchers.IO) {
-                val readable = runCatching { LocalDocumentMirror.resolve(context, uri, "docx") }.getOrDefault(uri)
-                val local = runCatching { mirrorToCache(context, readable, name) }.getOrDefault(readable)
+                // This route only opens .docx, so do not let a display name like "report.docx (1)"
+                // become a bogus mirror extension.
+                val readable = runCatching { LocalDocumentMirror.localFile(context, uri, "docx") }.getOrDefault(uri)
+                val local = if (readable.scheme == "file") readable
+                    else runCatching { mirrorToCache(context, readable, name) }.getOrDefault(readable)
                 val parsed = runCatching { context.contentResolver.openInputStream(local)?.use { DocxReader.read(it) } }.getOrNull()
                 parsed to local
             }

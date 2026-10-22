@@ -12,7 +12,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.hmx.pdf.ui.DocsApp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 open class MainActivity : ComponentActivity() {
 
@@ -93,29 +97,42 @@ open class MainActivity : ComponentActivity() {
         }?.takeIf { uri -> isSupportedDocumentIntent(intent?.type, uri.toString()) }
 
         // Route an incoming document by its kind: spreadsheets → interactive grid, images → image
-        // editor, .docx → the Word editor, everything else → the PDF viewer.
-        val incomingName = incomingPdfUri?.let { queryDisplayName(it) }
+        // editor, .docx → the Word editor, everything else → the PDF viewer. Use the intent MIME
+        // and the URI's own suffix only: querying OpenableColumns here blocks the first frame on
+        // the provider, and every viewer resolves the display name off the main thread anyway.
+        val incomingName = incomingPdfUri?.lastPathSegment
+        val incomingKind = if (incomingPdfUri != null) {
+            com.hmx.pdf.utils.docKindOf(incomingName, intent?.type)
+        } else null
         val effectiveRoute = if (incomingPdfUri != null) {
-            when (com.hmx.pdf.utils.docKindOf(incomingName)) {
+            when (incomingKind) {
                 com.hmx.pdf.utils.DocKind.Excel -> "spreadsheet"
                 com.hmx.pdf.utils.DocKind.Image -> "image_editor"
                 com.hmx.pdf.utils.DocKind.Word ->
-                    if (incomingName?.lowercase()?.trim()?.endsWith(".docx") == true) "docx_editor" else "pdf_viewer"
+                    if (com.hmx.pdf.utils.isDocxDocument(incomingName, intent?.type)) "docx_editor" else "pdf_viewer"
                 else -> "pdf_viewer"
             }
         } else shortcutRoute
 
         if (isDocumentWindow && incomingPdfUri != null) {
-            // Recents shows the document's name for its window.
-            val label = incomingName
-            if (label != null) runCatching {
-                @Suppress("DEPRECATION")
-                setTaskDescription(android.app.ActivityManager.TaskDescription(label))
+            // Recents needs a label immediately; the provider name can arrive later without
+            // delaying the document window or its first frame.
+            setRecentsLabel(incomingName ?: getString(R.string.app_name))
+            lifecycleScope.launch {
+                val label = withContext(Dispatchers.IO) { queryDisplayName(incomingPdfUri) }
+                if (!isFinishing && !isDestroyed) {
+                    setRecentsLabel(label ?: getString(R.string.app_name))
+                }
             }
         }
 
         setContent {
-            DocsApp(shortcutRoute = effectiveRoute, incomingPdfUri = incomingPdfUri, documentWindow = isDocumentWindow)
+            DocsApp(
+                shortcutRoute = effectiveRoute,
+                incomingPdfUri = incomingPdfUri,
+                incomingDocumentName = null,
+                documentWindow = isDocumentWindow
+            )
         }
     }
 
@@ -127,6 +144,13 @@ open class MainActivity : ComponentActivity() {
                 isSupportedDocumentIntent(intent.type, intent.data.toString())
             Intent.ACTION_SEND -> true
             else -> false
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun setRecentsLabel(label: String) {
+        runCatching {
+            setTaskDescription(android.app.ActivityManager.TaskDescription(label))
         }
     }
 

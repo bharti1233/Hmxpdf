@@ -234,13 +234,20 @@ fun DocsNavGraph(
     selectedLocale: String,
     onLocaleChanged: (String) -> Unit,
     incomingPdfUri: Uri? = null,
+    incomingDocumentName: String? = null,
     startDestination: String = ROUTE_HOME,
+    documentWindow: Boolean = false,
+    onCloseDocumentWindow: () -> Unit = {},
     // Onboarding's language picker takes this instead of [onLocaleChanged]: it must NOT restart the
     // Activity, or the flow would relaunch at page one under the user. The restart, if the choice
     // actually changed anything, is deferred to [onOnboardingFinished].
     onOnboardingLocaleSelected: (String) -> Unit = {},
     onOnboardingFinished: () -> Unit = {}
 ) {
+    // A document window can start directly on a viewer, so there may be no Home entry to pop to.
+    val closeDocument: () -> Unit = {
+        if (!navController.popBackStack() && documentWindow) onCloseDocumentWindow()
+    }
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -524,11 +531,17 @@ fun DocsNavGraph(
             val routeUri = backStackEntry.arguments
                 ?.getString(ARG_PDF_URI)
                 ?.let { parseViewerUriArg(it) }
-            // Auto-load PDF if opened from external app
+            // Auto-load PDF if opened from external app. The name resolved for the incoming intent
+            // is reused only on that direct path; a viewer opened from Recents/a tool keeps its own
+            // URI and name.
             LaunchedEffect(routeUri, incomingPdfUri) {
                 val targetUri = routeUri ?: incomingPdfUri
                 if (targetUri != null) {
-                    vm.openPdf(context, targetUri)
+                    vm.openPdf(
+                        context,
+                        targetUri,
+                        nameHint = if (routeUri == null) incomingDocumentName else null
+                    )
                 }
             }
             // We were handed a document to open (recents / external / a tool's output), so the viewer
@@ -538,7 +551,7 @@ fun DocsNavGraph(
             PdfViewerScreen(
                 backdrop = backdrop,
                 viewModel = vm,
-                onBack = { navController.popBackStack() },
+                onBack = closeDocument,
                 pendingLoad = hasPendingDoc,
                 onOpenOfficeEngineSettings = { navController.navigate(ROUTE_SETTINGS) { launchSingleTop = true } }
             )
@@ -561,12 +574,14 @@ fun DocsNavGraph(
             val routeUri = backStackEntry.arguments?.getString(ARG_PDF_URI)?.let { parseViewerUriArg(it) }
             LaunchedEffect(routeUri, incomingPdfUri) {
                 val target = routeUri ?: incomingPdfUri
-                if (target != null) vm.load(context, target)
+                if (target != null) {
+                    vm.load(context, target, nameHint = if (routeUri == null) incomingDocumentName else null)
+                }
             }
             SpreadsheetViewerScreen(
                 backdrop = backdrop,
                 viewModel = vm,
-                onBack = { navController.popBackStack() },
+                onBack = closeDocument,
                 onOpenPdf = { pdfUri -> navController.navigateToPdfViewer(pdfUri) }
             )
         }
@@ -584,12 +599,14 @@ fun DocsNavGraph(
             val routeUri = backStackEntry.arguments?.getString(ARG_PDF_URI)?.let { parseViewerUriArg(it) }
             LaunchedEffect(routeUri, incomingPdfUri) {
                 val target = routeUri ?: incomingPdfUri
-                if (target != null) vm.load(context, target)
+                if (target != null) {
+                    vm.load(context, target, nameHint = if (routeUri == null) incomingDocumentName else null)
+                }
             }
             com.hmx.pdf.ui.screen.DocxEditorScreen(
                 backdrop = backdrop,
                 viewModel = vm,
-                onBack = { navController.popBackStack() },
+                onBack = closeDocument,
                 onOpenPdf = { pdfUri -> navController.navigateToPdfViewer(pdfUri) }
             )
         }
@@ -606,12 +623,14 @@ fun DocsNavGraph(
             val routeUri = backStackEntry.arguments?.getString(ARG_PDF_URI)?.let { parseViewerUriArg(it) }
             LaunchedEffect(routeUri, incomingPdfUri) {
                 val target = routeUri ?: incomingPdfUri
-                if (target != null) vm.load(context, target)
+                if (target != null) {
+                    vm.load(context, target, nameHint = if (routeUri == null) incomingDocumentName else null)
+                }
             }
             ImageEditorScreen(
                 backdrop = backdrop,
                 viewModel = vm,
-                onBack = { navController.popBackStack() },
+                onBack = closeDocument,
                 onOpenPdf = { pdfUri -> navController.navigateToPdfViewer(pdfUri) }
             )
         }

@@ -72,25 +72,29 @@ class SpreadsheetViewModel : ViewModel() {
     /** `applied.size` at the last save, or -1 when that state is no longer reachable by undo. */
     private var savedAt = 0
 
-    fun load(context: Context, uri: Uri) {
+    fun load(context: Context, uri: Uri, nameHint: String? = null) {
         if (started) return
         started = true
         viewModelScope.launch {
-            runCatching {
-                context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            runCatching {
-                context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            }
             val name = withContext(Dispatchers.IO) {
-                runCatching { queryName(context, uri) }.getOrNull()
+                runCatching {
+                    context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                runCatching {
+                    context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                }
+                nameHint?.takeIf { it.isNotBlank() }
+                    ?: runCatching { queryName(context, uri) }.getOrNull()
                     ?: RecentFilesManager.getRecents(context).firstOrNull { it.uriString == uri.toString() }?.name
                     ?: uri.lastPathSegment ?: "Spreadsheet"
             }
             val (wb, localUri) = withContext(Dispatchers.IO) {
-                val extension = name.substringAfterLast('.', "xlsx").lowercase()
-                val readable = runCatching { LocalDocumentMirror.resolve(context, uri, extension) }.getOrDefault(uri)
-                val local = runCatching { mirrorToCache(context, readable, name) }.getOrDefault(readable)
+                val extension = if (name.lowercase().endsWith(".xls")) "xls" else "xlsx"
+                val readable = runCatching { LocalDocumentMirror.localFile(context, uri, extension) }.getOrDefault(uri)
+                // localFile already made the one copy the editor needs. Only fall back to a cache
+                // copy when local durability is disabled or the provider copy failed.
+                val local = if (readable.scheme == "file") readable
+                    else runCatching { mirrorToCache(context, readable, name) }.getOrDefault(readable)
                 val book = runCatching {
                     if (name.lowercase().endsWith(".xls")) fromLegacy(SpreadsheetParser.parse(context, local))
                     else context.contentResolver.openInputStream(local)?.use { XlsxReader.read(it) }

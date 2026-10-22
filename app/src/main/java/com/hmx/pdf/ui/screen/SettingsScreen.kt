@@ -190,8 +190,11 @@ fun SettingsScreen(
         }
     }
 
-    var isVisible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { isVisible = true }
+    var isVisible by remember { mutableStateOf(com.hmx.pdf.ui.utils.TabEntranceState.settingsShown) }
+    LaunchedEffect(Unit) {
+        com.hmx.pdf.ui.utils.TabEntranceState.settingsShown = true
+        isVisible = true
+    }
     // One transition for every section's entrance, staggered by index — the same device ToolsScreen
     // uses, in place of the old screen's twelve separate `animateFloatAsState` pairs (six panels,
     // each with its own alpha *and* offsetY Animatable, all running concurrently from first frame).

@@ -32,18 +32,32 @@ object RecentFilesManager {
     private const val MAX_RECENTS = 20
     private val json = Json { ignoreUnknownKeys = true }
 
+    // Home reads this on every return to the tab; the list is capped at 20 and every mutation goes
+    // through this object. Keep the decoded, sorted list so a tab switch does not re-read and
+    // re-decode the same JSON on the main thread.
+    @Volatile
+    private var cached: List<RecentFile>? = null
+
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    /** Explicit invalidation for settings changes made outside the write methods below. */
+    fun invalidate() {
+        cached = null
+    }
 
     /** Pinned first, then newest first. Stable across every read, so the UI never has to re-sort. */
     fun getRecents(context: Context): List<RecentFile> {
         if (!AppSettingsManager.getRememberRecentFiles(context)) return emptyList()
-        val raw = prefs(context).getString(KEY_RECENTS, null) ?: return emptyList()
+        cached?.let { return it }
+        val raw = prefs(context).getString(KEY_RECENTS, null)
+            ?: return emptyList<RecentFile>().also { cached = it }
         return try {
             json.decodeFromString<List<RecentFile>>(raw)
                 .sortedWith(compareByDescending<RecentFile> { it.pinned }.thenByDescending { it.timestamp })
+                .also { cached = it }
         } catch (_: Exception) {
-            emptyList()
+            emptyList<RecentFile>().also { cached = it }
         }
     }
 
@@ -66,9 +80,11 @@ object RecentFilesManager {
         prefs(context).edit()
             .putString(KEY_RECENTS, json.encodeToString(trimmed))
             .apply()
+        cached = trimmed
     }
 
     /** Flips the pin on one entry. No-op if the URI isn't in the list. */
+    @Synchronized
     fun togglePin(context: Context, uri: Uri) {
         val target = uri.toString()
         val updated = getRecents(context).map {
@@ -77,6 +93,7 @@ object RecentFilesManager {
         prefs(context).edit()
             .putString(KEY_RECENTS, json.encodeToString(updated))
             .apply()
+        cached = updated
     }
 
     /** Stores reading progress without changing the entry's recency or pinned state. */
@@ -95,16 +112,19 @@ object RecentFilesManager {
         prefs(context).edit()
             .putString(KEY_RECENTS, json.encodeToString(updated))
             .apply()
+        cached = updated
     }
 
     fun clearRecents(context: Context) {
         getRecents(context).forEach { LocalDocumentMirror.forget(context, it.uri) }
         prefs(context).edit().remove(KEY_RECENTS).apply()
+        cached = emptyList()
     }
 
     /** Clears browsing history while preserving separately opted-in recovery copies. */
     fun clearHistoryOnly(context: Context) {
         prefs(context).edit().remove(KEY_RECENTS).apply()
+        cached = emptyList()
     }
 
     fun removeRecent(context: Context, uri: Uri) {
@@ -117,6 +137,7 @@ object RecentFilesManager {
                 putString(KEY_RECENTS, json.encodeToString(remaining))
             }
         }.apply()
+        cached = remaining
     }
 }
 
@@ -240,7 +261,7 @@ object AppSettingsManager {
 
     fun setRememberRecentFiles(context: Context, value: Boolean) {
         prefs(context).edit().putBoolean(KEY_REMEMBER_RECENT_FILES, value).apply()
-        if (!value) RecentFilesManager.clearHistoryOnly(context)
+        if (!value) RecentFilesManager.clearHistoryOnly(context) else RecentFilesManager.invalidate()
     }
 
     fun getKeepLocalCopies(context: Context): Boolean =
