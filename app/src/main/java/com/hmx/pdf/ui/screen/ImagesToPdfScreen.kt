@@ -53,6 +53,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -116,7 +117,7 @@ fun ImagesToPdfScreen(
     val accent = Color(0xFF5E35B1)
 
     var showSaveDialog by remember { mutableStateOf(false) }
-    var viewerIndex by rememberSaveable { mutableStateOf(-1) }
+    var viewerIndex by rememberSaveable { mutableIntStateOf(-1) }
 
     LaunchedEffect(state.images.size) {
         if (viewerIndex >= state.images.size) viewerIndex = -1

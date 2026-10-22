@@ -469,6 +469,9 @@
     <string name="images_fit_a4">По размеру A4</string>
     <string name="images_original_size">Исходный размер</string>
     <string name="images_hint">Добавьте фото, чтобы создать PDF.</string>
+    <string name="images_viewer_counter">%1$d/%2$d</string>
+    <string name="images_viewer_pending_body">Изменения поворота ещё не применены к этому PDF.</string>
+    <string name="images_viewer_apply">Применить</string>
     <string name="extract_share_text">Поделиться текстом</string>
     <string name="extract_no_text">В этом PDF нет текстового слоя.</string>
     <string name="extract_pick_hint">Выберите PDF, чтобы извлечь из него текст.</string>

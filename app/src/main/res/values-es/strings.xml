@@ -447,6 +447,9 @@
     <string name="images_fit_a4">Ajustar a A4</string>
     <string name="images_original_size">Tamaño original</string>
     <string name="images_hint">Añade fotos para crear un PDF.</string>
+    <string name="images_viewer_counter">%1$d/%2$d</string>
+    <string name="images_viewer_pending_body">Los cambios de rotación aún no se han aplicado a este PDF.</string>
+    <string name="images_viewer_apply">Aplicar</string>
     <string name="extract_share_text">Compartir texto</string>
     <string name="extract_no_text">Este PDF no tiene una capa de texto.</string>
     <string name="extract_pick_hint">Elige un PDF para extraer su texto.</string>

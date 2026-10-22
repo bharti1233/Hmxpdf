@@ -450,6 +450,9 @@
     <string name="images_fit_a4">Adatta a formato A4</string>
     <string name="images_original_size">Dimensione originale</string>
     <string name="images_hint">Aggiungi foto per creare un PDF.</string>
+    <string name="images_viewer_counter">%1$d/%2$d</string>
+    <string name="images_viewer_pending_body">Le modifiche di rotazione non sono ancora state applicate a questo PDF.</string>
+    <string name="images_viewer_apply">Applica</string>
     <string name="extract_share_text">Condividi testo</string>
     <string name="extract_no_text">Nessuno livello testuale in questo PDF.</string>
     <string name="extract_pick_hint">Scegli un PDF per estrarne il testo.</string>
