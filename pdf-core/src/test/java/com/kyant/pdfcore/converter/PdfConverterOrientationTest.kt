@@ -12,7 +12,7 @@ class PdfConverterOrientationTest {
             pageSizeAfterTransform(4000, 3000, ExifInterface.ORIENTATION_ROTATE_90, 0)
         )
         assertEquals(
-            4000 to 3000,
+            3000 to 4000,
             pageSizeAfterTransform(4000, 3000, ExifInterface.ORIENTATION_ROTATE_270, 0)
         )
     }
