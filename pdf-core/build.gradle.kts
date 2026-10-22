@@ -28,6 +28,7 @@ kotlin {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.exifinterface)
 
     // Lossless PDF page operations (merge / split / reorder / rotate / text extraction).
     // PdfRenderer can only rasterise pages; PdfBox preserves the original text & vectors.
