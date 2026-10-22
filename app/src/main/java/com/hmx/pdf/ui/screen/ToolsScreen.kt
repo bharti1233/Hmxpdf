@@ -47,9 +47,11 @@ import androidx.compose.material.icons.rounded.TextSnippet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -165,10 +167,24 @@ fun ToolsScreen(
 
     // First visit: full cascade. Later tab visits: the NavHost fade is the transition; replaying
     // this 0.6 s stagger before the grid reaches full opacity made every switch feel slow.
-    var isVisible by remember { mutableStateOf(com.hmx.pdf.ui.utils.TabEntranceState.toolsShown) }
+    // Remember the answer: `toolsShown` flips during the entrance and must not tear the modifiers
+    // out from under the animation mid-flight.
+    val animateEntrance = remember { !com.hmx.pdf.ui.utils.TabEntranceState.toolsShown }
+    var isVisible by remember { mutableStateOf(!animateEntrance) }
+    // Tools is recreated by navigate("tools"). Each section's drawBackdrop attaches its own
+    // blur/lens/highlight shader cache (see DrawBackdropModifier), so composing all four panels in
+    // the entry frame blocks the NavHost fade before anything is visible. Attach one section per
+    // frame after the first; the completed screen is still a plain Column, so scrolling never
+    // builds a shader later.
+    var readySections by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
         com.hmx.pdf.ui.utils.TabEntranceState.toolsShown = true
         isVisible = true
+        withFrameNanos { }
+        sections.indices.forEach { index ->
+            readySections = index + 1
+            withFrameNanos { }
+        }
     }
     // One transition, one frame clock. Sections stagger via delayMillis instead of each running its
     // own animateFloatAsState.
@@ -190,7 +206,7 @@ fun ToolsScreen(
         header = { headerBackdrop ->
             // Holds a glass title pill and a glass circle, so it fades in place. Pinned above
             // the list, sampling the content layer so the tiles refract through it as they scroll.
-            Box(entrance.glassFadeModifier(0)) {
+            Box(if (animateEntrance) entrance.glassFadeModifier(0) else Modifier) {
                 GlassSearchHeader(
                     title = stringResource(R.string.tools_title),
                     backdrop = headerBackdrop,
@@ -209,8 +225,8 @@ fun ToolsScreen(
         // its lens and highlight shaders, plus four tiles. LazyColumn composed and attached each
         // section only as it scrolled in (and detached it again on the way out, dropping those
         // shaders), so every scroll across a section boundary paid composition + shader setup
-        // inside a frame — the Tools scroll hitch. Composing the whole grid once, behind the
-        // entrance fade, leaves scrolling with nothing to do but move layers.
+        // inside a frame — the Tools scroll hitch. Composing the whole grid once (staged in just
+        // after the entry frame above) leaves scrolling with nothing to do but move layers.
         AnimatedContent(
             targetState = searching,
             transitionSpec = {
@@ -244,19 +260,26 @@ fun ToolsScreen(
                         }
                     }
                 } else {
-                    Box(entrance.tileEntranceModifier(0, density)) {
+                    Box(if (animateEntrance) entrance.tileEntranceModifier(0, density) else Modifier) {
                         ToolTileWide(openPdf.title, openPdf.subtitle, openPdf.accent, openPdf.icon, openPdf.onClick)
                     }
 
-                    sections.forEachIndexed { index, section ->
+                    sections.take(readySections).forEachIndexed { index, section ->
                         // Five stagger slots per section — the label, then its four tiles — so the
                         // whole screen cascades top-to-bottom instead of four sections restarting.
                         val base = 1 + index * 5
                         Column {
-                            Box(entrance.tileEntranceModifier(base, density)) {
+                            Box(if (animateEntrance) entrance.tileEntranceModifier(base, density) else Modifier) {
                                 GlassSectionLabel(section.label)
                             }
-                            ToolSectionPanel(section, backdrop, uiSensor, entrance, base, density)
+                            ToolSectionPanel(
+                                section,
+                                backdrop,
+                                uiSensor,
+                                if (animateEntrance) entrance else null,
+                                base,
+                                density
+                            )
                         }
                     }
                 }
@@ -274,14 +297,15 @@ private fun ToolSectionPanel(
     section: ToolSection,
     backdrop: LayerBackdrop,
     uiSensor: UISensor,
-    entrance: Transition<Boolean>,
+    entrance: Transition<Boolean>?,
     base: Int,
     density: Float
 ) {
+    val fadeModifier = if (entrance != null) entrance.glassFadeModifier(base) else Modifier
     Column(
         Modifier
             .fillMaxWidth()
-            .then(entrance.glassFadeModifier(base))
+            .then(fadeModifier)
             .liquidGlassPanel(backdrop, uiSensor, withShadow = false)
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -296,6 +320,11 @@ private fun ToolSectionPanel(
                 pair.forEachIndexed { colIdx, tool ->
                     // Flat index across both rows: the label took slot `base`, so the four tiles
                     // occupy base+1..base+4 and the cascade keeps running top-to-bottom.
+                    val tileEntrance = if (entrance != null) {
+                        entrance.tileEntranceModifier(base + 1 + rowIdx * 2 + colIdx, density)
+                    } else {
+                        Modifier
+                    }
                     ToolTile(
                         title = tool.title,
                         subtitle = tool.subtitle,
@@ -305,7 +334,7 @@ private fun ToolSectionPanel(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
-                            .then(entrance.tileEntranceModifier(base + 1 + rowIdx * 2 + colIdx, density))
+                            .then(tileEntrance)
                     )
                 }
                 // Keep a lone trailing tile at half width instead of letting it stretch.
