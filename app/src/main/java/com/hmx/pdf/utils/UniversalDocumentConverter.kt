@@ -99,8 +99,9 @@ object UniversalDocumentConverter {
             return writePdf(context, pdfDoc, "Image")
         } finally {
             bitmap.recycle()
-            // Close on the failure path too; writePdf closes on success.
-            if (!pdfDoc.isClosed) runCatching { pdfDoc.close() }
+            // Close on the failure path too; writePdf closes on success. close() is
+            // internally idempotent, so a second call after writePdf is a harmless no-op.
+            runCatching { pdfDoc.close() }
         }
     }
 
@@ -725,13 +726,16 @@ object UniversalDocumentConverter {
     // ── Output helpers ─────────────────────────────────────────────────────────
 
     private fun writePdf(context: Context, pdfDoc: PdfDocument, prefix: String): Uri {
-        // `use` guarantees close() runs even when writeTo fails, so a failed conversion no longer
-        // leaks the document's native page resources.
-        return pdfDoc.use { doc ->
+        // PdfDocument doesn't implement Closeable, so close it explicitly on every path —
+        // even when writeTo fails — so a failed conversion no longer leaks the document's
+        // native page resources. close() is internally idempotent.
+        return try {
             val dir = File(context.cacheDir, "converted_pdfs").also { it.mkdirs() }
             val file = File(dir, "${prefix}_${System.currentTimeMillis()}.pdf")
-            FileOutputStream(file).use { doc.writeTo(it) }
+            FileOutputStream(file).use { pdfDoc.writeTo(it) }
             android.net.Uri.fromFile(file)
+        } finally {
+            runCatching { pdfDoc.close() }
         }
     }
 
