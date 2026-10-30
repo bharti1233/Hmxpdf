@@ -11,7 +11,11 @@
     <string name="office_engine_downloading_progress">Загрузка · %1$s из %2$s</string>
     <string name="office_engine_waiting_network">Ожидание сети…</string>
     <string name="office_engine_installing">Установка…</string>
-    <string name="office_engine_needs_confirmation">Google Play требует вашего подтверждения для загрузки</string>
+        <string name="office_engine_checking_connection">Проверка подключения…</string>
+    <string name="office_engine_queued">В очереди · ожидает планировщика устройства…</string>
+    <string name="office_engine_verifying">Проверка архива…</string>
+    <string name="office_engine_low_storage">Недостаточно свободного места · требуется %1$s</string>
+<string name="office_engine_needs_confirmation">Google Play требует вашего подтверждения для загрузки</string>
     <string name="office_engine_failed">Установка не удалась: %1$s</string>
     <string name="office_engine_download">Загрузить</string>
     <string name="office_engine_install">Установить</string>

@@ -13,7 +13,11 @@
     <string name="office_engine_downloading_progress">جارٍ التنزيل · %1$s من %2$s</string>
     <string name="office_engine_waiting_network">في انتظار الشبكة…</string>
     <string name="office_engine_installing">جارٍ التثبيت…</string>
-    <string name="office_engine_needs_confirmation">يحتاج Google Play إلى موافقتك للتنزيل</string>
+        <string name="office_engine_checking_connection">جارٍ التحقق من الاتصال…</string>
+    <string name="office_engine_queued">في قائمة الانتظار · بانتظار مُجدول الجهاز…</string>
+    <string name="office_engine_verifying">جارٍ التحقق من الأرشيف…</string>
+    <string name="office_engine_low_storage">لا توجد مساحة كافية · المطلوب %1$s</string>
+<string name="office_engine_needs_confirmation">يحتاج Google Play إلى موافقتك للتنزيل</string>
     <string name="office_engine_failed">فشل التثبيت: %1$s</string>
     <string name="office_engine_download">تنزيل</string>
     <string name="office_engine_install">تثبيت</string>

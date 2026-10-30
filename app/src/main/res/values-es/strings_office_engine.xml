@@ -13,7 +13,11 @@
     <string name="office_engine_downloading_progress">Descargando · %1$s de %2$s</string>
     <string name="office_engine_waiting_network">Esperando conexión…</string>
     <string name="office_engine_installing">Instalando…</string>
-    <string name="office_engine_needs_confirmation">Google Play necesita tu aprobación para descargar</string>
+        <string name="office_engine_checking_connection">Comprobando conexión…</string>
+    <string name="office_engine_queued">En cola · esperando al programador del dispositivo…</string>
+    <string name="office_engine_verifying">Verificando el archivo…</string>
+    <string name="office_engine_low_storage">Espacio libre insuficiente · se necesitan %1$s</string>
+<string name="office_engine_needs_confirmation">Google Play necesita tu aprobación para descargar</string>
     <string name="office_engine_failed">Error de instalación: %1$s</string>
     <string name="office_engine_download">Descargar</string>
     <string name="office_engine_install">Instalar</string>
