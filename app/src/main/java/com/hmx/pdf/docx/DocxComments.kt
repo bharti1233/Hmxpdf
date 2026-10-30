@@ -97,7 +97,7 @@ class DocxComments(val path: String?, val xml: String?) {
         val id = nextId()
         val info = CommentInfo(id, author, initials, date, text)
         val payload = StringBuilder()
-        DocxWriter.para(DocPara(0, null, "<w:p>", "", "", text, List(text.length) { CharFmt.Plain }), payload)
+        DocxWriter.para(DocPara(0, null, "<w:p>", "", "", text, List(text.length) { CharFmt.Plain }, editable = true), payload)
         val raw = "<w:comment w:id=\"$id\" w:author=\"${XmlScan.escape(author)}\" w:initials=\"${XmlScan.escape(initials)}\"" +
             " w:date=\"${XmlScan.escape(date)}\">$payload</w:comment>"
         added.add(Added(info, raw))
