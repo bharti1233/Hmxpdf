@@ -789,6 +789,16 @@
     <string name="docx_open_as_pdf">Open as PDF</string>
     <string name="docx_readonly_part">This part has tracked changes or fields, so it can\'t be edited here. Open as PDF to see its final layout.</string>
     <string name="docx_read_failed">Couldn\'t read this document.</string>
+    <string name="docx_replace_hint">Replace with&#8230;</string>
+    <string name="docx_match_case">Match case</string>
+    <string name="docx_replace_one">Replace</string>
+    <string name="docx_replace_all">Replace all</string>
+    <string name="docx_comments">Comments</string>
+    <string name="docx_add_comment">Comment</string>
+    <string name="docx_comment_delete">Delete comment</string>
+    <string name="docx_comment_hint">Write a comment&#8230;</string>
+    <string name="docx_comment_add">Add</string>
+    <string name="docx_no_comment">No comments yet</string>
     <string name="save_recovery_title">Recover an interrupted save?</string>
     <string name="save_recovery_body">A save of %1$s was interrupted. HMX PDF kept a recovery copy. Save it as a new file, or discard it.</string>
     <string name="save_recovery_document">this document</string>

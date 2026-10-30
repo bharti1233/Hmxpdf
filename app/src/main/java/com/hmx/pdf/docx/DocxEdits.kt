@@ -47,6 +47,39 @@ object DocxEdits {
         return p.edited(text = newText, fmts = fmts, marks = marks)
     }
 
+    /** Non-overlapping occurrences of [q] in [t], skipping any match that would include an object char. */
+    fun matchesIn(t: String, q: String, ignoreCase: Boolean): List<IntRange> {
+        if (q.isEmpty()) return emptyList()
+        val out = ArrayList<IntRange>()
+        var i = t.indexOf(q, ignoreCase = ignoreCase)
+        while (i >= 0) {
+            val end = i + q.length
+            if ((i until end).none { t[it] == OBJ_CHAR }) out.add(i until end)
+            i = t.indexOf(q, end, ignoreCase = ignoreCase)
+        }
+        return out
+    }
+
+    /** Replaces the characters of [p] in [start, end) with [newText]; inserted characters take the
+     *  first replaced character's formatting (Word's rule when a replacement spans runs). The range
+     *  must contain no object characters — if it does, the paragraph is returned unchanged. */
+    fun replaceRange(p: DocPara, start: Int, end: Int, newText: String): DocPara {
+        if (start >= end || (start until minOf(end, p.text.length)).any { p.text[it] == OBJ_CHAR }) return p
+        val text = p.text.substring(0, start) + newText + p.text.substring(end)
+        val typing = p.fmts[start]
+        val fmts = ArrayList<CharFmt>(text.length)
+        for (i in 0 until start) fmts.add(p.fmts[i])
+        repeat(newText.length) { fmts.add(typing) }
+        for (i in end until p.text.length) fmts.add(p.fmts[i])
+        val delta = newText.length - (end - start)
+        val marks = p.marks.map { m -> if (m < start) m else if (m >= end) m + delta else start }.distinct()
+        return p.edited(text = text, fmts = fmts, marks = marks)
+    }
+
+    /** Applies the replacement to every matched range of [p] (ranges refer to [p]'s current text). */
+    fun replaceAllIn(p: DocPara, ranges: List<IntRange>, newText: String): DocPara =
+        ranges.sortedByDescending { it.first }.fold(p) { cur, r -> replaceRange(cur, r.first, r.last + 1, newText) }
+
     /** Splits at [at]; the section break (if this paragraph ends a section) moves to the second half. */
     fun split(p: DocPara, at: Int, styles: DocxStyles): Pair<DocPara, DocPara> {
         val a = p.edited(

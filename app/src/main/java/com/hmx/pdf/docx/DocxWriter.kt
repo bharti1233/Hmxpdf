@@ -16,6 +16,7 @@ object DocxWriter {
 
     private const val NUMBERING_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering"
     private const val STYLES_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
+    private const val COMMENTS_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
     private const val W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
     fun write(pkg: DocxPackage, state: DocState, source: File, dest: File) {
@@ -37,10 +38,25 @@ object DocxWriter {
     private fun parts(pkg: DocxPackage, state: DocState): Pair<Map<String, ByteArray>, Map<String, ByteArray>> {
         val replace = HashMap<String, ByteArray>()
         val add = LinkedHashMap<String, ByteArray>()
-        replace[pkg.mainPath] = documentXml(pkg, state).toByteArray(Charsets.UTF_8)
+        val docXml = documentXml(pkg, state)
+        replace[pkg.mainPath] = docXml.toByteArray(Charsets.UTF_8)
         var rels = pkg.relsXml
         var types = pkg.contentTypes
         val dir = pkg.mainPath.substringBeforeLast('/', "")
+
+        val cm = pkg.comments
+        if (cm.modified) {
+            val path = cm.path ?: if (dir.isEmpty()) "comments.xml" else "$dir/comments.xml"
+            val refs = Regex("w:commentReference w:id=\"(\\d+)\"").findAll(docXml).mapTo(HashSet()) { it.groupValues[1] }
+            cm.document(refs)?.let {
+                if (cm.xml != null) replace[path] = it.toByteArray(Charsets.UTF_8)
+                else {
+                    add[path] = it.toByteArray(Charsets.UTF_8)
+                    rels = addRel(rels, COMMENTS_TYPE, relTarget(dir, path))
+                    types = addOverride(types, "/" + path, "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml")
+                }
+            }
+        }
 
         val num = pkg.numbering
         if (num.modified) {

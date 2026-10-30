@@ -26,6 +26,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateCentroid
@@ -194,6 +195,7 @@ import com.hmx.pdf.ui.components.GlassDialogAction
 import com.hmx.pdf.ui.components.GlassDropdownOption
 import com.hmx.pdf.ui.components.GlassMotion
 import com.hmx.pdf.ui.components.GlassScreenScaffold
+import com.hmx.pdf.ui.components.GlassSearchPill
 import com.hmx.pdf.ui.components.GlassTitlePill
 import com.hmx.pdf.ui.components.GlassToolButton
 import com.hmx.pdf.ui.components.GlassToolbar
@@ -231,7 +233,7 @@ private val PaperCorner = 6.dp
 private val DeskGutter = 8.dp
 private val PageGap = 14.dp
 
-private enum class DocPanel { NONE, TEXT_COLOR, HIGHLIGHT }
+private enum class DocPanel { NONE, TEXT_COLOR, HIGHLIGHT, COMMENTS }
 
 /** Formatting chosen with nothing selected: it applies to what is typed next at [at]. */
 private class Pending(val paraId: Long, val at: Int, val fmt: CharFmt)
@@ -473,6 +475,8 @@ private fun DocxEditorContent(
     var panel by remember { mutableStateOf(DocPanel.NONE) }
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    var replaceWith by remember { mutableStateOf("") }
+    var matchCase by remember { mutableStateOf(false) }
     var currentMatch by remember { mutableIntStateOf(0) }
     var confirmExit by remember { mutableStateOf(false) }
     var exitAfterSave by remember { mutableStateOf(false) }
@@ -488,8 +492,9 @@ private fun DocxEditorContent(
     val flat = remember(doc, pkg, editMode) { if (doc != null && pkg != null) flatten(doc.blocks, pkg.styles, !editMode) else null }
     val labels = remember(doc, pkg) { if (doc != null && pkg != null) numberingLabels(pkg, doc.blocks) else emptyMap() }
 
-    // Find, off the main thread and debounced.
-    val matches by produceState(emptyList<Pair<Long, IntRange>>(), doc, searchQuery) {
+    // Find, off the main thread and debounced. Same matcher powers replace, so matchness and
+    // replacement always agree (object runs can never be spliced).
+    val matches by produceState(emptyList<Pair<Long, IntRange>>(), doc, searchQuery, matchCase) {
         val q = searchQuery.trim()
         val d = doc
         if (q.isEmpty() || d == null) { value = emptyList(); return@produceState }
@@ -497,10 +502,9 @@ private fun DocxEditorContent(
         value = withContext(Dispatchers.Default) {
             val out = ArrayList<Pair<Long, IntRange>>()
             forEachPara(d.blocks) { p ->
-                var i = p.text.indexOf(q, ignoreCase = true)
-                while (i >= 0 && out.size < 5000) {
-                    out.add(p.id to (i until i + q.length))
-                    i = p.text.indexOf(q, i + q.length, ignoreCase = true)
+                for (r in DocxEdits.matchesIn(p.text, q, !matchCase)) {
+                    if (out.size >= 5000) break
+                    out.add(p.id to r)
                 }
             }
             out
@@ -860,6 +864,9 @@ private fun DocxEditorContent(
                         LiquidIconButton(onClick = { showSearch = true }, backdrop = headerBackdrop, modifier = findInk.modifier) {
                             Icon(Icons.Rounded.Search, stringResource(R.string.viewer_find), Modifier.size(20.dp), findInk.color)
                         }
+                        LiquidIconButton(onClick = { panel = DocPanel.COMMENTS }, backdrop = headerBackdrop, modifier = findInk.modifier) {
+                            Icon(Icons.Rounded.RateReview, stringResource(R.string.docx_comments), Modifier.size(19.dp), findInk.color)
+                        }
                         LiquidIconButton(onClick = onTogglePaper, backdrop = headerBackdrop, modifier = paperInk.modifier) {
                             Icon(
                                 if (paperDark) Icons.Rounded.LightMode else Icons.Rounded.DarkMode,
@@ -1063,6 +1070,7 @@ private fun DocxEditorContent(
                     GlassToolButton(Icons.Rounded.FormatStrikethrough, stringResource(R.string.sheet_strike), strike, { toggle(DocxEdits.Toggle.STRIKE, strike) }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.FormatColorText, stringResource(R.string.sheet_text_color), panel == DocPanel.TEXT_COLOR, { panel = if (panel == DocPanel.TEXT_COLOR) DocPanel.NONE else DocPanel.TEXT_COLOR }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.BorderColor, stringResource(R.string.docx_highlight), panel == DocPanel.HIGHLIGHT, { panel = if (panel == DocPanel.HIGHLIGHT) DocPanel.NONE else DocPanel.HIGHLIGHT }, enabled = has, accent = accent)
+                    GlassToolButton(Icons.Rounded.RateReview, stringResource(R.string.docx_add_comment), panel == DocPanel.COMMENTS, { panel = if (panel == DocPanel.COMMENTS) DocPanel.NONE else DocPanel.COMMENTS }, enabled = has, accent = accent)
                     GlassToolButton(
                         when (align) {
                             "center" -> Icons.Rounded.FormatAlignCenter
@@ -1154,21 +1162,69 @@ private fun DocxEditorContent(
             exit = fadeOut(tween(140)) + slideOutVertically { it },
             modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().imePadding().padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            PdfSearchBar(
-                query = searchQuery,
-                matchCount = matches.size,
-                currentMatchIndex = currentMatch,
-                focusRequester = searchFocus,
-                backdrop = screenBackdrop.content,
-                uiSensor = uiSensor,
-                fg = text,
-                fgSoft = sub,
-                surface = Color.Transparent,
-                onQueryChange = { searchQuery = it },
-                onPrevMatch = { goToMatch(-1) },
-                onNextMatch = { goToMatch(1) },
-                onClose = { showSearch = false; searchQuery = "" }
-            )
+            Column {
+                PdfSearchBar(
+                    query = searchQuery,
+                    matchCount = matches.size,
+                    currentMatchIndex = currentMatch,
+                    focusRequester = searchFocus,
+                    backdrop = screenBackdrop.content,
+                    uiSensor = uiSensor,
+                    fg = text,
+                    fgSoft = sub,
+                    surface = Color.Transparent,
+                    onQueryChange = { searchQuery = it },
+                    onPrevMatch = { goToMatch(-1) },
+                    onNextMatch = { goToMatch(1) },
+                    onClose = { showSearch = false; searchQuery = "" }
+                )
+                // Replace current / replace all — the same glass circles under the find bar,
+                // only for a document this editor can actually write.
+                if (viewModel.editable) {
+                    val replaceInk = rememberAdaptiveInk(text)
+                    Row(
+                        Modifier.fillMaxWidth().padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                            LiquidIconButton(
+                                onClick = { matchCase = !matchCase },
+                                backdrop = screenBackdrop.content,
+                                modifier = replaceInk.modifier.size(40.dp),
+                                surfaceColor = if (matchCase) text.copy(alpha = 0.16f) else Color.Transparent
+                            ) {
+                                BasicText("Aa", style = TextStyle(replaceInk.color, 15.sp, FontWeight.Bold))
+                            }
+                            GlassSearchPill(
+                                query = replaceWith,
+                                onQueryChange = { replaceWith = it },
+                                hint = stringResource(R.string.docx_replace_hint),
+                                backdrop = screenBackdrop.content,
+                                uiSensor = uiSensor,
+                                modifier = Modifier.weight(1f),
+                                animateIn = false,
+                                viewerChrome = true,
+                                surfaceColor = Color.Transparent,
+                                contentColor = replaceInk.color,
+                                hintColor = replaceInk.soft
+                            )
+                            LiquidIconButton(
+                                onClick = { matches.getOrNull(currentMatch)?.let { (id, r) -> viewModel.replaceOne(id, r, replaceWith) } },
+                                backdrop = screenBackdrop.content,
+                                modifier = replaceInk.modifier.size(40.dp)
+                            ) {
+                                Icon(Icons.Rounded.FindReplace, stringResource(R.string.docx_replace_one), Modifier.size(20.dp), replaceInk.color)
+                            }
+                            LiquidIconButton(
+                                onClick = { viewModel.replaceAll(searchQuery.trim(), replaceWith, matchCase) },
+                                backdrop = screenBackdrop.content,
+                                modifier = replaceInk.modifier.size(40.dp)
+                            ) {
+                                Icon(Icons.Rounded.DoneAll, stringResource(R.string.docx_replace_all), Modifier.size(20.dp), replaceInk.color)
+                            }
+                    }
+                }
+            }
         }
 
         // Text / highlight colour.
@@ -1258,6 +1314,70 @@ private fun DocxEditorContent(
                         inner()
                     }
                 )
+            }
+        }
+
+        // Comments: the same glass dialog the page-goer uses. Reading is always available; add and
+        // delete need an edited document and the paragraph the caret sits in.
+        if (panel == DocPanel.COMMENTS) {
+            val comments = remember(pkg, doc) { viewModel.comments() }
+            var draft by remember { mutableStateOf("") }
+            GlassDialog(
+                visible = true,
+                onDismiss = { panel = DocPanel.NONE },
+                backdrop = screenBackdrop.glass,
+                title = stringResource(R.string.docx_comments),
+                actions = {
+                    GlassDialogAction(
+                        stringResource(R.string.docx_comment_add),
+                        onClick = {
+                            focusTarget?.let { if (viewModel.addComment(it, draft)) { draft = ""; panel = DocPanel.NONE } }
+                        },
+                        primary = true, enabled = editable && draft.isNotBlank()
+                    )
+                }
+            ) {
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    if (comments.isEmpty()) BasicText(stringResource(R.string.docx_no_comment), style = TextStyle(sub, 13.sp))
+                    for (c in comments) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                BasicText(c.text, style = TextStyle(text, 15.sp, FontWeight.Medium))
+                                BasicText(
+                                    if (c.date.length >= 10) "${c.author} · ${c.date.take(10)}" else c.author,
+                                    style = TextStyle(sub, 11.sp)
+                                )
+                            }
+                            if (editable) Icon(
+                                Icons.Rounded.Delete, stringResource(R.string.docx_comment_delete),
+                                Modifier.size(20.dp).clickable { viewModel.deleteComment(c.id) },
+                                tint = sub
+                            )
+                        }
+                    }
+                    if (editable) {
+                        val commentFocus = remember { FocusRequester() }
+                        LaunchedEffect(panel) { if (comments.isEmpty()) runCatching { commentFocus.requestFocus() } }
+                        BasicTextField(
+                            value = draft,
+                            onValueChange = { draft = it },
+                            singleLine = true,
+                            textStyle = TextStyle(text, 15.sp, FontWeight.Medium),
+                            cursorBrush = SolidColor(accent),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 46.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(text.copy(0.07f))
+                                .padding(horizontal = 14.dp, vertical = 12.dp)
+                                .focusRequester(commentFocus),
+                            decorationBox = { inner ->
+                                if (draft.isEmpty()) BasicText(stringResource(R.string.docx_comment_hint), style = TextStyle(sub, 15.sp))
+                                inner()
+                            }
+                        )
+                    }
+                }
             }
         }
 

@@ -21,6 +21,7 @@ class DocxPackage(
     val stylesPath: String,
     val numbering: DocxNumbering,
     val numberingPath: String,
+    val comments: DocxComments,
     val theme: DocxTheme,
     /** Relationship id → zip entry path (internal targets only). */
     val rels: Map<String, String>,
@@ -75,6 +76,7 @@ object DocxReader {
         val relMap = rels.filter { !it.external }.associate { it.id to it.target }
         val stylesPath = rels.firstOrNull { it.type.endsWith("/styles") }?.target ?: join(dir, "styles.xml")
         val numberingPath = rels.firstOrNull { it.type.endsWith("/numbering") }?.target ?: join(dir, "numbering.xml")
+        val commentsPath = rels.firstOrNull { it.type.endsWith("/comments") }?.target
         val themePath = rels.firstOrNull { it.type.endsWith("/theme") }?.target
 
         val root = XmlScan.scan(xml)
@@ -107,6 +109,7 @@ object DocxReader {
             stylesPath = stylesPath,
             numbering = DocxNumbering.parse(parts[numberingPath]),
             numberingPath = numberingPath,
+            comments = DocxComments.parse(commentsPath, parts[commentsPath]),
             theme = DocxTheme.parse(themePath?.let { parts[it] }),
             rels = relMap,
             links = rels.filter { it.external }.associate { it.id to it.target },

@@ -12,13 +12,16 @@ import com.hmx.pdf.data.repository.RecentFile
 import com.hmx.pdf.data.repository.RecentFilesManager
 import com.hmx.pdf.data.repository.SaveRecovery
 import com.hmx.pdf.docx.DocBlock
+import com.hmx.pdf.docx.CommentInfo
 import com.hmx.pdf.docx.DocPara
 import com.hmx.pdf.docx.DocState
+import com.hmx.pdf.docx.DocxComments
 import com.hmx.pdf.docx.DocxEdits
 import com.hmx.pdf.docx.DocxPackage
 import com.hmx.pdf.docx.DocxReader
 import com.hmx.pdf.docx.DocxWriter
 import com.hmx.pdf.docx.findPara
+import com.hmx.pdf.docx.forEachPara
 import com.hmx.pdf.docx.mapContainerOf
 import com.hmx.pdf.docx.replacePara
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +29,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+
+/** The editor's own identity on comments it creates (no user account exists to attribute). */
+private const val COMMENT_AUTHOR = "HMXPDF"
+private const val COMMENT_INITIALS = "H"
 
 /**
  * The Word editor's document: loads a .docx into blocks, keeps undo/redo as whole-document
@@ -236,6 +243,59 @@ class DocxEditorViewModel : ViewModel() {
             if (np !== p) blocks = replacePara(blocks, np) ?: blocks
         }
         if (blocks !== doc?.blocks) { lastKey = null; commit(DocState(blocks)) }
+    }
+
+    /** Replaces every occurrence of the query — one undo step ("Replace all"). */
+    fun replaceAll(query: String, replacement: String, matchCase: Boolean) {
+        val d = doc ?: return
+        val ids = ArrayList<Long>()
+        val hits = HashMap<Long, List<IntRange>>()
+        forEachPara(d.blocks) { p ->
+            val ms = DocxEdits.matchesIn(p.text, query, !matchCase)
+            if (ms.isNotEmpty()) { ids.add(p.id); hits[p.id] = ms }
+        }
+        if (ids.isEmpty()) return
+        mapParas(ids) { p -> hits[p.id]?.let { DocxEdits.replaceAllIn(p, it, replacement) } ?: p }
+    }
+
+    /** Replaces one match on its paragraph — one undo step. The range must come from a live match. */
+    fun replaceOne(id: Long, range: IntRange, replacement: String) {
+        mapParas(listOf(id)) { cur -> DocxEdits.replaceRange(cur, range.first, range.last + 1, replacement) }
+    }
+
+    // ── comments ───────────────────────────────────────────────────────────────
+
+    /** Adds a comment anchored to [paraId]'s start — one undo step. */
+    fun addComment(paraId: Long, text: String): Boolean {
+        if (!editable || text.isBlank()) return false
+        val cm = pkg?.comments ?: return false
+        // Only paragraphs the editor can serialize again accept the anchor.
+        if (findPara(doc?.blocks ?: return false, paraId)?.editable != true) return false
+        val date = java.time.Instant.now().toString().take(19) + "Z"
+        val id = cm.add(COMMENT_AUTHOR, COMMENT_INITIALS, date, text)
+        mapParas(listOf(paraId)) { DocxComments.anchorPara(it, id) }
+        return true
+    }
+
+    /** Deletes a comment everywhere: part element, range markers, reference runs — one undo step. */
+    fun deleteComment(id: String) {
+        if (!editable) return
+        val cm = pkg?.comments ?: return
+        cm.remove(id)
+        val all = ArrayList<Long>()
+        doc?.blocks?.let { blocks -> forEachPara(blocks) { p -> all.add(p.id) } }
+        mapParas(all) { DocxComments.stripPara(it, id) }
+    }
+
+    /** The comments anchored in the document right now — additions undone show their absence. */
+    fun comments(): List<CommentInfo> {
+        val cm = pkg?.comments ?: return emptyList()
+        val d = doc ?: return emptyList()
+        val anchored = HashSet<String>()
+        forEachPara(d.blocks) { p ->
+            Regex("""<w:commentRangeStart[^>]*w:id="(\d+)""").findAll(p.extras).forEach { anchored.add(it.groupValues[1]) }
+        }
+        return cm.items.filter { it.id in anchored }
     }
 
     // ── saving ─────────────────────────────────────────────────────────────────
