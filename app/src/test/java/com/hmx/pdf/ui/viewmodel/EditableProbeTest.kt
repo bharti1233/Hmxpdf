@@ -1,7 +1,6 @@
 package com.hmx.pdf.ui.viewmodel
 
 import com.hmx.pdf.docx.DocxReader
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -39,19 +38,12 @@ class EditableProbeTest {
     fun probe() {
         val (pkg, state) = DocxReader.read(ByteArrayInputStream(docx()))!!
         val v = DocxEditorViewModel()
-        println("PROBE0 writable=${pkg.writable} mirror=${v.testFileMirror} editable=${v.editable}")
         v.primeForTest(pkg to state)
-        println(
-            "PROBE1 writable=${pkg.writable} mirror=${v.testFileMirror} editable=${v.editable} mode=${v.editMode} " +
-                "pkgSame=${v.pkg === pkg} mirrorField=" + run {
-                    v.javaClass.getDeclaredField("testFileMirror").isAccessible = true; v.javaClass.getDeclaredField("testFileMirror").get(v)
-                }
-        )
         assertTrue("p1Mirror=${v.testFileMirror}", v.testFileMirror == true)
-        assertEquals("p2PkgSame", v.pkg, pkg)
-        assertTrue("p3Editable=${v.editable}", v.editable)
+        assertTrue("p2PkgSame=${v.pkg === pkg}", v.pkg === pkg)
+        assertTrue("p3Writable=${v.pkg?.writable}", v.pkg?.writable == true)
+        assertTrue("p4Editable=${v.editable}", v.editable)
         v.setEditMode(true)
-        println("PROBE2 mode=${v.editMode} editable=${v.editable} mirror=${v.testFileMirror}")
-        assertTrue("p4Mode=${v.editMode}", v.editMode)
+        assertTrue("p5Mode=${v.editMode}", v.editMode)
     }
 }
