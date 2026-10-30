@@ -79,7 +79,9 @@ class DocxEditorViewModel : ViewModel() {
         private set
 
     val dirty: Boolean get() = doc != null && doc !== saved
-    val editable: Boolean get() = pkg?.writable == true && (testFileMirror ?: meta.fileUri?.scheme == "file")
+    // The test-mirror half sits alone: unparenthesized, the elvis binds to the getter's left side
+    // (`(mirror ?: uri) == "file"`) and any forced Boolean would compare against "file" as false.
+    val editable: Boolean get() = pkg?.writable == true && (testFileMirror ?: (meta.fileUri?.scheme == "file"))
 
     /**
      * The session mode: documents open in View Mode (read-only); Edit is the explicit header
