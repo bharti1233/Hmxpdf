@@ -2,11 +2,28 @@
 
 **Stage D deliverable.** Companion to `PHASE1_SOURCE_AUDIT.md` (evidence model: **[S]** source-reviewed, **[T]** confirmed by tests, **[N]** not verified, **[R]** requires runtime device).
 
+## Stage G outcome — CI verified (2026-10-30)
+
+**Final green run: [41079865164](https://github.com/bharti1233/Hmxpdf/actions/runs/41079865164) on commit `f43de2c`, all three jobs success** (`release`, `release-guard`, `build` — tests + lint + packaging). Artifacts: [hmx-pdf-debug-apk](https://github.com/bharti1233/Hmxpdf/actions/runs/41079865164/artifacts), hmx-pdf-release-apk, hmx-pdf-release-bundle. The JVM unit-test task ran with `--rerun-tasks`; no test failure ("194 tests completed" corresponds to the `:app:testPlayDebugUnitTest` run family; skipped counts come from parameterised/preview-compatible omits, unchanged from previous runs).
+
+Everything above marked "not run locally; runs in CI" has now run in CI and passed: the pre-existing DOCX suites stayed green, and all 20 new tests (8 find/replace + 8 comments + 4 table-cell) passed. Same run: `lintPlayDebug`, `assemblePlayDebug`, `assemblePlayRelease`, `bundlePlayRelease`, and the release signing guard all succeeded.
+
+### What CI found before it went green (fix history on this branch)
+| Run | Result | Cause → fix |
+|---|---|---|
+| 41045041243 | failure | 6 compile errors in new code: four importable-rounded icon properties (`RateReview`/`FindReplace`/`DoneAll`/`Delete`) lacked per-symbol imports; comment payload `DocPara` missed the required `editable` flag → commit `1ed538a` |
+| 41045825562 | failure | test passed a `ByteArray` where `DocxReader.read` needs an `InputStream` → commit `a160d55` |
+| 41046882481 | failure | tests all compiled and ran; 9 failed. Root causes: `DocxComments` parsed comments.xml at the wrong tree level (`XmlScan.scan` returns a pseudo-root above `w:comments`, so items parsed empty and `remove()` was a silent no-op) → `partRoot()` navigation, commit `a139904`; plus two wrong hand-computed test expectations (inclusive `IntRange` from `i until end`; `replaceRange`'s `[start, end)` semantics). Verified locally without gradle by hand-simulating the scanner and edit math |
+| 41077288344 | failure | JVM tests all green; `lintPlayDebug` blocked on the Phase-1 diff itself: `java.time.Instant#now` needs API 26 (app min is 23, desugaring deliberately off) → switched to the codebase's `SimpleDateFormat` pattern at a fixed US locale; all 10 new strings lacked translations in ar/ru/pt/it/es (pt-rBR added too) → translated; `docx_match_case` was dead (the Aa switch is its own visible label) → deleted → commit `f43de2c` |
+| 41079865164 | **success** | — |
+
+The tests earned their keep beyond presence checks: they caught a real engine bug (the empty-comments-part parse), which would otherwise have shipped silently.
+
 ## Environment limitation (explicit)
 
 **Local Unit tests were NOT executed. The user instructed (2026-10-30): "dont run or build apk locally my device is low".** All gradle jobs — including `testPlayDebugUnitTest`, `:pdf-core:test`, `:ocr-core:test`, `lintPlayDebug`, and any APK/AAB packaging — are therefore left entirely to the GitHub Actions `android.yml` run (Stage G), which is the declared build/test authority for this project anyway.
 
-What was done locally in its place (static, near-zero memory):
+## What was done locally in its place (static, near-zero memory)
 - Full source re-read of every changed/new file (Stage E).
 - Component contract verification against the installed dependency artifacts: `Icons.Rounded.FindReplace`/`DoneAll`/`RateReview` confirmed in `material-icons-extended` 1.7.6; `Rounded.Delete`/`Search` confirmed in `material-icons-core`; `GlassDialog(title, actions, content)`, `LiquidIconButton(onClick, backdrop, modifier, surfaceColor)`, `GlassSearchPill(...)`, `rememberAdaptiveInk().color/.soft/.modifier` signatures verified in source.
 - Kotlin brace/paren balance scan of the changed screen file: balanced.
