@@ -465,7 +465,9 @@ private fun DocxEditorContent(
     val doc = viewModel.doc
     val editable = viewModel.editable
 
-    var editMode by rememberSaveable { mutableStateOf(false) }
+    // The session mode is the ViewModel's: mutations are guarded at the source, and the header
+    // and dock render from the same flag.
+    val editMode = viewModel.editMode
     /** The paragraph field that has focus; Enter is swallowed while none has (see the root Box). */
     var focusedField by remember { mutableStateOf<Long?>(null) }
     // 1 = the page fits the screen's width, as a desktop shows a whole page.
@@ -691,7 +693,12 @@ private fun DocxEditorContent(
         activeId = null
         pending = null
         panel = DocPanel.NONE
-        editMode = false
+        // Nothing editing-related may leak into View Mode: the find bar and replace row live under
+        // both, and the anchor must not name a paragraph the caret session already left.
+        showSearch = false
+        searchQuery = ""
+        focusTarget = null
+        viewModel.setEditMode(false)
     }
 
     // ── formatting ─────────────────────────────────────────────────────────────
@@ -865,9 +872,6 @@ private fun DocxEditorContent(
                         }
                     }
                     if (!editMode) {
-                        LiquidIconButton(onClick = { showSearch = true }, backdrop = headerBackdrop, modifier = findInk.modifier) {
-                            Icon(Icons.Rounded.Search, stringResource(R.string.viewer_find), Modifier.size(20.dp), findInk.color)
-                        }
                         LiquidIconButton(onClick = { panel = DocPanel.COMMENTS }, backdrop = headerBackdrop, modifier = findInk.modifier) {
                             Icon(Icons.Rounded.RateReview, stringResource(R.string.docx_comments), Modifier.size(19.dp), findInk.color)
                         }
@@ -878,10 +882,16 @@ private fun DocxEditorContent(
                                 Modifier.size(19.dp), paperInk.color
                             )
                         }
+                    } else {
+                        // Find lives with editing: search and replace mutate nothing while shown,
+                        // but they are editing tools, so View Mode has no search entry at all.
+                        LiquidIconButton(onClick = { showSearch = true }, backdrop = headerBackdrop, modifier = findInk.modifier) {
+                            Icon(Icons.Rounded.Search, stringResource(R.string.viewer_find), Modifier.size(20.dp), findInk.color)
+                        }
                     }
                     if (editable && doc != null) {
                         LiquidIconButton(
-                            onClick = { if (editMode) exitEdit() else { editMode = true; showSearch = false; searchQuery = "" } },
+                            onClick = { if (editMode) exitEdit() else { viewModel.setEditMode(true); showSearch = false; searchQuery = "" } },
                             backdrop = headerBackdrop,
                             modifier = editInk.modifier,
                             surfaceColor = if (editMode) accent.copy(0.22f) else Color.Unspecified
@@ -1183,8 +1193,8 @@ private fun DocxEditorContent(
                     onClose = { showSearch = false; searchQuery = "" }
                 )
                 // Replace current / replace all — the same glass circles under the find bar,
-                // only for a document this editor can actually write.
-                if (viewModel.editable) {
+                // only for a document this editor can actually write, in Edit Mode.
+                if (editable && editMode) {
                     val replaceInk = rememberAdaptiveInk(text)
                     Row(
                         Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -1322,7 +1332,7 @@ private fun DocxEditorContent(
         }
 
         // Comments: the same glass dialog the page-goer uses. Reading is always available; add and
-        // delete need an edited document and the paragraph the caret sits in.
+        // delete need an edited document in Edit Mode — the VM re-checks both behind these gates.
         if (panel == DocPanel.COMMENTS) {
             val comments = remember(pkg, doc) { viewModel.comments() }
             var draft by remember { mutableStateOf("") }
@@ -1335,9 +1345,9 @@ private fun DocxEditorContent(
                     GlassDialogAction(
                         stringResource(R.string.docx_comment_add),
                         onClick = {
-                            focusTarget?.let { if (viewModel.addComment(it, draft)) { draft = ""; panel = DocPanel.NONE } }
+                            if (viewModel.addComment(focusTarget, draft)) { draft = ""; panel = DocPanel.NONE }
                         },
-                        primary = true, enabled = editable && draft.isNotBlank()
+                        primary = true, enabled = editable && editMode && draft.isNotBlank()
                     )
                 }
             ) {
@@ -1352,14 +1362,14 @@ private fun DocxEditorContent(
                                     style = TextStyle(sub, 11.sp)
                                 )
                             }
-                            if (editable) Icon(
+                            if (editable && editMode) Icon(
                                 Icons.Rounded.Delete, stringResource(R.string.docx_comment_delete),
                                 Modifier.size(20.dp).clickable { viewModel.deleteComment(c.id) },
                                 tint = sub
                             )
                         }
                     }
-                    if (editable) {
+                    if (editable && editMode) {
                         val commentFocus = remember { FocusRequester() }
                         LaunchedEffect(panel) { if (comments.isEmpty()) runCatching { commentFocus.requestFocus() } }
                         BasicTextField(

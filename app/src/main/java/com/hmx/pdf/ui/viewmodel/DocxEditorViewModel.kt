@@ -79,7 +79,31 @@ class DocxEditorViewModel : ViewModel() {
         private set
 
     val dirty: Boolean get() = doc != null && doc !== saved
-    val editable: Boolean get() = pkg?.writable == true && meta.fileUri?.scheme == "file"
+    val editable: Boolean get() = pkg?.writable == true && (testFileMirror ?: meta.fileUri?.scheme == "file")
+
+    /**
+     * The session mode: documents open in View Mode (read-only); Edit is the explicit header
+     * toggle. The VM owns it so every mutating method below can guard on one shared flag — the
+     * screen hides its editing controls from this same value.
+     */
+    var editMode by mutableStateOf(false)
+        private set
+
+    /** Enters edit mode (writable documents only); leaving it is always allowed. */
+    fun setEditMode(on: Boolean) {
+        if (on && !editable) return
+        if (!on) lastKey = null
+        editMode = on
+    }
+
+    /** Test seam: plain JVM unit tests build no android.net.Uri, so they force the mirror half of [editable]. */
+    internal var testFileMirror: Boolean? = null
+
+    /** Test seam: installs a parsed package/state without [load]'s picker and mirror pipeline. */
+    internal fun primeForTest(parsed: Pair<DocxPackage, DocState>) {
+        pkg = parsed.first; doc = parsed.second; saved = parsed.second; original = parsed.second
+        testFileMirror = true
+    }
 
     private var started = false
     /** The page last read in this document (from Recents), to reopen at. */
@@ -162,6 +186,7 @@ class DocxEditorViewModel : ViewModel() {
     fun breakUndoGroup() { lastKey = null }
 
     fun undo() {
+        if (!editMode) return
         val prev = undoStack.removeLastOrNull() ?: return
         doc?.let { redoStack.add(it) }
         doc = prev
@@ -171,6 +196,7 @@ class DocxEditorViewModel : ViewModel() {
     }
 
     fun redo() {
+        if (!editMode) return
         val next = redoStack.removeLastOrNull() ?: return
         doc?.let { undoStack.add(it) }
         doc = next
@@ -183,6 +209,7 @@ class DocxEditorViewModel : ViewModel() {
 
     /** Typing: the field's text changed. */
     fun typed(id: Long, newText: String, typing: com.hmx.pdf.docx.CharFmt) {
+        if (!editMode) return
         val d = doc ?: return
         val p = findPara(d.blocks, id) ?: return
         val np = DocxEdits.typed(p, newText, typing)
@@ -191,12 +218,14 @@ class DocxEditorViewModel : ViewModel() {
     }
 
     fun replace(para: DocPara, grouped: Boolean = false) {
+        if (!editMode) return
         val d = doc ?: return
         replacePara(d.blocks, para)?.let { commit(DocState(it), if (grouped) "fmt${para.id}" else null) }
     }
 
     /** Enter: splits paragraph [id] at [at] and returns the new paragraph's id. */
     fun split(id: Long, text: String, at: Int, typing: com.hmx.pdf.docx.CharFmt): Long? {
+        if (!editMode) return null
         val d = doc ?: return null
         val p0 = findPara(d.blocks, id) ?: return null
         val p = DocxEdits.typed(p0, text, typing)
@@ -216,6 +245,7 @@ class DocxEditorViewModel : ViewModel() {
      * paragraph's id and where the caret goes, or null when there is nothing to join with.
      */
     fun mergeWithPrevious(id: Long): Pair<Long, Int>? {
+        if (!editMode) return null
         val d = doc ?: return null
         var result: Pair<Long, Int>? = null
         val blocks = mapContainerOf(d.blocks, id) { list ->
@@ -238,6 +268,7 @@ class DocxEditorViewModel : ViewModel() {
 
     /** Paragraph-level change applied to every paragraph id in [ids]. */
     fun mapParas(ids: Collection<Long>, f: (DocPara) -> DocPara) {
+        if (!editMode) return
         var blocks = doc?.blocks ?: return
         for (id in ids) {
             val p = findPara(blocks, id) ?: continue
@@ -268,27 +299,40 @@ class DocxEditorViewModel : ViewModel() {
 
     // ── comments ───────────────────────────────────────────────────────────────
 
-    /** Adds a comment anchored to [paraId]'s start — one undo step. */
-    fun addComment(paraId: Long, text: String): Boolean {
-        if (!editable || text.isBlank()) return false
+    /**
+     * Adds a comment anchored to [paraId]'s start — one undo step. [paraId] null (or a paragraph
+     * that has since gone) falls back to the first editable paragraph, so "Add" works even with no
+     * caret session: the anchor survives focus being consumed by the field that requested it.
+     */
+    fun addComment(paraId: Long?, text: String): Boolean {
+        if (!editMode || !editable || text.isBlank()) return false
         val cm = pkg?.comments ?: return false
-        // Only paragraphs the editor can serialize again accept the anchor.
-        if (findPara(doc?.blocks ?: return false, paraId)?.editable != true) return false
+        val blocks = doc?.blocks ?: return false
+        val target = paraId?.let { findPara(blocks, it) }?.takeIf { p -> p.editable }
+            ?: firstEditable(blocks)
+            ?: return false
         // w:date is a machine format: fixed US locale, no java.time (min SDK 23).
         val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).format(Date()) + "Z"
         val id = cm.add(COMMENT_AUTHOR, COMMENT_INITIALS, date, text)
-        mapParas(listOf(paraId)) { DocxComments.anchorPara(it, id) }
+        mapParas(listOf(target.id)) { DocxComments.anchorPara(it, id) }
         return true
     }
 
     /** Deletes a comment everywhere: part element, range markers, reference runs — one undo step. */
     fun deleteComment(id: String) {
-        if (!editable) return
+        if (!editMode || !editable) return
         val cm = pkg?.comments ?: return
         cm.remove(id)
         val all = ArrayList<Long>()
         doc?.blocks?.let { blocks -> forEachPara(blocks) { p -> all.add(p.id) } }
         mapParas(all) { DocxComments.stripPara(it, id) }
+    }
+
+    /** The first editable paragraph (the add-comment anchor fallback), or null. */
+    private fun firstEditable(blocks: List<com.hmx.pdf.docx.DocBlock>): DocPara? {
+        var found: DocPara? = null
+        forEachPara(blocks) { p -> if (found == null && p.editable) found = p }
+        return found
     }
 
     /** The comments anchored in the document right now — additions undone show their absence. */
