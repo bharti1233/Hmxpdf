@@ -84,16 +84,18 @@ class DocxEditorViewModel : ViewModel() {
     /**
      * The session mode: documents open in View Mode (read-only); Edit is the explicit header
      * toggle. The VM owns it so every mutating method below can guard on one shared flag — the
-     * screen hides its editing controls from this same value.
+     * screen hides its editing controls from this same value. (Backing state stays private:
+     * a `private set` on a property named `editMode` would generate a JVM setter clashing with
+     * [setEditMode].)
      */
-    var editMode by mutableStateOf(false)
-        private set
+    private var mode by mutableStateOf(false)
+    val editMode: Boolean get() = mode
 
     /** Enters edit mode (writable documents only); leaving it is always allowed. */
     fun setEditMode(on: Boolean) {
         if (on && !editable) return
         if (!on) lastKey = null
-        editMode = on
+        mode = on
     }
 
     /** Test seam: plain JVM unit tests build no android.net.Uri, so they force the mirror half of [editable]. */
