@@ -49,8 +49,8 @@ class DocxReplaceTest {
 
     @Test
     fun findsCaseVariants() {
-        assertEquals(listOf(0..5, 6..11), DocxEdits.matchesIn("Hello hello", "hello", true))
-        assertEquals(listOf(6..11), DocxEdits.matchesIn("Hello hello", "hello", false))
+        assertEquals(listOf(0..4, 6..10), DocxEdits.matchesIn("Hello hello", "hello", true))
+        assertEquals(listOf(6..10), DocxEdits.matchesIn("Hello hello", "hello", false))
         assertTrue(DocxEdits.matchesIn("Hello", "world", true).isEmpty())
     }
 
@@ -96,7 +96,7 @@ class DocxReplaceTest {
     fun pageMarksShiftWithTheEdit() {
         val p = para("abc def").let { it.edited(marks = listOf(4)) }
         val r = DocxEdits.replaceRange(p, 0, 1, "xy")
-        assertEquals("xyc def", r.text)
+        assertEquals("xybc def", r.text)
         assertEquals(listOf(5), r.marks)
     }
 

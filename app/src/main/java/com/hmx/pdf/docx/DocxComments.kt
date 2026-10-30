@@ -25,6 +25,10 @@ class DocxComments(val path: String?, val xml: String?) {
     /** id → the raw element removed from [xml] (kept so an undone deletion can be written back). */
     private val removed = HashMap<String, String>()
 
+    /** The part's root element (`w:comments`) — `scan()` returns a pseudo-root above it. */
+    private fun partRoot(x: String): XNode? =
+        XmlScan.scan(x).children.firstOrNull { it.local == "comments" }
+
     companion object {
         private const val W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
@@ -66,8 +70,8 @@ class DocxComments(val path: String?, val xml: String?) {
         get() {
             val base = ArrayList<CommentInfo>()
             if (xml != null) {
-                val root = XmlScan.scan(xml)
-                for (c in root.childrenNamed("comment")) {
+                val part = partRoot(xml) ?: return emptyList()
+                for (c in part.childrenNamed("comment")) {
                     val id = c.attr(xml, "id") ?: continue
                     val text = StringBuilder()
                     collectText(c, xml, text)
@@ -109,7 +113,7 @@ class DocxComments(val path: String?, val xml: String?) {
         val a = added.firstOrNull { it.info.id == id }
         if (a != null) { added.remove(a); removed[id] = a.raw; return }
         val base = xml ?: return
-        val node = XmlScan.scan(base).childrenNamed("comment").firstOrNull { it.attr(base, "id") == id } ?: return
+        val node = partRoot(base)?.childrenNamed("comment")?.firstOrNull { it.attr(base, "id") == id } ?: return
         removed[id] = node.text(base)
     }
 
@@ -122,8 +126,7 @@ class DocxComments(val path: String?, val xml: String?) {
         var out = xml
             ?: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><w:comments xmlns:w=\"$W_NS\"></w:comments>"
         if (xml != null && removed.isNotEmpty()) {
-            val root = XmlScan.scan(out)
-            val splice = root.childrenNamed("comment")
+            val splice = (partRoot(out)?.childrenNamed("comment") ?: emptyList())
                 .filter { removed.containsKey(it.attr(out, "id")) && !references.contains(it.attr(out, "id")) }
                 .sortedByDescending { it.start }
             for (n in splice) out = out.substring(0, n.start) + out.substring(n.end)

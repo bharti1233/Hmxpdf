@@ -22,10 +22,12 @@ class DocxCommentsTest {
         "<w:comment w:id=\"$id\" w:author=\"$author\" w:date=\"2026-01-0${id}T00:00:00Z\"><w:p><w:r><w:t>$text</w:t></w:r></w:p></w:comment>"
 
     /** body para anchored as comment [id]: markers around "hello" plus a reference run. */
-    private val anchoredBody = "<w:commentRangeStart w:id=\"1\"/>" +
+    private val anchoredBody = "<w:p>" +
+        "<w:commentRangeStart w:id=\"1\"/>" +
         "<w:r><w:t>hello</w:t></w:r>" +
         "<w:commentRangeEnd w:id=\"1\"/>" +
-        "<w:r><w:rPr><w:rStyle w:val=\"CommentReference\"/></w:rPr><w:commentReference w:id=\"1\"/></w:r>"
+        "<w:r><w:rPr><w:rStyle w:val=\"CommentReference\"/></w:rPr><w:commentReference w:id=\"1\"/></w:r>" +
+        "</w:p>"
 
     private fun docx(body: String, withComments: Boolean = true): ByteArray {
         val parts = linkedMapOf(
