@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="open_pdf"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_open"
+        android:shortcutShortLabel="@string/shortcut_open_short"
+        android:shortcutLongLabel="@string/shortcut_open_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hmx.pdf"
+            android:targetClass="com.hmx.pdf.MainActivity"
+            android:data="hmxpdf://open" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="merge_pdfs"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_merge"
+        android:shortcutShortLabel="@string/shortcut_merge_short"
+        android:shortcutLongLabel="@string/shortcut_merge_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hmx.pdf"
+            android:targetClass="com.hmx.pdf.MainActivity"
+            android:data="hmxpdf://merge" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="compress_pdf"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_compress"
+        android:shortcutShortLabel="@string/shortcut_compress_short"
+        android:shortcutLongLabel="@string/shortcut_compress_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hmx.pdf"
+            android:targetClass="com.hmx.pdf.MainActivity"
+            android:data="hmxpdf://compress" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="create_pdf"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_create"
+        android:shortcutShortLabel="@string/shortcut_create_short"
+        android:shortcutLongLabel="@string/shortcut_create_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hmx.pdf"
+            android:targetClass="com.hmx.pdf.MainActivity"
+            android:data="hmxpdf://create" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+</shortcuts>

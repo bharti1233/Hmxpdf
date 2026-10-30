@@ -1,0 +1,39 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace = "com.kyant.pdfcore"
+    compileSdk {
+        version = release(36)
+    }
+    buildToolsVersion = "36.1.0"
+
+    defaultConfig {
+        minSdk = 23
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+}
+
+kotlin {
+    // Match the app module and the CI JDK (17); nothing here needs newer language features.
+    jvmToolchain(17)
+}
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.exifinterface)
+
+    // Lossless PDF page operations (merge / split / reorder / rotate / text extraction).
+    // PdfRenderer can only rasterise pages; PdfBox preserves the original text & vectors.
+    implementation(libs.pdfbox.android)
+
+    testImplementation("junit:junit:4.13.2")
+}

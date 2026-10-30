@@ -1,0 +1,4431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 9.0.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.0.0)" variant="all" version="9.0.0">
+
+    <issue
+        id="ResourceType"
+        message="Expected resource of type styleable"
+        errorLine1="        val r = runCatching { ta.getDrawable(1) }.getOrNull()?.mutate()?.apply { setTint(handleColor.toArgb()) }"
+        errorLine2="                                             ~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/selection/PdfSelectionOverlay.kt"
+            line="229"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 30 (current min is 23): `android.view.HapticFeedbackConstants#CONFIRM`"
+        errorLine1="                                    view.performHapticFeedback(HapticFeedbackConstants.CONFIRM)"
+        errorLine2="                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/HomeScreen.kt"
+            line="1225"
+            column="64"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 26 (current min is 23): `android.graphics.Bitmap.Config#HARDWARE`"
+        errorLine1="                        bmp.config == Bitmap.Config.HARDWARE || !bmp.isMutable -> bmp.copy(Bitmap.Config.ARGB_8888, true)"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="2642"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#valueOf`"
+        errorLine1="                    val c = android.graphics.Color.valueOf(overlay.colorArgb)"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1039"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                    cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                              ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1044"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                    cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                   ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1044"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                    cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                          ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1044"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#valueOf`"
+        errorLine1="                    val c = android.graphics.Color.valueOf(overlay.colorArgb)"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1057"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                        cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                                     ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1068"
+            column="70"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                        cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                          ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1068"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                        cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                 ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1068"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                        cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                                  ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1072"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                        cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                       ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1072"
+            column="56"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                        cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                              ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1072"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#valueOf`"
+        errorLine1="                    val c = android.graphics.Color.valueOf(overlay.colorArgb)"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1081"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                        cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                                     ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1094"
+            column="70"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                        cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                          ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1094"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                        cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                 ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1094"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                        cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                                  ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1102"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                        cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                       ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1102"
+            column="56"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                        cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                              ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1102"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#valueOf`"
+        errorLine1="                    val c = android.graphics.Color.valueOf(overlay.colorArgb)"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1115"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                    cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                              ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1122"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                    cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                   ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1122"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                    cs.setStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                          ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1122"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#valueOf`"
+        errorLine1="                    val c = android.graphics.Color.valueOf(overlay.colorArgb)"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1156"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                    cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                                 ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1167"
+            column="66"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                    cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                                      ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1167"
+            column="55"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                    cs.setNonStrokingColor(c.red(), c.green(), c.blue())"
+        errorLine2="                                             ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1167"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#valueOf`"
+        errorLine1="                    val c = android.graphics.Color.valueOf(overlay.colorArgb)"
+        errorLine2="                                                   ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1183"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                        floatArrayOf(c.red(), c.green(), c.blue()),"
+        errorLine2="                                                           ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1188"
+            column="60"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#blue`"
+        errorLine1="                        floatArrayOf(c.red(), c.green(), c.blue()),"
+        errorLine2="                                                           ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1188"
+            column="60"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                        floatArrayOf(c.red(), c.green(), c.blue()),"
+        errorLine2="                                                ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1188"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#green`"
+        errorLine1="                        floatArrayOf(c.red(), c.green(), c.blue()),"
+        errorLine2="                                                ~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1188"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                        floatArrayOf(c.red(), c.green(), c.blue()),"
+        errorLine2="                                       ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1188"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.graphics.Color#red`"
+        errorLine1="                        floatArrayOf(c.red(), c.green(), c.blue()),"
+        errorLine2="                                       ~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1188"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 26 (current min is 23): `android.graphics.Bitmap.Config#HARDWARE`"
+        errorLine1="        if (bmp != null &amp;&amp; (bmp.config == Bitmap.Config.HARDWARE || !bmp.isMutable)) {"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/SignatureManager.kt"
+            line="65"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 26 (current min is 23): `android.graphics.Bitmap.Config#HARDWARE`"
+        errorLine1="                                            val safeBmp = if (savedBmp.bitmap.config == Bitmap.Config.HARDWARE || !savedBmp.bitmap.isMutable) {"
+        errorLine2="                                                                                        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SignaturePadDialog.kt"
+            line="495"
+            column="89"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#of`"
+        errorLine1="                val script = runCatching { Character.UnicodeScript.of(probe.codePointAt(0)) }.getOrNull()"
+        errorLine2="                                                                   ~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="280"
+            column="68"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Enum for switch requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript`"
+        errorLine1="                    val named = when (script) {"
+        errorLine2="                                      ~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="286"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#DEVANAGARI`"
+        errorLine1="                        Character.UnicodeScript.DEVANAGARI -> listOf(&quot;Noto Sans Devanagari&quot;, &quot;Nirmala UI&quot;, &quot;Mangal&quot;, &quot;Kokila&quot;, &quot;Aparajita&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="287"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#BENGALI`"
+        errorLine1="                        Character.UnicodeScript.BENGALI -> listOf(&quot;Noto Sans Bengali&quot;, &quot;Nirmala UI&quot;, &quot;Vrinda&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="288"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#TAMIL`"
+        errorLine1="                        Character.UnicodeScript.TAMIL -> listOf(&quot;Noto Sans Tamil&quot;, &quot;Nirmala UI&quot;, &quot;Latha&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="289"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#TELUGU`"
+        errorLine1="                        Character.UnicodeScript.TELUGU -> listOf(&quot;Noto Sans Telugu&quot;, &quot;Nirmala UI&quot;, &quot;Gautami&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="290"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#GUJARATI`"
+        errorLine1="                        Character.UnicodeScript.GUJARATI -> listOf(&quot;Noto Sans Gujarati&quot;, &quot;Nirmala UI&quot;, &quot;Shruti&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="291"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#GURMUKHI`"
+        errorLine1="                        Character.UnicodeScript.GURMUKHI -> listOf(&quot;Noto Sans Gurmukhi&quot;, &quot;Nirmala UI&quot;, &quot;Raavi&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="292"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#KANNADA`"
+        errorLine1="                        Character.UnicodeScript.KANNADA -> listOf(&quot;Noto Sans Kannada&quot;, &quot;Nirmala UI&quot;, &quot;Tunga&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="293"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Field requires API level 24 (current min is 23): `java.lang.Character.UnicodeScript#MALAYALAM`"
+        errorLine1="                        Character.UnicodeScript.MALAYALAM -> listOf(&quot;Noto Sans Malayalam&quot;, &quot;Nirmala UI&quot;, &quot;Kartika&quot;)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="294"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        errorLine1="        targetSdk = 36"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="55"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="SdCardPath"
+        message="Do not hardcode &quot;`/data/`&quot;; use `Context.getFilesDir().getPath()` instead"
+        errorLine1="    const val RELOCATE_FROM: String = &quot;/data/data/vasuki.istanpdf/files&quot;"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/office/OfficeEngineManifest.kt"
+            line="51"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutId` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutId=&quot;open_pdf&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="5"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutShortLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutShortLabel=&quot;@string/shortcut_open_short&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="8"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutLongLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutLongLabel=&quot;@string/shortcut_open_long&quot;>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="9"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutId` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutId=&quot;merge_pdfs&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="19"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutShortLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutShortLabel=&quot;@string/shortcut_merge_short&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="22"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutLongLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutLongLabel=&quot;@string/shortcut_merge_long&quot;>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="23"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutId` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutId=&quot;compress_pdf&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="33"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutShortLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutShortLabel=&quot;@string/shortcut_compress_short&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="36"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutLongLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutLongLabel=&quot;@string/shortcut_compress_long&quot;>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="37"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutId` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutId=&quot;create_pdf&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="47"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutShortLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutShortLabel=&quot;@string/shortcut_create_short&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="50"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `shortcutLongLabel` is only used in API level 25 and higher (current min is 23)"
+        errorLine1="        android:shortcutLongLabel=&quot;@string/shortcut_create_long&quot;>"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/shortcuts.xml"
+            line="51"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="WrongConstant"
+        message="Must be one of: LineBreaker.JUSTIFICATION_MODE_NONE, LineBreaker.JUSTIFICATION_MODE_INTER_WORD, LineBreaker.JUSTIFICATION_MODE_INTER_CHARACTER"
+        errorLine1="                        builder.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD)"
+        errorLine2="                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/UniversalDocumentConverter.kt"
+            line="616"
+            column="54"/>
+    </issue>
+
+    <issue
+        id="WrongConstant"
+        message="Flag not allowed here"
+        errorLine1="        val style = (if (st.bold) Typeface.BOLD else 0) or (if (st.italic) Typeface.ITALIC else 0)"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="238"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="AppBundleLocaleChanges"
+        message="Found dynamic locale changes, but did not find corresponding Play Core library calls for downloading languages and splitting by language is not disabled in the `bundle` configuration"
+        errorLine1="        config.setLocale(locale)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/utils/LocaleHelper.kt"
+            line="64"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.appcompat:appcompat than 1.7.0 is available: 1.8.0"
+        errorLine1="    implementation(&quot;androidx.appcompat:appcompat:1.7.0&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="198"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.documentfile:documentfile than 1.0.1 is available: 1.1.0"
+        errorLine1="    implementation(&quot;androidx.documentfile:documentfile:1.0.1&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="231"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.apache.poi:poi than 3.17 is available: 5.5.1"
+        errorLine1="    implementation(&quot;org.apache.poi:poi:3.17&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="216"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.apache.poi:poi-scratchpad than 3.17 is available: 5.5.1"
+        errorLine1="    implementation(&quot;org.apache.poi:poi-scratchpad:3.17&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="217"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ConfigurationScreenWidthHeight"
+        message="Using Configuration.screenWidthDp instead of LocalWindowInfo.current.containerSize"
+        errorLine1="        val screenW = LocalConfiguration.current.screenWidthDp"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfPageScrubber.kt"
+            line="205"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="ConfigurationScreenWidthHeight"
+        message="Using Configuration.screenWidthDp instead of LocalWindowInfo.current.containerSize"
+        errorLine1="    val maxWidth = (LocalConfiguration.current.screenWidthDp.dp - 128.dp)"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SpreadsheetViewerScreen.kt"
+            line="1010"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ContextCastToActivity"
+        message="LocalContext should not be cast to Activity, use LocalActivity instead"
+        errorLine1="            val activity = LocalContext.current as? android.app.Activity"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/DocsApp.kt"
+            line="215"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="        onError = { viewModel.setError(context.getString(R.string.scanner_start_failed)) }"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/CreatePdfScreen.kt"
+            line="118"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                message = context.getString(R.string.decrypt_pdf_success)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/DecryptPdfScreen.kt"
+            line="98"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                message = context.getString(R.string.decrypt_pdf_invalid)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/DecryptPdfScreen.kt"
+            line="101"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                message = context.getString(R.string.file_preview_unsupported)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/DecryptPdfScreen.kt"
+            line="104"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                    ?.takeIf { it.isNotBlank() } ?: context.getString(R.string.docx_save_failed)"
+        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/DocxEditorScreen.kt"
+            line="742"
+            column="53"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                    res.message.takeIf { it.isNotBlank() } ?: context.getString(R.string.docx_save_failed),"
+        errorLine2="                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/DocxEditorScreen.kt"
+            line="759"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="            message = context.getString(R.string.encrypt_pdf_password_required)"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="93"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="            message = context.getString(R.string.encrypt_pdf_mismatch)"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="98"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                message = context.getString(R.string.encrypt_pdf_success)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="110"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                message = context.getString(R.string.encrypt_pdf_source_protected)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="113"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                message = context.getString(R.string.file_preview_unsupported)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="116"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                                message = context.getString(R.string.encrypt_pdf_password_required)"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="211"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                                message = context.getString(R.string.encrypt_pdf_mismatch)"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/EncryptPdfScreen.kt"
+            line="215"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                            context.startActivity(Intent.createChooser(send, context.getString(R.string.extract_share_text)))"
+        errorLine2="                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ExtractTextScreen.kt"
+            line="151"
+            column="78"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                    context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.recents_share_pdf)))"
+        errorLine2="                                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/HomeScreen.kt"
+            line="506"
+            column="77"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                    context.startActivity(Intent.createChooser(view, context.getString(R.string.recents_open_with)))"
+        errorLine2="                                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/HomeScreen.kt"
+            line="516"
+            column="70"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="            locationDisplay = uri.lastPathSegment?.replace(&quot;primary:&quot;, &quot;&quot;) ?: context.getString(R.string.selected_folder)"
+        errorLine2="                                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/LiquidSaveDialog.kt"
+            line="170"
+            column="79"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="        onError = { viewModel.setError(context.getString(R.string.scanner_start_failed)) }"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ScanDocumentScreen.kt"
+            line="155"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                            Toast.makeText(context, context.getString(R.string.pdf_saved_successfully), Toast.LENGTH_SHORT).show()"
+        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ScanDocumentScreen.kt"
+            line="507"
+            column="53"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                            viewModel.setError(context.getString(R.string.pdf_save_failed))"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ScanDocumentScreen.kt"
+            line="509"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                        ?.takeIf { it.isNotBlank() } ?: context.getString(R.string.sheet_save_failed)"
+        errorLine2="                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SpreadsheetViewerScreen.kt"
+            line="448"
+            column="57"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                    res.message.takeIf { it.isNotBlank() } ?: context.getString(R.string.sheet_save_failed),"
+        errorLine2="                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SpreadsheetViewerScreen.kt"
+            line="467"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="LocalContextResourcesRead"
+        message="Reading Resources using LocalContext.current.resources"
+        errorLine1="        val density = context.resources.displayMetrics.density"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SpreadsheetViewerScreen.kt"
+            line="422"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="ModifierFactoryExtensionFunction"
+        message="Modifier factory functions should be extensions on Modifier"
+        errorLine1="private fun Transition&lt;Boolean>.glassFade(index: Int): Modifier {"
+        errorLine2="                                ~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/HomeScreen.kt"
+            line="976"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ModifierFactoryExtensionFunction"
+        message="Modifier factory functions should be extensions on Modifier"
+        errorLine1="private fun Transition&lt;Boolean>.sectionFade(index: Int): Modifier {"
+        errorLine2="                                ~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SettingsScreen.kt"
+            line="904"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ModifierFactoryExtensionFunction"
+        message="Modifier factory functions should be extensions on Modifier"
+        errorLine1="private fun Transition&lt;Boolean>.glassFadeModifier(index: Int): Modifier {"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ToolsScreen.kt"
+            line="335"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ModifierFactoryExtensionFunction"
+        message="Modifier factory functions should be extensions on Modifier"
+        errorLine1="private fun Transition&lt;Boolean>.tileEntranceModifier(index: Int, density: Float): Modifier {"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ToolsScreen.kt"
+            line="356"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/thirdparty/freecorners/compose/FreeCornersCropper.kt"
+            line="99"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/GlassGuideCallout.kt"
+            line="49"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/LiquidGlassCard.kt"
+            line="64"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be named modifier"
+        errorLine1="    surface: Modifier,"
+        errorLine2="    ~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/LiquidSaveDialog.kt"
+            line="145"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfPageScrubber.kt"
+            line="94"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be named modifier"
+        errorLine1="private fun OptionalSlot(slot: Modifier?, content: @Composable () -> Unit) {"
+        errorLine2="                         ~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="2816"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be named modifier"
+        errorLine1="    entranceModifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SettingsScreen.kt"
+            line="917"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/ShareMorphButton.kt"
+            line="90"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Aligned16KB"
+        message="The native library `arm64-v8a/libyuv-decoder.so` (from `jp.co.cyberagent.android:gpuimage:2.1.0`) is not 16 KB aligned">
+        <location
+            file="$GRADLE_USER_HOME/caches/9.3.0/transforms/f4b656d99b62b964cf115fd03bb4d61b/transformed/gpuimage-2.1.0/jni/arm64-v8a/libyuv-decoder.so"/>
+    </issue>
+
+    <issue
+        id="Aligned16KB"
+        message="The native library `arm64-v8a/libyuv-decoder.so` (from `jp.co.cyberagent.android:gpuimage:2.1.0`) is not 16 KB aligned">
+        <location
+            file="$GRADLE_USER_HOME/caches/9.3.0/transforms/f4b656d99b62b964cf115fd03bb4d61b/transformed/gpuimage-2.1.0/jni/arm64-v8a/libyuv-decoder.so"/>
+    </issue>
+
+    <issue
+        id="Aligned16KB"
+        message="The native library `arm64-v8a/libyuv-decoder.so` (from `jp.co.cyberagent.android:gpuimage:2.1.0`) is not 16 KB aligned">
+        <location
+            file="$GRADLE_USER_HOME/caches/9.3.0/transforms/f4b656d99b62b964cf115fd03bb4d61b/transformed/gpuimage-2.1.0/jni/arm64-v8a/libyuv-decoder.so"/>
+    </issue>
+
+    <issue
+        id="StringFormatInvalid"
+        message="Incorrect formatting string `onboarding_privacy_badge`; missing conversion character in &apos;`% s`&apos;?"
+        errorLine1="    &lt;string name=&quot;onboarding_privacy_badge&quot;>100% sin conexión &amp;#183; Sin recopilación de datos &amp;#183; Código abierto&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="287"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;selected&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;viewer_lasso_selected_count&quot;>%1$d selected — drag to move&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="239"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;results&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;viewer_find_results&quot;>%1$d of %2$d results&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="245"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;ffline&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;onboarding_privacy_badge&quot;>100% offline &amp;#183; No data collection &amp;#183; Open source&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="323"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;recents_page_count&quot;>%1$d pages&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="419"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;sheets&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;recents_sheet_count&quot;>%1$d sheets&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="421"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;files&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;files_selected&quot;>%1$d files selected&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="474"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;create_pages&quot;>%1$d pages&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="490"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;characters&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;create_character_count&quot;>%1$d characters&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="494"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;scan_pages_scanned&quot;>%1$d pages scanned&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="544"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;files&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;merge_success&quot;>Merged %1$d files -&amp;gt; %2$s\nSaved to %3$s&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="581"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;split_success&quot;>Split into %1$d pages\nSaved to %2$s&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="583"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;extract_success&quot;>Extracted %1$d pages\nSaved to %2$s&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="584"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;create_success&quot;>Created %1$s (%2$d pages)\nSaved to %3$s&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="596"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;pages&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;organize_success&quot;>Saved %1$d pages\nSaved to %2$s&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="608"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;characters&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;selection_chars_selected&quot;>%1$d characters selected&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="630"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="StringFormatCount"
+        message="Inconsistent number of arguments in formatting string `onboarding_privacy_badge`; found both 0 here and 1 in values/strings.xml"
+        errorLine1="    &lt;string name=&quot;onboarding_privacy_badge&quot;>دون إنترنت 100% · بلا جمع للبيانات · مفتوح المصدر&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ar/strings.xml"
+            line="304"
+            column="5"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="323"
+            column="5"
+            message="Conflicting number of arguments (1) here"/>
+    </issue>
+
+    <issue
+        id="StringFormatCount"
+        message="Inconsistent number of arguments in formatting string `onboarding_privacy_badge`; found both 0 here and 1 in values/strings.xml"
+        errorLine1="    &lt;string name=&quot;onboarding_privacy_badge&quot;>100% офлайн &amp;#183; Без сбора данных &amp;#183; Открытый код&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="307"
+            column="5"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="323"
+            column="5"
+            message="Conflicting number of arguments (1) here"/>
+    </issue>
+
+    <issue
+        id="ChromeOsAbiSupport"
+        message="Missing x86_64 ABI support for ChromeOS"
+        errorLine1="                ndk { abiFilters += fdroidAbi }"
+        errorLine2="                                    ~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="124"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="SetJavaScriptEnabled"
+        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully"
+        errorLine1="                view.settings.javaScriptEnabled = true"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/DocxWebRenderer.kt"
+            line="116"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="SetJavaScriptEnabled"
+        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully"
+        errorLine1="            javaScriptEnabled = true"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/util/HtmlToPdfConverter.kt"
+            line="40"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkClientTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="$GRADLE_USER_HOME/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkClientTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="$GRADLE_USER_HOME/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkServerTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="$GRADLE_USER_HOME/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15to18/1.72/32faf4d74dbc333fb3a7a6c80c30417cf888fc7a/bcpkix-jdk15to18-1.72.jar"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        errorLine1="        System.load(File(lib, &quot;libc++_shared.so&quot;).absolutePath)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/office/OfficeEngineRuntime.kt"
+            line="31"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnsafeDynamicallyLoadedCode"
+        message="Dynamically loading code using `load` is risky, please use `loadLibrary` instead when possible"
+        errorLine1="        System.load(File(lib, &quot;liblo-native-code.so&quot;).absolutePath)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/office/OfficeEngineRuntime.kt"
+            line="32"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 23"
+        errorLine1="    fun processAbi(): String? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &amp;&amp; Process.is64Bit()) {"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/office/OfficeEngineManifest.kt"
+            line="58"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 23"
+        errorLine1="        &lt;item name=&quot;android:windowLightStatusBar&quot; tools:targetApi=&quot;23&quot;>false&lt;/item>"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-night/themes.xml"
+            line="7"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 23"
+        errorLine1="        &lt;item name=&quot;android:windowLightStatusBar&quot; tools:targetApi=&quot;23&quot;>true&lt;/item>"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/themes.xml"
+            line="7"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="FrequentlyChangingValue"
+        message="Reading a value annotated with @FrequentlyChangingValue inside composition"
+        errorLine1="                val info = listState.layoutInfo"
+        errorLine2="                                     ~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PageOrganizerScreen.kt"
+            line="361"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="FrequentlyChangingValue"
+        message="Reading a value annotated with @FrequentlyChangingValue inside composition"
+        errorLine1="    val currentPageIndex = listState.firstVisibleItemIndex.coerceIn(0, safePageCount - 1)"
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="842"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
+        errorLine1="    var restoreEpoch by mutableStateOf(0)"
+        errorLine2="                        ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/DocxEditorViewModel.kt"
+            line="67"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
+        errorLine1="    var hoverIndex by remember { mutableStateOf(selectedIndex) }"
+        errorLine2="                                 ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/GlassSegmentedControl.kt"
+            line="99"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableFloatStateOf` instead of `mutableStateOf`"
+        errorLine1="    var filterAnchorY by remember { mutableStateOf(0f) }   // root-space BOTTOM of the filter glyph"
+        errorLine2="                                    ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/HomeScreen.kt"
+            line="211"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableLongStateOf` instead of `mutableStateOf`"
+        errorLine1="    var lastInteractionAtMs by rememberSaveable { mutableStateOf(System.currentTimeMillis()) }"
+        errorLine2="                                                  ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="243"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
+        errorLine1="    var editingAnnoPage     by remember { mutableStateOf(0) }"
+        errorLine2="                                          ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="284"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
+        errorLine1="    var editingShapeIndex   by remember { mutableStateOf(-1) }"
+        errorLine2="                                          ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="290"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
+        errorLine1="    var selectedAnnoIndex   by remember { mutableStateOf(-1) }"
+        errorLine2="                                          ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="293"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
+        errorLine1="        var containerHeightPx by remember { mutableStateOf(0) }"
+        errorLine2="                                            ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="1089"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_format_txt` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_format_txt.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_onboarding_formats` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_onboarding_formats.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_onboarding_language` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_onboarding_language.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_onboarding_ready` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_onboarding_ready.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_onboarding_tools` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_onboarding_tools.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.settings_replay_onboarding_desc` appears to be unused"
+        errorLine1="    &lt;string name=&quot;settings_replay_onboarding_desc&quot;>Replay the welcome tour&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="42"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.home_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;home_title&quot;>ClearPDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="45"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.home_workspace_label` appears to be unused"
+        errorLine1="    &lt;string name=&quot;home_workspace_label&quot;>PDF WORKSPACE&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="46"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.search_clear` appears to be unused"
+        errorLine1="    &lt;string name=&quot;search_clear&quot;>Clear search&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="60"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.tools_subtitle` appears to be unused"
+        errorLine1="    &lt;string name=&quot;tools_subtitle&quot;>Everything you need to work with PDFs.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="64"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.settings_privacy_policy` appears to be unused"
+        errorLine1="    &lt;string name=&quot;settings_privacy_policy&quot;>Privacy Policy&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="99"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.tool_html_to_pdf_sub` appears to be unused"
+        errorLine1="    &lt;string name=&quot;tool_html_to_pdf_sub&quot;>URL or HTML to PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="145"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.fill_form_fields` appears to be unused"
+        errorLine1="    &lt;string name=&quot;fill_form_fields&quot;>Form fields&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="157"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.fill_form_flatten` appears to be unused"
+        errorLine1="    &lt;string name=&quot;fill_form_flatten&quot;>Flatten when saving&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="170"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.fill_form_flatten_desc` appears to be unused"
+        errorLine1="    &lt;string name=&quot;fill_form_flatten_desc&quot;>Make the filled values permanent&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="171"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.fill_form_action` appears to be unused"
+        errorLine1="    &lt;string name=&quot;fill_form_action&quot;>Save Filled PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="172"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.fill_form_working` appears to be unused"
+        errorLine1="    &lt;string name=&quot;fill_form_working&quot;>Saving…&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="173"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.settings_save_downloads` appears to be unused"
+        errorLine1="    &lt;string name=&quot;settings_save_downloads&quot;>Downloads&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="197"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.settings_save_custom` appears to be unused"
+        errorLine1="    &lt;string name=&quot;settings_save_custom&quot;>Custom Folder&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="198"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.settings_language_desc` appears to be unused"
+        errorLine1="    &lt;string name=&quot;settings_language_desc&quot;>Choose application language&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="212"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.settings_version` appears to be unused"
+        errorLine1="    &lt;string name=&quot;settings_version&quot;>Version 1.1.0&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="214"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_auto_scroll_speed` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_auto_scroll_speed&quot;>Change auto-scroll speed&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="230"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_select_text` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_select_text&quot;>Select Text&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="235"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_find_results` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_find_results&quot;>%1$d of %2$d results&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="245"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_prev` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_prev&quot;>Previous&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="247"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_next` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_next&quot;>Next&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="248"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_open_another` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_open_another&quot;>Open Another PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="249"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_quick_actions` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_quick_actions&quot;>Reader actions&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="252"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_open_pdf_short` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_open_pdf_short&quot;>Open PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="254"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_strike` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_strike&quot;>Strike&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="265"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_size` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_size&quot;>Size&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="276"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_page_label` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_page_label&quot;>Page&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="278"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_ocr` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_ocr&quot;>OCR (%1$d)&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="280"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_share_encrypt` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_share_encrypt&quot;>Encrypt with password&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="285"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sig_saved` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sig_saved&quot;>Saved&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="299"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sig_thin` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sig_thin&quot;>Thin&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="302"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sig_medium` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sig_medium&quot;>Medium&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="303"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sig_thick` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sig_thick&quot;>Thick&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="304"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sig_heavy` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sig_heavy&quot;>Heavy&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="305"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ok` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ok&quot;>OK&lt;/string>"
+        errorLine2="            ~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="329"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.not_now` appears to be unused"
+        errorLine1="    &lt;string name=&quot;not_now&quot;>Not now&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="357"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.dont_ask_again` appears to be unused"
+        errorLine1="    &lt;string name=&quot;dont_ask_again&quot;>Don\&apos;t ask again&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="358"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.recents_remove` appears to be unused"
+        errorLine1="    &lt;string name=&quot;recents_remove&quot;>Remove&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="376"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.recents_pdf_type` appears to be unused"
+        errorLine1="    &lt;string name=&quot;recents_pdf_type&quot;>PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="378"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_prev` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_prev&quot;>Previous sheet&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="382"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_next` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_next&quot;>Next sheet&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="383"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_index_of` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_index_of&quot;>%1$d of %2$d&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="384"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_cell_value` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_cell_value&quot;>Cell value&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="385"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_cell_empty` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_cell_empty&quot;>Empty cell&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="386"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_title_index` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_title_index&quot;>Sheet %1$d of %2$d&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="387"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.viewer_sheet_of` appears to be unused"
+        errorLine1="    &lt;string name=&quot;viewer_sheet_of&quot;>Sheet %1$d / %2$d&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="388"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_picker_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_picker_title&quot;>SHEETS&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="389"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_export_pdf` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_export_pdf&quot;>Export PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="390"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_zoom_in` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_zoom_in&quot;>Zoom in&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="391"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_zoom_out` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_zoom_out&quot;>Zoom out&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="392"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_rotate_left` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_rotate_left&quot;>Rotate left&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="394"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_rotate_right` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_rotate_right&quot;>Rotate right&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="395"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_reset_edits` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_reset_edits&quot;>Reset&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="396"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_brightness` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_brightness&quot;>Brightness&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="397"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_contrast` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_contrast&quot;>Contrast&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="398"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_save_gallery` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_save_gallery&quot;>Save to gallery&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="399"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_export_pdf` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_export_pdf&quot;>Export PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="400"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_filter_none` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_filter_none&quot;>Original&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="401"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_filter_mono` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_filter_mono&quot;>Mono&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="402"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_filter_sepia` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_filter_sepia&quot;>Sepia&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="403"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_filter_vivid` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_filter_vivid&quot;>Vivid&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="404"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_filter_cool` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_filter_cool&quot;>Cool&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="405"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.image_filter_warm` appears to be unused"
+        errorLine1="    &lt;string name=&quot;image_filter_warm&quot;>Warm&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="406"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.pdf_password_required` appears to be unused"
+        errorLine1="    &lt;string name=&quot;pdf_password_required&quot;>This PDF is password protected.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="447"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_preview_text` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_preview_text&quot;>Text preview&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="469"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_preview_open` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_preview_open&quot;>Open document&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="470"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.scan_scanner_unavailable` appears to be unused"
+        errorLine1="    &lt;string name=&quot;scan_scanner_unavailable&quot;>Scanner unavailable: %1$s&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="536"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_type_pdf` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_type_pdf&quot;>PDF&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="565"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_type_word` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_type_word&quot;>Word&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="566"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_type_excel` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_type_excel&quot;>Excel&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="567"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_type_powerpoint` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_type_powerpoint&quot;>PowerPoint&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="568"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_type_images` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_type_images&quot;>Images&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="569"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.file_type_txt` appears to be unused"
+        errorLine1="    &lt;string name=&quot;file_type_txt&quot;>TXT&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="570"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.operation_failed` appears to be unused"
+        errorLine1="    &lt;string name=&quot;operation_failed&quot;>Something went wrong. Please try again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="576"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.save_pdf_failed_generic` appears to be unused"
+        errorLine1="    &lt;string name=&quot;save_pdf_failed_generic&quot;>Could not save the PDF.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="578"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.create_output_failed` appears to be unused"
+        errorLine1="    &lt;string name=&quot;create_output_failed&quot;>Failed to create the output file.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="594"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.create_images_failed` appears to be unused"
+        errorLine1="    &lt;string name=&quot;create_images_failed&quot;>Could not decode any images.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="595"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.scanner_unavailable` appears to be unused"
+        errorLine1="    &lt;string name=&quot;scanner_unavailable&quot;>Scanner is unavailable in this context.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="616"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_reset` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_reset&quot;>Reset&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="646"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_cancel` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_cancel&quot;>Cancel&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="649"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_rotate_left` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_rotate_left&quot;>Rotate left&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="650"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_rotate_right` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_rotate_right&quot;>Rotate right&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="651"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_flip_h` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_flip_h&quot;>Flip horizontal&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="652"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_flip_v` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_flip_v&quot;>Flip vertical&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="653"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_aspect` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_aspect&quot;>Aspect&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="655"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_shape` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_shape&quot;>Shape&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="656"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_shapes` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_shapes&quot;>Shapes&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="687"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_font` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_font&quot;>Font&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="690"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_exporting` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_exporting&quot;>Exporting…&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="722"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_discard_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_discard_title&quot;>Discard edits?&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="723"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_discard_body` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_discard_body&quot;>Your changes to this image have not been saved.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="724"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_discard` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_discard&quot;>Discard&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="725"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.ie_keep_editing` appears to be unused"
+        errorLine1="    &lt;string name=&quot;ie_keep_editing&quot;>Keep editing&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="726"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_discard` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_discard&quot;>Discard&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="741"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.sheet_read_only` appears to be unused"
+        errorLine1="    &lt;string name=&quot;sheet_read_only&quot;>This file can be viewed but not edited&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="802"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.tour_reader_tools_ppt_message` appears to be unused"
+        errorLine1="    &lt;string name=&quot;tour_reader_tools_ppt_message&quot;>Tap the notes bubble to highlight, draw, add notes, or sign.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="811"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.whats_new_share_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;whats_new_share_title&quot;>Share in more formats&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="852"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.whats_new_share_desc` appears to be unused"
+        errorLine1="    &lt;string name=&quot;whats_new_share_desc&quot;>PDF, page images or text, with your edits included.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="853"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.whats_new_feel_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;whats_new_feel_title&quot;>Smoother everywhere&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="854"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.whats_new_feel_desc` appears to be unused"
+        errorLine1="    &lt;string name=&quot;whats_new_feel_desc&quot;>Cleaner glass, springier motion, and haptics you can switch off.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="855"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.whats_new_sheets_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;whats_new_sheets_title&quot;>Hindi and Indic spreadsheets&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="856"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.whats_new_sheets_desc` appears to be unused"
+        errorLine1="    &lt;string name=&quot;whats_new_sheets_desc&quot;>Every script displays, edits and saves correctly.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="857"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.office_engine_module_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;office_engine_module_title&quot;>Office engine (powered by LibreOffice)&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_office_engine.xml"
+            line="3"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.office_engine_install` appears to be unused"
+        errorLine1="    &lt;string name=&quot;office_engine_install&quot;>Install&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_office_engine.xml"
+            line="17"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.office_engine_notification_channel` appears to be unused"
+        errorLine1="    &lt;string name=&quot;office_engine_notification_channel&quot;>Office engine download&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_office_engine.xml"
+            line="28"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>مثل: 1-3، 5، 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ar/strings.xml"
+            line="95"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>p. ej. 1-3, 5, 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="102"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>ad es. 1-3, 5, 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="104"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>например, 1-3, 5, 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="104"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>e.g. 1-3, 5, 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="104"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>ex.: 1-3, 5, 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="489"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;extract_pages_hint&quot;>ex.: 1-3, 5, 8-10&lt;/string>"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="489"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>Digite o conte&amp;#250;do...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="356"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>Digite o conte&amp;#250;do...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="356"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>Salvando...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="409"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>Salvando...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="409"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>Escribe el contenido de texto...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="438"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>Digita contenuto testuale...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="441"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>Введите текст...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="460"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>اكتب محتوى النص...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ar/strings.xml"
+            line="472"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>Guardando...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="491"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;create_text_hint&quot;>Type text content...&lt;/string>"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="493"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>Salvataggio...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="503"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>Сохранение...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="522"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>جارٍ الحفظ...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ar/strings.xml"
+            line="534"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;saving&quot;>Saving...&lt;/string>"
+        errorLine2="                          ~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="555"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>Salva come...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-it/strings.xml"
+            line="684"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>Сохранить как...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ru/strings.xml"
+            line="703"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>حفظ باسم...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-ar/strings.xml"
+            line="708"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>Save as...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="736"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>Salvar como...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt-rBR/strings.xml"
+            line="743"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>Salvar como...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-pt/strings.xml"
+            line="743"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;sheet_save_as&quot;>Guardar como...&lt;/string>"
+        errorLine2="                                 ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-es/strings.xml"
+            line="745"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/wallpaper_dark.jpeg` in densityless folder">
+        <location
+            file="src/main/res/drawable/wallpaper_dark.jpeg"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/wallpaper_light.jpeg` in densityless folder">
+        <location
+            file="src/main/res/drawable/wallpaper_light.jpeg"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="                        ?: Bitmap.createBitmap(bw, bh, Bitmap.Config.ARGB_8888).also { bitmap = it }"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/AdaptiveInk.kt"
+            line="80"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/Adjustments.kt"
+            line="113"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/Adjustments.kt"
+            line="128"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/BlurUtils.kt"
+            line="42"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.scale` instead?"
+        errorLine1="        val resized = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, true)"
+        errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/CreatePdfViewModel.kt"
+            line="232"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="                    context.contentResolver.openInputStream(android.net.Uri.parse(uriStr))?.use {"
+        errorLine2="                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/DocsApp.kt"
+            line="123"
+            column="61"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(GitHubStarPromptManager.REPO_URL)).apply {"
+        errorLine2="                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/DocsApp.kt"
+            line="160"
+            column="57"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension property `Locale.layoutDirection` instead?"
+        errorLine1="    android.text.TextUtils.getLayoutDirectionFromLocale(java.util.Locale.forLanguageTag(tag)) == android.view.View.LAYOUT_DIRECTION_RTL"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/DocsApp.kt"
+            line="574"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="    val parsed = Uri.parse(rawArg)"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/navigation/DocsNavGraph.kt"
+            line="125"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="        Uri.parse(Uri.decode(rawArg))"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/navigation/DocsNavGraph.kt"
+            line="128"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.scale` instead?"
+        errorLine1="            Bitmap.createScaledBitmap(src, w, h, true).let { if (it === src) src.copy(Bitmap.Config.ARGB_8888, true) else it }"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/EditRenderer.kt"
+            line="52"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(outW, outH, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/EditRenderer.kt"
+            line="73"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(r - l, b - t, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/EditRenderer.kt"
+            line="83"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val mask = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/EditRenderer.kt"
+            line="102"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/EditRenderer.kt"
+            line="123"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val out = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/thirdparty/freecorners/FreeCrop.kt"
+            line="68"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    context.getSharedPreferences(RECENT_PREFS, Context.MODE_PRIVATE).edit()"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/GlassColorPicker.kt"
+            line="125"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/GlassStyle.kt"
+            line="84"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(&quot;haptics&quot;, enabled).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/GlassStyle.kt"
+            line="100"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withTranslation` instead?"
+        errorLine1="                canvas.save()"
+        errorLine2="                ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/util/HtmlToPdfConverter.kt"
+            line="95"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.scale` instead?"
+        errorLine1="                Bitmap.createScaledBitmap(src, (src.width * s).roundToInt().coerceAtLeast(1), (src.height * s).roundToInt().coerceAtLeast(1), true)"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/ImageEditorViewModel.kt"
+            line="335"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="            prefs(context).edit().putString(key(original), file.absolutePath).apply()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/LocalDocumentMirror.kt"
+            line="90"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="            prefs(context).edit().putString(key(original), file.absolutePath).apply()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/LocalDocumentMirror.kt"
+            line="105"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().remove(key(original)).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/LocalDocumentMirror.kt"
+            line="115"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().clear().apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/LocalDocumentMirror.kt"
+            line="120"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)"
+        errorLine2="        ^">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/utils/LocaleHelper.kt"
+            line="23"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        if (pending) prefs.edit().remove(KEY_PENDING_FADE).apply()"
+        errorLine2="                     ~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/utils/LocaleHelper.kt"
+            line="31"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/MotionSettings.kt"
+            line="67"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.get` instead?"
+        errorLine1="                val p = bitmap.getPixel(x, y)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/components/NightPaper.kt"
+            line="68"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_USE_FOR_OFFICE, enabled).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/office/OfficeEngine.kt"
+            line="48"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_HINT_DISMISSED, true).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/office/OfficeEngine.kt"
+            line="68"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))"
+        errorLine2="                                                         ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/OfficeEngineSettingsSection.kt"
+            line="330"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="53"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putInt(KEY_WHATS_NEW_VERSION, currentVersionCode(context)).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="73"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun markEditTextTourSeen(context: Context) = prefs(context).edit().putBoolean(KEY_EDIT_TEXT_TOUR_SEEN, true).apply()"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="76"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun markRecentsMenuTourSeen(context: Context) = prefs(context).edit().putBoolean(KEY_RECENTS_MENU_TOUR_SEEN, true).apply()"
+        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="79"
+            column="53"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun markGlassSettingsTourSeen(context: Context) = prefs(context).edit().putBoolean(KEY_GLASS_SETTINGS_TOUR_SEEN, true).apply()"
+        errorLine2="                                                      ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="82"
+            column="55"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun markFormFillTourSeen(context: Context) = prefs(context).edit().putBoolean(KEY_FORM_FILL_TOUR_SEEN, true).apply()"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="85"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="88"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_PDF_READER_TOUR_SEEN, true).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="97"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_SPREADSHEET_READER_TOUR_SEEN, true).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="103"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putString(KEY_LOCALE, languageTag).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/OnboardingManager.kt"
+            line="109"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withRotation` instead?"
+        errorLine1="        canvas.save()"
+        errorLine2="        ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/OverlayRenderer.kt"
+            line="60"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withRotation` instead?"
+        errorLine1="            canvas.save()"
+        errorLine2="            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/OverlayRenderer.kt"
+            line="98"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withRotation` instead?"
+        errorLine1="            canvas.save()"
+        errorLine2="            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/OverlayRenderer.kt"
+            line="126"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.scale` instead?"
+        errorLine1="            return Bitmap.createScaledBitmap(img, tw, th, true)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/OverlayRenderer.kt"
+            line="139"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val bmp = Bitmap.createBitmap(tw, th, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/OverlayRenderer.kt"
+            line="151"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="                        val bmp = Bitmap.createBitmap(thumbWidth, thumbHeight, Bitmap.Config.ARGB_8888)"
+        errorLine2="                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PageOrganizerViewModel.kt"
+            line="222"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/PdfPageBookmarksManager.kt"
+            line="26"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="    val result = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerInternals.kt"
+            line="745"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.get` instead?"
+        errorLine1="        if (px in 0 until bw &amp;&amp; py in 0 until bh) runCatching { bitmap.getPixel(px, py) }.getOrNull() else null"
+        errorLine2="                                                                ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerInternals.kt"
+            line="915"
+            column="65"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="            val parsed = android.net.Uri.parse(withScheme)"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="895"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.get` instead?"
+        errorLine1="            val p = bitmap.getPixel(px, py)"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="2715"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.scale` instead?"
+        errorLine1="    val scaled = Bitmap.createScaledBitmap(bitmap, w, h, true)"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/PdfViewerScreen.kt"
+            line="2782"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.scale` instead?"
+        errorLine1="    val small = if (w == page.width) page else Bitmap.createScaledBitmap(page, w, h, true)"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/PdfViewerViewModel.kt"
+            line="1293"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withSave` instead?"
+        errorLine1="            canvas.save()"
+        errorLine2="            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/PptxRenderer.kt"
+            line="325"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withTranslation` instead?"
+        errorLine1="            canvas.save()"
+        errorLine2="            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/PptxRenderer.kt"
+            line="552"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toColorInt` instead?"
+        errorLine1="        return runCatching { Color.parseColor(if (hex.startsWith(&quot;#&quot;)) hex else &quot;#$hex&quot;) }.getOrNull()"
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/PptxRenderer.kt"
+            line="766"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="    val uri: Uri get() = Uri.parse(uriString)"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="22"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="62"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="73"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="90"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().remove(KEY_RECENTS).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="97"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().remove(KEY_RECENTS).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="102"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().apply {"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="108"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="        return Uri.parse(raw)"
+        errorLine2="               ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="131"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="139"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="146"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_SHOW_WALLPAPER, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="175"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun setInvertShareMorph(context: Context, enabled: Boolean) = prefs(context).edit().putBoolean(&quot;invert_share_morph&quot;, enabled).apply()"
+        errorLine2="                                                                  ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="188"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun setAutoDarkPages(context: Context, enabled: Boolean) = prefs(context).edit().putBoolean(KEY_AUTO_DARK_PAGES, enabled).apply()"
+        errorLine2="                                                               ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="189"
+            column="64"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun setTrimMargins(context: Context, enabled: Boolean) = prefs(context).edit().putBoolean(&quot;trim_page_margins&quot;, enabled).apply()"
+        errorLine2="                                                             ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="193"
+            column="62"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="    fun setBookMode(context: Context, enabled: Boolean) = prefs(context).edit().putBoolean(&quot;book_mode&quot;, enabled).apply()"
+        errorLine2="                                                          ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="197"
+            column="59"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_REDUCE_GLASS_MOTION, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="203"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putString(&quot;custom_wallpaper_uri&quot;, uri).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="210"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().remove(&quot;custom_wallpaper_uri&quot;).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="213"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_AUTO_COMPRESS, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="219"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_REMEMBER_RECENT_FILES, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="225"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_KEEP_LOCAL_COPIES, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="233"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putBoolean(KEY_KEEP_ORIGINAL, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="241"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putFloat(KEY_DEFAULT_QUALITY, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="247"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putInt(KEY_THEME_MODE, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="253"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putInt(&quot;scroll_orientation&quot;, value).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="259"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="            p.edit()"
+        errorLine2="            ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="313"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit().putLong(KEY_LAST_FAILURE_MS, System.currentTimeMillis()).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="328"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        p.edit().putInt(KEY_SCORE, score(p) + points).apply()"
+        errorLine2="        ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="334"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        p.edit()"
+        errorLine2="        ~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="374"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        prefs(context).edit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/data/repository/Preferences.kt"
+            line="382"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="    val output = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/ScanDocumentScreen.kt"
+            line="663"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })"
+        errorLine2="                                                         ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SettingsScreen.kt"
+            line="954"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="                            val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SignaturePadDialog.kt"
+            line="571"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="                            val bmp = Bitmap.createBitmap(thumbWidth, thumbHeight, Bitmap.Config.ARGB_8888)"
+        errorLine2="                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/viewmodel/SplitPdfViewModel.kt"
+            line="81"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withTranslation` instead?"
+        errorLine1="        nc.save()"
+        errorLine2="        ~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/ui/screen/SpreadsheetGrid.kt"
+            line="596"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val layer = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/imageeditor/engine/draw/StrokeRenderer.kt"
+            line="49"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toColorInt` instead?"
+        errorLine1="        return runCatching { Color.parseColor(if (hex.startsWith(&quot;#&quot;)) hex else &quot;#$hex&quot;) }.getOrDefault(0)"
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/UniversalDocumentConverter.kt"
+            line="356"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withSave` instead?"
+        errorLine1="                    canvas.save(); canvas.translate(MARGIN + indent, y); layout.draw(canvas); canvas.restore()"
+        errorLine2="                    ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/UniversalDocumentConverter.kt"
+            line="620"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withClip` instead?"
+        errorLine1="                canvas.save()"
+        errorLine2="                ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="492"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withClip` instead?"
+        errorLine1="        canvas.save()"
+        errorLine2="        ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPainter.kt"
+            line="575"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Canvas.withTranslation` instead?"
+        errorLine1="                            canvas.save()"
+        errorLine2="                            ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/hmx/pdf/utils/xlsx/XlsxPdfRenderer.kt"
+            line="61"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    testImplementation(&quot;junit:junit:4.13.2&quot;)"
+        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="194"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    implementation(&quot;androidx.appcompat:appcompat:1.7.0&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="198"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    implementation(&quot;org.apache.poi:poi:3.17&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="216"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    implementation(&quot;org.apache.poi:poi-scratchpad:3.17&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="217"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    implementation(&quot;androidx.documentfile:documentfile:1.0.1&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="231"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    testImplementation(&quot;net.sf.kxml:kxml2:2.3.0&quot;)"
+        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="244"
+            column="24"/>
+    </issue>
+
+</issues>

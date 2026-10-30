@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rules for API 31+ cloud/d2d backups. The legacy fullBackupContent lives in backup_rules.xml
+     and must stay separate: this root element is not valid for android:fullBackupContent. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Exclude decrypted PDF plaintext cache from backup (privacy) -->
+        <exclude domain="file" path="cache/decrypted_pdfs/" />
+        <!-- Exclude shared export temp files from backup -->
+        <exclude domain="file" path="cache/shared/" />
+        <!-- Exclude save-copy recovery backups (plaintext content) -->
+        <exclude domain="file" path="save_copy_recovery/" />
+        <!-- Exclude Office save recovery journals (may contain plaintext) -->
+        <exclude domain="file" path="save_recovery/" />
+        <!-- Exclude any recovered document copies -->
+        <exclude domain="file" path="converted_pdfs/" />
+    </cloud-backup>
+    <device-transfer>
+        <!-- Same privacy rules for direct device-to-device restores. -->
+        <exclude domain="file" path="cache/decrypted_pdfs/" />
+        <exclude domain="file" path="cache/shared/" />
+        <exclude domain="file" path="save_copy_recovery/" />
+        <exclude domain="file" path="save_recovery/" />
+        <exclude domain="file" path="converted_pdfs/" />
+    </device-transfer>
+</data-extraction-rules>
