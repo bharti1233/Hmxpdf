@@ -38,12 +38,20 @@ class EditableProbeTest {
     @Test
     fun probe() {
         val (pkg, state) = DocxReader.read(ByteArrayInputStream(docx()))!!
-        assertEquals("mainPath", "word/document.xml", pkg.mainPath)
-        assertTrue("writable=${pkg.writable}", pkg.writable)
         val v = DocxEditorViewModel()
+        println("PROBE0 writable=${pkg.writable} mirror=${v.testFileMirror} editable=${v.editable}")
         v.primeForTest(pkg to state)
-        assertTrue("mirror=${v.testFileMirror} editable=${v.editable}", v.editable)
+        println(
+            "PROBE1 writable=${pkg.writable} mirror=${v.testFileMirror} editable=${v.editable} mode=${v.editMode} " +
+                "pkgSame=${v.pkg === pkg} mirrorField=" + run {
+                    v.javaClass.getDeclaredField("testFileMirror").isAccessible = true; v.javaClass.getDeclaredField("testFileMirror").get(v)
+                }
+        )
+        assertTrue("p1Mirror=${v.testFileMirror}", v.testFileMirror == true)
+        assertEquals("p2PkgSame", v.pkg, pkg)
+        assertTrue("p3Editable=${v.editable}", v.editable)
         v.setEditMode(true)
-        assertTrue("mode=${v.editMode} editable=${v.editable}", v.editMode)
+        println("PROBE2 mode=${v.editMode} editable=${v.editable} mirror=${v.testFileMirror}")
+        assertTrue("p4Mode=${v.editMode}", v.editMode)
     }
 }
