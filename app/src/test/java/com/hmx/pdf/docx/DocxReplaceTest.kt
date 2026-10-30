@@ -104,7 +104,7 @@ class DocxReplaceTest {
     fun replacingNeverRewritesUntouchedParagraphs() {
         val one = "<w:p><w:r><w:t>kestrel</w:t></w:r></w:p>"
         val two = "<w:p><w:r><w:t>cat sat on cat</w:t></w:r></w:p>"
-        val (pkg, state) = DocxReader.read(docx("$one$two"))!!
+        val (pkg, state) = DocxReader.read(docx("$one$two").inputStream())!!
         val ids = HashMap<Long, List<IntRange>>()
         forEachPara(state.blocks) { p ->
             val ms = DocxEdits.matchesIn(p.text, "cat", false)
