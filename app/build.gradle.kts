@@ -95,7 +95,7 @@ android {
             // -dontobfuscate (proguard-debug.pro) keeps debug stack traces readable.
             // ponytail: remove this block when a POI update dexes on API < 26 again.
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro", "proguard-debug.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro", "proguard-debug.pro")
         }
         release {
             if (hasReleaseSigning) {
