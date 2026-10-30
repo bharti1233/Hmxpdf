@@ -992,5 +992,14 @@
     <string name="save_recovery_saved">Copia recuperata salvata</string>
     <string name="save_recovery_failed">Impossibile salvare la copia recuperata</string>
     <string name="docx_share_failed">Impossibile preparare il documento modificato per la condivisione</string>
+    <string name="docx_replace_hint">Sostituisci con…</string>
+    <string name="docx_replace_one">Sostituisci</string>
+    <string name="docx_replace_all">Sostituisci tutto</string>
+    <string name="docx_comments">Commenti</string>
+    <string name="docx_add_comment">Commento</string>
+    <string name="docx_comment_delete">Elimina commento</string>
+    <string name="docx_comment_hint">Scrivi un commento…</string>
+    <string name="docx_comment_add">Aggiungi</string>
+    <string name="docx_no_comment">Nessun commento</string>
 
 </resources>

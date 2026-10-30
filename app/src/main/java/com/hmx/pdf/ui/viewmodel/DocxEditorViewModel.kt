@@ -29,6 +29,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /** The editor's own identity on comments it creates (no user account exists to attribute). */
 private const val COMMENT_AUTHOR = "HMXPDF"
@@ -271,7 +274,8 @@ class DocxEditorViewModel : ViewModel() {
         val cm = pkg?.comments ?: return false
         // Only paragraphs the editor can serialize again accept the anchor.
         if (findPara(doc?.blocks ?: return false, paraId)?.editable != true) return false
-        val date = java.time.Instant.now().toString().take(19) + "Z"
+        // w:date is a machine format: fixed US locale, no java.time (min SDK 23).
+        val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).format(Date()) + "Z"
         val id = cm.add(COMMENT_AUTHOR, COMMENT_INITIALS, date, text)
         mapParas(listOf(paraId)) { DocxComments.anchorPara(it, id) }
         return true

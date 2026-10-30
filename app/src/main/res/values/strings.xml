@@ -790,7 +790,6 @@
     <string name="docx_readonly_part">This part has tracked changes or fields, so it can\'t be edited here. Open as PDF to see its final layout.</string>
     <string name="docx_read_failed">Couldn\'t read this document.</string>
     <string name="docx_replace_hint">Replace with&#8230;</string>
-    <string name="docx_match_case">Match case</string>
     <string name="docx_replace_one">Replace</string>
     <string name="docx_replace_all">Replace all</string>
     <string name="docx_comments">Comments</string>

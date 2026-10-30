@@ -992,5 +992,14 @@
     <string name="save_recovery_saved">Восстановленная копия сохранена</string>
     <string name="save_recovery_failed">Не удалось сохранить восстановленную копию</string>
     <string name="docx_share_failed">Не удалось подготовить изменённый документ к отправке</string>
+    <string name="docx_replace_hint">Заменить на…</string>
+    <string name="docx_replace_one">Заменить</string>
+    <string name="docx_replace_all">Заменить все</string>
+    <string name="docx_comments">Комментарии</string>
+    <string name="docx_add_comment">Комментарий</string>
+    <string name="docx_comment_delete">Удалить комментарий</string>
+    <string name="docx_comment_hint">Напишите комментарий…</string>
+    <string name="docx_comment_add">Добавить</string>
+    <string name="docx_no_comment">Комментариев пока нет</string>
 
 </resources>

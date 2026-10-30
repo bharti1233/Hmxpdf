@@ -962,5 +962,14 @@
     <string name="save_recovery_saved">تم حفظ النسخة المستردة</string>
     <string name="save_recovery_failed">تعذر حفظ النسخة المستردة</string>
     <string name="docx_share_failed">تعذر تجهيز المستند المعدل للمشاركة</string>
+    <string name="docx_replace_hint">استبدال بـ…</string>
+    <string name="docx_replace_one">استبدال</string>
+    <string name="docx_replace_all">استبدال الكل</string>
+    <string name="docx_comments">التعليقات</string>
+    <string name="docx_add_comment">تعليق</string>
+    <string name="docx_comment_delete">حذف التعليق</string>
+    <string name="docx_comment_hint">اكتب تعليقًا…</string>
+    <string name="docx_comment_add">إضافة</string>
+    <string name="docx_no_comment">لا تعليقات بعد</string>
 
 </resources>
