@@ -87,6 +87,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            // poi 5.4.1's poifs.nio.CleanerUtil uses MethodHandle.invokeExact, which D8 can
+            // only dex on API 26+ — plain-D8 debug dexing aborts assemblePlayDebug with
+            // "Increase the minSdkVersion to 26 or above". R8 (already used by release)
+            // drops the unreachable sun.misc path, so route debug dexing through R8 too;
+            // -dontobfuscate (proguard-debug.pro) keeps debug stack traces readable.
+            // ponytail: remove this block when a POI update dexes on API < 26 again.
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro", "proguard-debug.pro")
+        }
         release {
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
