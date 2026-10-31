@@ -78,7 +78,9 @@ class DocxRoundTripTest {
         assertEquals("Second & line\ttabbed", ps[1].text)
         assertEquals("link after", ps[2].text)
         assertEquals("tracked", ps[3].text)
-        assertFalse("tracked changes are not editable", ps[3].editable)
+        // Phase 2: a w:ins paragraph is now parsed as an editable tracked insertion.
+        assertTrue(ps[3].editable)
+        assertTrue(ps[3].revs.containsKey(5))
         assertTrue(ps[0].editable)
         assertEquals("A1", ps[4].text)
         assertEquals("B1", ps[5].text)
