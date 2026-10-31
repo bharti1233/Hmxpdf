@@ -36,7 +36,7 @@ class DocxRevisionsTest {
         "<w:r><w:t>files.</w:t></w:r></w:p>"
 
     /** One inserted paragraph plus one deletion paragraph in one body. */
-    private const val twoParaBody = insertedBody + "<w:p>" +
+    private val twoParaBody = insertedBody + "<w:p>" +
         "<w:r><w:t>cell</w:t></w:r>" +
         "<w:del w:id=\"9\" w:author=\"Eve\" w:date=\"2026-03-01T10:00:00Z\">" +
         "<w:r><w:delText>2</w:delText></w:r></w:del></w:p>"
