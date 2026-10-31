@@ -31,6 +31,7 @@ import com.hmx.pdf.docx.OBJ_CHAR
 import com.hmx.pdf.docx.PProps
 import com.hmx.pdf.docx.Props
 import com.hmx.pdf.docx.RProps
+import com.hmx.pdf.docx.Rev
 import com.hmx.pdf.docx.XmlScan
 import com.hmx.pdf.docx.forEachPara
 import com.hmx.pdf.docx.layoutTwips
