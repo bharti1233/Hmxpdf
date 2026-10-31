@@ -183,6 +183,7 @@ internal class DocxLook(
         val b = AnnotatedString.Builder(text.length)
         var i = 0
         val styleCache = HashMap<CharFmt, Pair<SpanStyle, RProps>>()
+        val revCache = HashMap<Rev, SpanStyle>()
         while (i < text.length) {
             val f = p.fmts.getOrElse(i) { CharFmt.Plain }
             var j = i + 1
@@ -198,6 +199,11 @@ internal class DocxLook(
             }
             b.append(String(display, i, j - i))
             b.addStyle(span, i, j)
+            // Tracked changes ride the same spans into the reading view and the edit field:
+            // underline marks an insertion, strikethrough a still-pending deletion.
+            f.rev?.let { r -> b.addStyle(revCache.getOrPut(r) {
+                SpanStyle(textDecoration = if (r.ins) TextDecoration.Underline else TextDecoration.LineThrough)
+            }, i, j) }
             if (withLinks && f.link != null) {
                 val rid = XmlScan.attr(f.link, "id")
                 val url = rid?.let { pkg.links[it] }

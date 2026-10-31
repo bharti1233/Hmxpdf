@@ -971,5 +971,16 @@
     <string name="docx_comment_hint">اكتب تعليقًا…</string>
     <string name="docx_comment_add">إضافة</string>
     <string name="docx_no_comment">لا تعليقات بعد</string>
+    <string name="docx_revisions">المراجعات</string>
+    <string name="docx_track_changes">تتبع التغييرات</string>
+    <string name="docx_track_changes_sub">تسجيل التعديلات الجديدة كتغييرات متتبعة</string>
+    <string name="docx_accept_all">قبول الكل</string>
+    <string name="docx_reject_all">رفض الكل</string>
+    <string name="docx_accept_revision">قبول التغيير</string>
+    <string name="docx_reject_revision">رفض التغيير</string>
+    <string name="docx_revision_inserted">إضافة: %1$s</string>
+    <string name="docx_revision_deleted">حذف: %1$s</string>
+    <string name="docx_no_revisions">لا تغييرات معلقة</string>
+    <string name="docx_revisions_readonly">الحل يتطلب وضع التحرير</string>
 
 </resources>

@@ -1001,5 +1001,16 @@
     <string name="docx_comment_hint">Scrivi un commento…</string>
     <string name="docx_comment_add">Aggiungi</string>
     <string name="docx_no_comment">Nessun commento</string>
+    <string name="docx_revisions">Revisioni</string>
+    <string name="docx_track_changes">Controllo modifiche</string>
+    <string name="docx_track_changes_sub">Registra le nuove modifiche come revisioni</string>
+    <string name="docx_accept_all">Accetta tutto</string>
+    <string name="docx_reject_all">Rifiuta tutto</string>
+    <string name="docx_accept_revision">Accetta modifica</string>
+    <string name="docx_reject_revision">Rifiuta modifica</string>
+    <string name="docx_revision_inserted">Inserito: %1$s</string>
+    <string name="docx_revision_deleted">Eliminato: %1$s</string>
+    <string name="docx_no_revisions">Nessuna modifica in sospeso</string>
+    <string name="docx_revisions_readonly">La risoluzione richiede la Modalità modifica</string>
 
 </resources>

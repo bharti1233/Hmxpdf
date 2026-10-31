@@ -996,5 +996,16 @@
     <string name="docx_comment_hint">Escribe un comentario…</string>
     <string name="docx_comment_add">Añadir</string>
     <string name="docx_no_comment">Aún no hay comentarios</string>
+    <string name="docx_revisions">Revisiones</string>
+    <string name="docx_track_changes">Controlar cambios</string>
+    <string name="docx_track_changes_sub">Registrar las nuevas ediciones como cambios controlados</string>
+    <string name="docx_accept_all">Aceptar todo</string>
+    <string name="docx_reject_all">Rechazar todo</string>
+    <string name="docx_accept_revision">Aceptar cambio</string>
+    <string name="docx_reject_revision">Rechazar cambio</string>
+    <string name="docx_revision_inserted">Insertado: %1$s</string>
+    <string name="docx_revision_deleted">Eliminado: %1$s</string>
+    <string name="docx_no_revisions">Sin cambios pendientes</string>
+    <string name="docx_revisions_readonly">Resolver requiere el Modo edición</string>
 
 </resources>

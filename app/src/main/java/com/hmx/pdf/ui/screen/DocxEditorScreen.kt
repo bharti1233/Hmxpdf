@@ -75,6 +75,8 @@ import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.BorderColor
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ChangeHistory
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.DoneAll
@@ -196,6 +198,7 @@ import com.hmx.pdf.ui.components.GlassBackButton
 import com.hmx.pdf.ui.components.GlassColorPicker
 import com.hmx.pdf.ui.components.GlassDialog
 import com.hmx.pdf.ui.components.GlassDialogAction
+import com.hmx.pdf.ui.components.LiquidToggle
 import com.hmx.pdf.ui.components.GlassDropdownOption
 import com.hmx.pdf.ui.components.GlassMotion
 import com.hmx.pdf.ui.components.GlassScreenScaffold
@@ -237,7 +240,7 @@ private val PaperCorner = 6.dp
 private val DeskGutter = 8.dp
 private val PageGap = 14.dp
 
-private enum class DocPanel { NONE, TEXT_COLOR, HIGHLIGHT, COMMENTS }
+private enum class DocPanel { NONE, TEXT_COLOR, HIGHLIGHT, COMMENTS, REVISIONS }
 
 /** Formatting chosen with nothing selected: it applies to what is typed next at [at]. */
 private class Pending(val paraId: Long, val at: Int, val fmt: CharFmt)
@@ -668,8 +671,12 @@ private fun DocxEditorContent(
             return
         }
         if (newText != old) {
-            viewModel.typed(cur.id, newText, typing)
+            val caret = viewModel.typed(cur.id, newText, typing)
             pending = null
+            // A tracked edit's retained deletion re-enters the paragraph: the field re-reads it,
+            // so what the user sees is the struck-through text they "removed" — and the buffer
+            // stays in sync with the model for the next edit.
+            if (caret >= 0) activate(cur.id, caret)
         } else if (pending != null && (pending?.paraId != cur.id || sel.start - 1 != pending?.at)) {
             pending = null
         }
@@ -1085,6 +1092,7 @@ private fun DocxEditorContent(
                     GlassToolButton(Icons.Rounded.FormatColorText, stringResource(R.string.sheet_text_color), panel == DocPanel.TEXT_COLOR, { panel = if (panel == DocPanel.TEXT_COLOR) DocPanel.NONE else DocPanel.TEXT_COLOR }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.BorderColor, stringResource(R.string.docx_highlight), panel == DocPanel.HIGHLIGHT, { panel = if (panel == DocPanel.HIGHLIGHT) DocPanel.NONE else DocPanel.HIGHLIGHT }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.RateReview, stringResource(R.string.docx_add_comment), panel == DocPanel.COMMENTS, { panel = if (panel == DocPanel.COMMENTS) DocPanel.NONE else DocPanel.COMMENTS }, enabled = has, accent = accent)
+                    GlassToolButton(Icons.Rounded.ChangeHistory, stringResource(R.string.docx_revisions), panel == DocPanel.REVISIONS, { panel = if (panel == DocPanel.REVISIONS) DocPanel.NONE else DocPanel.REVISIONS }, enabled = has, accent = accent)
                     GlassToolButton(
                         when (align) {
                             "center" -> Icons.Rounded.FormatAlignCenter
@@ -1390,6 +1398,82 @@ private fun DocxEditorContent(
                                 inner()
                             }
                         )
+                    }
+                }
+            }
+        }
+
+        // Revisions: pending tracked changes with accept/reject. Reading and resolving live behind
+        // the same Edit-Mode gate as comments; the VM re-checks both behind these gates too.
+        if (panel == DocPanel.REVISIONS) {
+            val revisions = viewModel.pendingRevisions()
+            GlassDialog(
+                visible = true,
+                onDismiss = { panel = DocPanel.NONE },
+                backdrop = screenBackdrop.glass,
+                title = stringResource(R.string.docx_revisions),
+                actions = {
+                    GlassDialogAction(
+                        stringResource(R.string.docx_accept_all),
+                        onClick = { viewModel.resolveAllRevisions(true) },
+                        primary = true,
+                        enabled = editable && editMode && revisions.isNotEmpty()
+                    )
+                    GlassDialogAction(
+                        stringResource(R.string.docx_reject_all),
+                        onClick = { viewModel.resolveAllRevisions(false) },
+                        enabled = editable && editMode && revisions.isNotEmpty()
+                    )
+                }
+            ) {
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    // Track Changes itself: on in Edit Mode only; going off never touches what
+                    // is already recorded.
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            BasicText(stringResource(R.string.docx_track_changes), style = TextStyle(text, 15.sp, FontWeight.Medium))
+                            BasicText(stringResource(R.string.docx_track_changes_sub), style = TextStyle(sub, 11.sp))
+                        }
+                        LiquidToggle(
+                            selected = { viewModel.tracking },
+                            onSelect = { viewModel.setTracking(it) },
+                            backdrop = screenBackdrop.glass
+                        )
+                    }
+                    if (revisions.isEmpty()) {
+                        BasicText(stringResource(R.string.docx_no_revisions), style = TextStyle(sub, 13.sp))
+                    } else if (!(editable && editMode)) {
+                        BasicText(stringResource(R.string.docx_revisions_readonly), style = TextStyle(sub, 13.sp))
+                    }
+                    for (r in revisions) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                BasicText(
+                                    stringResource(if (r.ins) R.string.docx_revision_inserted else R.string.docx_revision_deleted, r.excerpt),
+                                    style = TextStyle(text, 15.sp, FontWeight.Medium)
+                                )
+                                BasicText(
+                                    if (r.date.length >= 10) "${r.author} · ${r.date.take(10)}" else r.author,
+                                    style = TextStyle(sub, 11.sp)
+                                )
+                            }
+                            if (editable && editMode) {
+                                Icon(
+                                    Icons.Rounded.Check, stringResource(R.string.docx_accept_revision),
+                                    Modifier.size(20.dp).clickable(remember { MutableInteractionSource() }, indication = null) {
+                                        viewModel.resolveRevision(r, accept = true)
+                                    },
+                                    tint = accent
+                                )
+                                Icon(
+                                    Icons.Rounded.Close, stringResource(R.string.docx_reject_revision),
+                                    Modifier.size(20.dp).clickable(remember { MutableInteractionSource() }, indication = null) {
+                                        viewModel.resolveRevision(r, accept = false)
+                                    },
+                                    tint = sub
+                                )
+                            }
+                        }
                     }
                 }
             }

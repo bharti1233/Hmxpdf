@@ -1001,5 +1001,16 @@
     <string name="docx_comment_hint">Напишите комментарий…</string>
     <string name="docx_comment_add">Добавить</string>
     <string name="docx_no_comment">Комментариев пока нет</string>
+    <string name="docx_revisions">Правки</string>
+    <string name="docx_track_changes">Отслеживать изменения</string>
+    <string name="docx_track_changes_sub">Записывать новые изменения как правки</string>
+    <string name="docx_accept_all">Принять все</string>
+    <string name="docx_reject_all">Отклонить все</string>
+    <string name="docx_accept_revision">Принять правку</string>
+    <string name="docx_reject_revision">Отклонить правку</string>
+    <string name="docx_revision_inserted">Вставлено: %1$s</string>
+    <string name="docx_revision_deleted">Удалено: %1$s</string>
+    <string name="docx_no_revisions">Нет ожидающих правок</string>
+    <string name="docx_revisions_readonly">Для применения включите режим редактирования</string>
 
 </resources>

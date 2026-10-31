@@ -798,6 +798,17 @@
     <string name="docx_comment_hint">Write a comment&#8230;</string>
     <string name="docx_comment_add">Add</string>
     <string name="docx_no_comment">No comments yet</string>
+    <string name="docx_revisions">Revisions</string>
+    <string name="docx_track_changes">Track Changes</string>
+    <string name="docx_track_changes_sub">Record new edits as tracked changes</string>
+    <string name="docx_accept_all">Accept all</string>
+    <string name="docx_reject_all">Reject all</string>
+    <string name="docx_accept_revision">Accept change</string>
+    <string name="docx_reject_revision">Reject change</string>
+    <string name="docx_revision_inserted">Inserted: %1$s</string>
+    <string name="docx_revision_deleted">Deleted: %1$s</string>
+    <string name="docx_no_revisions">No pending changes</string>
+    <string name="docx_revisions_readonly">Resolving requires Edit Mode</string>
     <string name="save_recovery_title">Recover an interrupted save?</string>
     <string name="save_recovery_body">A save of %1$s was interrupted. HMX PDF kept a recovery copy. Save it as a new file, or discard it.</string>
     <string name="save_recovery_document">this document</string>
