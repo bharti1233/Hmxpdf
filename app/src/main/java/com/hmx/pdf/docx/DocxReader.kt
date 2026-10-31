@@ -32,7 +32,8 @@ class DocxPackage(
     val contentTypes: String?,
     /** Zip entry path → bytes, for pictures. */
     val media: Map<String, ByteArray>,
-    val page: PageSetup,
+    /** Live page setup mirror: the VM syncs it from the undo stack before preview/PDF export. */
+    var page: PageSetup,
     /** Zip entry path → xml, for header/footer parts (`relationships/header` and `/footer`). */
     val hfParts: Map<String, String> = emptyMap(),
     /** `word/settings.xml` xml (for `w:evenAndOddHeaders`), null when the part doesn't exist. */

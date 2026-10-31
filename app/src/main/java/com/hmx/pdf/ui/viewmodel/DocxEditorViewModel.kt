@@ -547,17 +547,19 @@ class DocxEditorViewModel : ViewModel() {
         val want = DocxPageLayout.withEvenOdd(pkg?.settings, on)
         if (want == pkg?.settings) return
         settingsChanged = true
-        pkg = pkg?.copy(settings = want) ?: return
+        wantSettings = want
         lastKey = null
     }
 
-    fun evenOddHeaders(): Boolean = DocxPageLayout.hasEvenOdd(pkg?.settings)
+    fun evenOddHeaders(): Boolean = DocxPageLayout.hasEvenOdd(wantSettings ?: pkg?.settings)
 
     // ── headers & footers (P3): part contents live here, references live in sections ──
 
     private val hfChanged = HashMap<String, DocState>()
     private val hfRelIds = HashMap<String, String>()
     private var settingsChanged = false
+    /** The spliced settings.xml once the even/odd toggle is on (DocxPackage has no copy()). */
+    private var wantSettings: String? = null
 
     /** Saved-parse cache per part path: paragraph ids stay stable across recompositions. */
     private val hfCache = HashMap<String, DocState>()
@@ -635,14 +637,14 @@ class DocxEditorViewModel : ViewModel() {
 
     /** Package-level layout state belongs to one document: clearing at every (re)load. */
     private fun resetPageLayoutExtras() {
-        hfChanged.clear(); hfRelIds.clear(); hfCache.clear(); settingsChanged = false
+        hfChanged.clear(); hfRelIds.clear(); hfCache.clear(); settingsChanged = false; wantSettings = null
     }
 
     /** The package half of save: header/footer parts and settings ride along with the body patch. */
     private fun extras() = DocxWriter.Extras(
         hfSave = hfChanged.toMap(),
         hfRelIds = hfRelIds.toMap(),
-        settings = if (settingsChanged) pkg?.settings else null
+        settings = if (settingsChanged) wantSettings else null
     )
 
     private fun buildPatched(context: Context): File? {
@@ -653,7 +655,7 @@ class DocxEditorViewModel : ViewModel() {
         val safe = meta.fileName.replace(Regex("[^A-Za-z0-9._-]"), "_").ifBlank { "document.docx" }
             .let { if (it.lowercase().endsWith(".docx")) it else "$it.docx" }
         val out = File(dir, "edited_${System.currentTimeMillis()}_$safe")
-        return runCatching { DocxWriter.write(p, d, src, out, extras()) }.getOrElse { out.delete(); null }
+        return runCatching { DocxWriter.write(p, d, src, out, extras()); out }.getOrElse { out.delete(); null }
     }
 
     sealed class SaveResult {
@@ -797,7 +799,8 @@ class DocxEditorViewModel : ViewModel() {
      */
     fun exportToPdf(context: Context, onDone: (Uri?) -> Unit) {
         // The fallback renderer follows the live page setup (blocks), not a possibly-stale mirror.
-        val p = pkg?.let { base -> base.copy(page = livePage()) }
+        pkg?.page = livePage()
+        val p = pkg
         val d = doc
         val name = meta.fileName.ifBlank { "Document.docx" }
         currentFile(context) { src ->

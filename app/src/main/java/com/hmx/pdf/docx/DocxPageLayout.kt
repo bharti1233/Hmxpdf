@@ -209,9 +209,10 @@ object DocxPageLayout {
 
     fun withEvenOdd(settings: String?, on: Boolean): String {
         if (!on) {
-            if (settings == null) return ""
-            val r = root(settings) ?: return settings
-            var out = settings
+            // `var out = settings` keeps the declared String? type, so spell the non-null value out.
+            val s = settings ?: return ""
+            val r = root(s) ?: return s
+            var out = s
             for (c in r.childrenNamed("evenAndOddHeaders").asReversed()) out = out.substring(0, c.start) + out.substring(c.end)
             return out
         }
