@@ -210,23 +210,37 @@ object DocxWriter {
         while (k < to) {
             val f = p.fmts[k]
             if (f.obj != null) {
-                sb.append(f.obj)
+                wrap(p, f.rev, sb) { sb.append(f.obj) }
                 k++
                 continue
             }
             var m = k
-            while (m < to && p.fmts[m].obj == null && p.fmts[m].rPr == f.rPr) m++
-            run(f.rPr, p.text, k, m, sb)
+            while (m < to && p.fmts[m].obj == null && p.fmts[m].rPr == f.rPr && p.fmts[m].rev == f.rev) m++
+            val del = f.rev != null && !f.rev.ins
+            wrap(p, f.rev, sb) { run(f.rPr, p.text, k, m, sb, del) }
             k = m
         }
     }
 
-    private fun run(rPr: String, text: String, from: Int, to: Int, sb: StringBuilder) {
+    /** Opens/closes a tracked-change wrapper around the runs that share [rev] (none: verbatim path). */
+    private inline fun wrap(p: DocPara, rev: Rev?, sb: StringBuilder, body: () -> Unit) {
+        if (rev == null) { body(); return }
+        val meta = p.revs[rev.id] ?: RevMeta("", "")
+        val tag = if (rev.ins) "w:ins" else "w:del"
+        sb.append('<').append(tag).append(" w:id=\"").append(rev.id).append("\" w:author=\"")
+            .append(XmlScan.escape(meta.author)).append("\" w:date=\"").append(XmlScan.escape(meta.date)).append("\">")
+        body()
+        sb.append("</").append(tag).append('>')
+    }
+
+    private fun run(rPr: String, text: String, from: Int, to: Int, sb: StringBuilder, del: Boolean = false) {
         sb.append("<w:r>").append(rPr)
         val buf = StringBuilder()
         fun flush() {
             if (buf.isEmpty()) return
-            sb.append("<w:t xml:space=\"preserve\">").append(XmlScan.escape(buf.toString())).append("</w:t>")
+            val elem = if (del) "w:delText" else "w:t"
+            sb.append('<').append(elem).append(" xml:space=\"preserve\">").append(XmlScan.escape(buf.toString()))
+                .append("</").append(elem).append('>')
             buf.setLength(0)
         }
         var i = from

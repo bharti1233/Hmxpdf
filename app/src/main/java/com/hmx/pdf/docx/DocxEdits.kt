@@ -28,23 +28,59 @@ object DocxEdits {
         return markFmt(p)
     }
 
-    /** Applies the field's new text to [p]; inserted characters take [typing]. */
-    fun typed(p: DocPara, newText: String, typing: CharFmt): DocPara {
+    /** The [prefix, suffix] match of [old] against [next] — where an edit happened. */
+    fun diff(old: String, next: String): Pair<Int, Int> {
+        var pre = 0
+        val max = minOf(old.length, next.length)
+        while (pre < max && old[pre] == next[pre]) pre++
+        var suf = 0
+        while (suf < max - pre && old[old.length - 1 - suf] == next[next.length - 1 - suf]) suf++
+        return pre to suf
+    }
+
+    /**
+     * Applies the field's new text to [p]; inserted characters take [typing].
+     *
+     * With [revId] (tracking on), deleted text is retained: removed characters that were not
+     * already pending stay as real characters flagged as a deletion of the same revision, removed
+     * pending insertions simply vanish (they were never document content), and removed pending
+     * deletions become applied (the user deleted them again). [meta] records the revision's
+     * author/date for the writer.
+     */
+    fun typed(p: DocPara, newText: String, typing: CharFmt, revId: Int? = null, meta: RevMeta? = null): DocPara {
         val old = p.text
         if (old == newText) return p
-        var pre = 0
-        val max = minOf(old.length, newText.length)
-        while (pre < max && old[pre] == newText[pre]) pre++
-        var suf = 0
-        while (suf < max - pre && old[old.length - 1 - suf] == newText[newText.length - 1 - suf]) suf++
+        val (pre, suf) = diff(old, newText)
+        if (revId == null) {
+            val fmts = ArrayList<CharFmt>(newText.length)
+            for (i in 0 until pre) fmts.add(p.fmts[i])
+            for (i in pre until newText.length - suf) fmts.add(typing)
+            for (i in old.length - suf until old.length) fmts.add(p.fmts[i])
+            // Word's page marks move with the text after the edit.
+            val delta = newText.length - old.length
+            val marks = p.marks.map { m -> if (m <= pre) m else if (m >= old.length - suf) m + delta else pre }.distinct()
+            return p.edited(text = newText, fmts = fmts, marks = marks)
+        }
+        val midEnd = newText.length - suf
+        val text = StringBuilder(newText.length)
         val fmts = ArrayList<CharFmt>(newText.length)
-        for (i in 0 until pre) fmts.add(p.fmts[i])
-        for (i in pre until newText.length - suf) fmts.add(typing)
-        for (i in old.length - suf until old.length) fmts.add(p.fmts[i])
-        // Word's page marks move with the text after the edit.
-        val delta = newText.length - old.length
+        for (i in 0 until pre) { text.append(old[i]); fmts.add(p.fmts[i]) }
+        for (i in pre until old.length - suf) {
+            // Retained deletions keep their own character and run properties, under this edit's id.
+            val f = p.fmts[i]
+            when {
+                f.rev?.ins == true -> {}
+                f.rev?.ins == false -> {}
+                else -> { text.append(old[i]); fmts.add(f.copy(rev = Rev(false, revId))) }
+            }
+        }
+        for (i in pre until midEnd) { text.append(newText[i]); fmts.add(typing.copy(rev = Rev(true, revId))) }
+        for (i in old.length - suf until old.length) { text.append(old[i]); fmts.add(p.fmts[i]) }
+        val out = text.toString()
+        val delta = out.length - old.length
         val marks = p.marks.map { m -> if (m <= pre) m else if (m >= old.length - suf) m + delta else pre }.distinct()
-        return p.edited(text = newText, fmts = fmts, marks = marks)
+        val revs = if (meta != null) p.revs + (revId to meta) else p.revs
+        return p.edited(text = out, fmts = fmts, marks = marks, revs = revs)
     }
 
     /** Non-overlapping occurrences of [q] in [t], skipping any match that would include an object char. */
@@ -60,25 +96,56 @@ object DocxEdits {
         return out
     }
 
-    /** Replaces the characters of [p] in [start, end) with [newText]; inserted characters take the
-     *  first replaced character's formatting (Word's rule when a replacement spans runs). The range
-     *  must contain no object characters — if it does, the paragraph is returned unchanged. */
-    fun replaceRange(p: DocPara, start: Int, end: Int, newText: String): DocPara {
-        if (start >= end || (start until minOf(end, p.text.length)).any { p.text[it] == OBJ_CHAR }) return p
-        val text = p.text.substring(0, start) + newText + p.text.substring(end)
-        val typing = p.fmts[start]
+    /**
+     * Replaces the characters of [p] in [start, end) with [newText]; inserted characters take the
+     * first replaced character's formatting (Word's rule when a replacement spans runs). The range
+     * must contain no object characters — if it does, the paragraph is returned unchanged.
+     * With [revId] (tracking on) the removed text is retained as a pending deletion of the same
+     * revision, [meta] records its author/date; already-pending insertions vanish, pending
+     * deletions of other ids just drop from their list (the text was deleted again).
+     */
+    fun replaceRange(p: DocPara, start: Int, end: Int, newText: String, revId: Int? = null, meta: RevMeta? = null): DocPara {
+        val top = minOf(end, p.text.length)
+        if (start >= end || (start until top).any { p.text[it] == OBJ_CHAR }) return p
+        if (revId == null) {
+            val text = p.text.substring(0, start) + newText + p.text.substring(end)
+            val fmts = ArrayList<CharFmt>(text.length)
+            for (i in 0 until start) fmts.add(p.fmts[i])
+            repeat(newText.length) { fmts.add(p.fmts[start]) }
+            for (i in end until p.text.length) fmts.add(p.fmts[i])
+            val delta = newText.length - (end - start)
+            val marks = p.marks.map { m -> if (m < start) m else if (m >= end) m + delta else start }.distinct()
+            return p.edited(text = text, fmts = fmts, marks = marks)
+        }
+        val text = StringBuilder(p.text.length + newText.length)
         val fmts = ArrayList<CharFmt>(text.length)
-        for (i in 0 until start) fmts.add(p.fmts[i])
-        repeat(newText.length) { fmts.add(typing) }
-        for (i in end until p.text.length) fmts.add(p.fmts[i])
-        val delta = newText.length - (end - start)
-        val marks = p.marks.map { m -> if (m < start) m else if (m >= end) m + delta else start }.distinct()
-        return p.edited(text = text, fmts = fmts, marks = marks)
+        for (i in 0 until start) { text.append(p.text[i]); fmts.add(p.fmts[i]) }
+        for (i in start until top) {
+            val f = p.fmts[i]
+            // Pending insertions vanish (they were never content); a pending deletion re-deleted
+            // is applied; ordinary characters stay as this revision's deletion.
+            when {
+                f.rev != null -> {}
+                else -> { text.append(p.text[i]); fmts.add(f.copy(rev = Rev(false, revId))) }
+            }
+        }
+        for (c in newText) { text.append(c); fmts.add(p.fmts[start].copy(rev = Rev(true, revId))) }
+        for (i in end until p.text.length) { text.append(p.text[i]); fmts.add(p.fmts[i]) }
+        val out = text.toString()
+        val marks = p.marks.map { m ->
+            when {
+                m < start -> m
+                m >= end -> m + (out.length - p.text.length)
+                else -> start
+            }
+        }.distinct()
+        val revs = if (meta != null) p.revs + (revId to meta) else p.revs
+        return p.edited(text = out, fmts = fmts, marks = marks, revs = revs)
     }
 
     /** Applies the replacement to every matched range of [p] (ranges refer to [p]'s current text). */
-    fun replaceAllIn(p: DocPara, ranges: List<IntRange>, newText: String): DocPara =
-        ranges.sortedByDescending { it.first }.fold(p) { cur, r -> replaceRange(cur, r.first, r.last + 1, newText) }
+    fun replaceAllIn(p: DocPara, ranges: List<IntRange>, newText: String, revId: Int? = null, meta: RevMeta? = null): DocPara =
+        ranges.sortedByDescending { it.first }.fold(p) { cur, r -> replaceRange(cur, r.first, r.last + 1, newText, revId, meta) }
 
     /** Splits at [at]; the section break (if this paragraph ends a section) moves to the second half. */
     fun split(p: DocPara, at: Int, styles: DocxStyles): Pair<DocPara, DocPara> {
@@ -99,7 +166,7 @@ object DocxEdits {
         val b = DocPara(
             id = DocIds.next(), origin = null, openTag = "<w:p>", pPr = bPpr, extras = "",
             text = p.text.substring(at), fmts = p.fmts.subList(at, p.text.length).toList(), editable = true,
-            marks = p.marks.filter { it >= at }.map { it - at }
+            marks = p.marks.filter { it >= at }.map { it - at }, revs = p.revs
         )
         return a to b
     }
@@ -109,7 +176,7 @@ object DocxEdits {
         Props.child(cur.pPr, "sectPr")?.let { pPr = Props.setP(pPr, "sectPr", it) }
         return prev.edited(
             text = prev.text + cur.text, fmts = prev.fmts + cur.fmts, pPr = pPr, extras = prev.extras + cur.extras,
-            marks = prev.marks + cur.marks.map { it + prev.text.length }
+            marks = prev.marks + cur.marks.map { it + prev.text.length }, revs = prev.revs + cur.revs
         )
     }
 

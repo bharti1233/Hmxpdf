@@ -87,6 +87,7 @@ object DocxReader {
 
         val ctx = Ctx(xml)
         val blocks = ctx.container(body.children, readOnly = !writable)
+        DocxRevisions.seed(ctx.maxRev)
         val bodyClose = xml.lastIndexOf("</", body.end - 1).coerceAtLeast(body.startTagEnd)
 
         val page = body.children.lastOrNull { it.local == "sectPr" }?.let { s ->
@@ -158,6 +159,9 @@ object DocxReader {
         private val interned = HashMap<CharFmt, CharFmt>()
         private fun intern(f: CharFmt) = interned.getOrPut(f) { f }
 
+        /** The highest `w:id` of any tracked change parsed here (the capture counter seeds above it). */
+        var maxRev = 0
+
         fun container(children: List<XNode>, readOnly: Boolean): List<DocBlock> {
             val out = ArrayList<DocBlock>(children.size)
             for (c in children) out.add(
@@ -181,29 +185,32 @@ object DocxReader {
             val fmts = ArrayList<CharFmt>()
             val extras = StringBuilder()
             val marks = ArrayList<Int>()
+            val revs = HashMap<Int, RevMeta>()
             var editable = !readOnly
 
             fun add(s: String, f: CharFmt) {
                 for (ch in s) { text.append(ch); fmts.add(f) }
             }
 
-            fun run(r: XNode, link: String?) {
+            fun run(r: XNode, link: String?, rev: Rev? = null) {
                 val rPr = r.child("rPr")?.text(xml) ?: ""
-                val fmt = intern(CharFmt(rPr, link))
-                for (c in r.children) when (c.local) {
-                    "rPr" -> {}
-                    "lastRenderedPageBreak" -> if (marks.lastOrNull() != text.length) marks.add(text.length)
-                    "t" -> add(XmlScan.unescape(c.inner(xml)), fmt)
-                    "tab" -> add("\t", fmt)
-                    "br", "cr" -> {
+                val fmt = intern(CharFmt(rPr, link, rev = rev))
+                for (c in r.children) when {
+                    c.local == "rPr" -> {}
+                    c.local == "lastRenderedPageBreak" -> if (marks.lastOrNull() != text.length) marks.add(text.length)
+                    // Deleted content reaches us inside a `w:del` wrapper: its text is kept, flagged.
+                    c.local == "t" || (c.local == "delText" && rev != null && !rev.ins) -> add(XmlScan.unescape(c.inner(xml)), fmt)
+                    c.local == "tab" -> add("\t", fmt)
+                    c.local == "br" || c.local == "cr" -> {
                         val type = c.attr(xml, "type")
                         if (type == null || type == "textWrapping") add("\n", fmt)
-                        else add(OBJ_CHAR.toString(), intern(CharFmt(rPr, link, objXml(r, rPr, c))))
+                        else add(OBJ_CHAR.toString(), intern(CharFmt(rPr, link, objXml(r, rPr, c), rev)))
                     }
-                    "noBreakHyphen" -> add("\u2011", fmt)
-                    "softHyphen" -> add("\u00AD", fmt)
-                    "delText", "instrText", "delInstrText", "fldChar" -> editable = false
-                    else -> add(OBJ_CHAR.toString(), intern(CharFmt(rPr, link, objXml(r, rPr, c))))
+                    c.local == "noBreakHyphen" -> add("\u2011", fmt)
+                    c.local == "softHyphen" -> add("\u00AD", fmt)
+                    // Field instructions and stray deleted text keep the paragraph read-only.
+                    c.local == "delText" || c.local == "instrText" || c.local == "delInstrText" || c.local == "fldChar" -> editable = false
+                    else -> add(OBJ_CHAR.toString(), intern(CharFmt(rPr, link, objXml(r, rPr, c), rev)))
                 }
             }
 
@@ -218,6 +225,23 @@ object DocxReader {
             for (c in p.children) when (c.local) {
                 "pPr", "proofErr" -> {}
                 "r" -> run(c, null)
+                // Tracked changes: `w:ins` and `w:del` wrapper runs record their text, flagged and
+                // resolvable (P2-2/P2-3). Anything unmodelable inside falls back to read-only.
+                "ins", "del" -> {
+                    val id = c.attr(xml, "id")?.toIntOrNull()
+                    val simple = c.children.none { it.local != "r" && it.local !in markers && it.local != "proofErr" }
+                    if (id == null || !simple) { if (id != null) maxRev = maxOf(maxRev, id); editable = false; deep(c) }
+                    else {
+                        maxRev = maxOf(maxRev, id)
+                        revs[id] = RevMeta(c.attr(xml, "author") ?: "", c.attr(xml, "date") ?: "")
+                        val flag = Rev(c.local == "ins", id)
+                        for (h in c.children) when {
+                            h.local == "r" -> run(h, null, flag)
+                            h.local in markers -> extras.append(h.text(xml))
+                            else -> {}
+                        }
+                    }
+                }
                 "hyperlink" -> {
                     val tag = c.startTag(xml)
                     if (tag.endsWith("/>")) continue
@@ -243,7 +267,8 @@ object DocxReader {
                 text = text.toString(),
                 fmts = fmts,
                 editable = editable,
-                marks = marks
+                marks = marks,
+                revs = revs
             )
         }
 
