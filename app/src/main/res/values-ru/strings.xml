@@ -1013,4 +1013,44 @@
     <string name="docx_no_revisions">Нет ожидающих правок</string>
     <string name="docx_revisions_readonly">Для применения включите режим редактирования</string>
 
+    <!-- Page layout (P3) -->
+    <string name="docx_page_setup">Параметры страницы</string>
+    <string name="docx_section_n">Раздел %1$d</string>
+    <string name="docx_section_info">%1$s × %2$s дюйма</string>
+    <string name="docx_orientation">Альбомная</string>
+    <string name="docx_orientation_sub">Меняет местами ширину и высоту этого раздела</string>
+    <string name="docx_paper_a4">A4</string>
+    <string name="docx_paper_letter">Letter</string>
+    <string name="docx_paper_legal">Legal</string>
+    <string name="docx_page_width">Ширина страницы</string>
+    <string name="docx_page_height">Высота страницы</string>
+    <string name="docx_margin_top">Верхнее поле</string>
+    <string name="docx_margin_bottom">Нижнее поле</string>
+    <string name="docx_margin_left">Левое поле</string>
+    <string name="docx_margin_right">Правое поле</string>
+    <string name="docx_margin_header">Отступ верхнего колонтитула</string>
+    <string name="docx_margin_footer">Отступ нижнего колонтитула</string>
+    <string name="docx_margin_gutter">Отступ для переплёта</string>
+    <string name="docx_insert_page_break">Разрыв страницы</string>
+    <string name="docx_break_next">Следующая страница</string>
+    <string name="docx_break_continuous">Текущий</string>
+    <string name="docx_break_even">Чётная страница</string>
+    <string name="docx_break_odd">Нечётная страница</string>
+    <string name="docx_first_page">Особая первая страница</string>
+    <string name="docx_first_page_sub">Без колонтитулов на первой странице раздела</string>
+    <string name="docx_even_odd">Разные колонтитулы для чётных и нечётных</string>
+    <string name="docx_even_odd_sub">Чётные страницы используют свои колонтитулы</string>
+    <string name="docx_header">Верхний колонтитул</string>
+    <string name="docx_footer">Нижний колонтитул</string>
+    <string name="docx_variant_default">Обычный</string>
+    <string name="docx_variant_first">Первая страница</string>
+    <string name="docx_variant_even">Чётные</string>
+    <string name="docx_hf_referenced">Задан в этом разделе (%1$s)</string>
+    <string name="docx_hf_absent">Не задан — наследуется от предыдущего раздела</string>
+    <string name="docx_hf_edit">Изменить</string>
+    <string name="docx_hf_remove">Убрать</string>
+    <string name="docx_hf_empty">Этот колонтитул пуст</string>
+    <string name="docx_hf_hint">Введите текст колонтитула…</string>
+    <string name="docx_hf_fieldlocked">(недоступно для изменения)</string>
+
 </resources>

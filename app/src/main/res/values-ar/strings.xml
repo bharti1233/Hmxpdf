@@ -983,4 +983,44 @@
     <string name="docx_no_revisions">لا تغييرات معلقة</string>
     <string name="docx_revisions_readonly">الحل يتطلب وضع التحرير</string>
 
+    <!-- Page layout (P3) -->
+    <string name="docx_page_setup">إعداد الصفحة</string>
+    <string name="docx_section_n">القسم %1$d</string>
+    <string name="docx_section_info">%1$s × %2$s بوصة</string>
+    <string name="docx_orientation">أفقي</string>
+    <string name="docx_orientation_sub">يبدّل العرض والارتفاع لهذا القسم</string>
+    <string name="docx_paper_a4">A4</string>
+    <string name="docx_paper_letter">Letter</string>
+    <string name="docx_paper_legal">Legal</string>
+    <string name="docx_page_width">عرض الصفحة</string>
+    <string name="docx_page_height">ارتفاع الصفحة</string>
+    <string name="docx_margin_top">الهامش العلوي</string>
+    <string name="docx_margin_bottom">الهامش السفلي</string>
+    <string name="docx_margin_left">الهامش الأيسر</string>
+    <string name="docx_margin_right">الهامش الأيمن</string>
+    <string name="docx_margin_header">بُعد الترويسة</string>
+    <string name="docx_margin_footer">بُعد التذييل</string>
+    <string name="docx_margin_gutter">المسافة الوسطى</string>
+    <string name="docx_insert_page_break">فاصل صفحات</string>
+    <string name="docx_break_next">الصفحة التالية</string>
+    <string name="docx_break_continuous">مستمر</string>
+    <string name="docx_break_even">صفحة زوجية</string>
+    <string name="docx_break_odd">صفحة فردية</string>
+    <string name="docx_first_page">صفحة أولى مختلفة</string>
+    <string name="docx_first_page_sub">بلا ترويسة أو تذييل في أول صفحة من القسم</string>
+    <string name="docx_even_odd">اختلاف الصفحات الفردية والزوجية</string>
+    <string name="docx_even_odd_sub">تستخدم الصفحات الزوجية ترويساتها وتذييلاتها الخاصة</string>
+    <string name="docx_header">الترويسة</string>
+    <string name="docx_footer">التذييل</string>
+    <string name="docx_variant_default">الافتراضي</string>
+    <string name="docx_variant_first">الصفحة الأولى</string>
+    <string name="docx_variant_even">زوجي</string>
+    <string name="docx_hf_referenced">معيّن في هذا القسم (%1$s)</string>
+    <string name="docx_hf_absent">غير معيّن — يورّث القسم السابق</string>
+    <string name="docx_hf_edit">تحرير</string>
+    <string name="docx_hf_remove">إزالة</string>
+    <string name="docx_hf_empty">هذه الترويسة فارغة</string>
+    <string name="docx_hf_hint">اكتب نص الترويسة…</string>
+    <string name="docx_hf_fieldlocked">(غير قابل للتحرير)</string>
+
 </resources>

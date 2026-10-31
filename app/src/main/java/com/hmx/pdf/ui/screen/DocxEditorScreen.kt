@@ -105,6 +105,7 @@ import androidx.compose.material.icons.rounded.RateReview
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Superscript
 import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material3.CircularProgressIndicator
@@ -182,9 +183,11 @@ import com.hmx.pdf.docx.DocTable
 import com.hmx.pdf.docx.DocxEdits
 import com.hmx.pdf.docx.DocxObjects
 import com.hmx.pdf.docx.DocxPackage
+import com.hmx.pdf.docx.DocxPageLayout
 import com.hmx.pdf.docx.DocxStyles
 import com.hmx.pdf.docx.HighlightColors
 import com.hmx.pdf.docx.OBJ_CHAR
+import com.hmx.pdf.docx.PageSetup
 import com.hmx.pdf.docx.ObjInfo
 import com.hmx.pdf.docx.Props
 import com.hmx.pdf.docx.RProps
@@ -240,7 +243,7 @@ private val PaperCorner = 6.dp
 private val DeskGutter = 8.dp
 private val PageGap = 14.dp
 
-private enum class DocPanel { NONE, TEXT_COLOR, HIGHLIGHT, COMMENTS, REVISIONS }
+private enum class DocPanel { NONE, TEXT_COLOR, HIGHLIGHT, COMMENTS, REVISIONS, LAYOUT, HEADERS }
 
 /** Formatting chosen with nothing selected: it applies to what is typed next at [at]. */
 private class Pending(val paraId: Long, val at: Int, val fmt: CharFmt)
@@ -489,6 +492,10 @@ private fun DocxEditorContent(
     var currentMatch by remember { mutableIntStateOf(0) }
     var confirmExit by remember { mutableStateOf(false) }
     var exitAfterSave by remember { mutableStateOf(false) }
+    // The header/footer part being edited in the HEADERS panel (path + which row opened it).
+    var hfPath0 by remember { mutableStateOf<String?>(null) }
+    var hfKind0 by remember { mutableStateOf(true) }
+    var hfVariant0 by remember { mutableStateOf("default") }
     var readOnlyHinted by remember { mutableStateOf(false) }
     var showGoTo by remember { mutableStateOf(false) }
     val searchFocus = remember { FocusRequester() }
@@ -1093,6 +1100,7 @@ private fun DocxEditorContent(
                     GlassToolButton(Icons.Rounded.BorderColor, stringResource(R.string.docx_highlight), panel == DocPanel.HIGHLIGHT, { panel = if (panel == DocPanel.HIGHLIGHT) DocPanel.NONE else DocPanel.HIGHLIGHT }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.RateReview, stringResource(R.string.docx_add_comment), panel == DocPanel.COMMENTS, { panel = if (panel == DocPanel.COMMENTS) DocPanel.NONE else DocPanel.COMMENTS }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.ChangeHistory, stringResource(R.string.docx_revisions), panel == DocPanel.REVISIONS, { panel = if (panel == DocPanel.REVISIONS) DocPanel.NONE else DocPanel.REVISIONS }, enabled = has, accent = accent)
+                    GlassToolButton(Icons.Rounded.Settings, stringResource(R.string.docx_page_setup), panel == DocPanel.LAYOUT, { panel = if (panel == DocPanel.LAYOUT) DocPanel.NONE else DocPanel.LAYOUT }, enabled = has, accent = accent)
                     GlassToolButton(
                         when (align) {
                             "center" -> Icons.Rounded.FormatAlignCenter
@@ -1479,8 +1487,279 @@ private fun DocxEditorContent(
             }
         }
 
+        // Page setup: sections, orientation, paper, margins, breaks and header/footer variants —
+        // the existing glass-dialog conventions, one dock entry; gates live in the VM itself.
+        if (panel == DocPanel.LAYOUT) {
+            val sections = viewModel.sectionsOf()
+            val live = viewModel.editable && viewModel.editMode
+            var sel by remember { mutableStateOf(sections.size - 1) }
+            val section = sections.getOrNull(sel) ?: sections.lastOrNull() ?: DocxPageLayout.Section(null, null, "")
+            val cur = DocxPageLayout.pageSetupOf(section.sectPr)
+            // Inches <-> twips for the fields; a value applies as soon as it renders as a whole
+            // number (trailing dots don't commit) and passes the kernel bounds, coalesced per field.
+            fun twIn(v: Int): String = ((v * 100.0 / 1440.0).roundToInt() / 100.0).toString()
+
+            fun commitIf(txt: String, value: Int, valid: (Int) -> Boolean, apply: (Int) -> PageSetup, key: String) {
+                if (txt.lastOrNull()?.isDigit() != true) return
+                val parsed = txt.toDoubleOrNull()?.let { (it * 1440).roundToInt() } ?: return
+                if (valid(parsed) && parsed != value) {
+                    viewModel.setSectionSetup(section, apply(parsed), key)
+                }
+            }
+
+            GlassDialog(
+                visible = true,
+                onDismiss = { panel = DocPanel.NONE },
+                backdrop = screenBackdrop.glass,
+                title = stringResource(R.string.docx_page_setup)
+            ) {
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    if (sections.size > 1) {
+                        for ((i, s) in sections.withIndex()) {
+                            val sum = DocxPageLayout.pageSetupOf(s.sectPr)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.clickable(remember { MutableInteractionSource() }, indication = null) { sel = i }
+                            ) {
+                                Column(Modifier.weight(1f)) {
+                                    BasicText(stringResource(R.string.docx_section_n, i + 1), style = TextStyle(if (sel == i) accent else text, 15.sp, FontWeight.Medium))
+                                    BasicText(
+                                        stringResource(R.string.docx_section_info, (sum.width * 100.0 / 1440.0).roundToInt() / 100.0, (sum.height * 100.0 / 1440.0).roundToInt() / 100.0),
+                                        style = TextStyle(sub, 11.sp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    // Orientation — real section dimensions swap, the way Word's Page Layout does.
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            BasicText(stringResource(R.string.docx_orientation), style = TextStyle(text, 15.sp, FontWeight.Medium))
+                            BasicText(stringResource(R.string.docx_orientation_sub), style = TextStyle(sub, 11.sp))
+                        }
+                        LiquidToggle(selected = { cur.landscape }, onSelect = { v ->
+                            if (live && v != cur.landscape) {
+                                viewModel.setSectionSetup(section, cur.copy(width = cur.height, height = cur.width, landscape = v), "pg:orient")
+                            }
+                        }, backdrop = screenBackdrop.glass)
+                    }
+                    // Paper presets (real twip dims; the orientation flag rides along).
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        for (preset in listOf(
+                            Triple(stringResource(R.string.docx_paper_a4), 11906, 16838),
+                            Triple(stringResource(R.string.docx_paper_letter), 12240, 15840),
+                            Triple(stringResource(R.string.docx_paper_legal), 12240, 20160)
+                        )) {
+                            val chosen = cur.width == preset.second && cur.height == preset.third
+                            BasicText(
+                                preset.first,
+                                style = TextStyle(if (chosen) accent else text, 13.sp, FontWeight.Medium),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(text.copy(alpha = if (chosen) 0.16f else 0.08f))
+                                    .clickable(remember { MutableInteractionSource() }, indication = null, enabled = live) {
+                                        viewModel.setSectionSetup(
+                                            section,
+                                            cur.copy(width = preset.second, height = preset.third),
+                                            "pg:paper"
+                                        )
+                                    }
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                    for ((i, field) in listOf(
+                        Triple(stringResource(R.string.docx_page_width), cur.width, { v: Int -> cur.copy(width = v) }) to DocxPageLayout::validDim,
+                        Triple(stringResource(R.string.docx_page_height), cur.height, { v: Int -> cur.copy(height = v) }) to DocxPageLayout::validDim,
+                        Triple(stringResource(R.string.docx_margin_top), cur.top, { v: Int -> cur.copy(top = v) }) to DocxPageLayout::validMargin,
+                        Triple(stringResource(R.string.docx_margin_bottom), cur.bottom, { v: Int -> cur.copy(bottom = v) }) to DocxPageLayout::validMargin,
+                        Triple(stringResource(R.string.docx_margin_left), cur.left, { v: Int -> cur.copy(left = v) }) to DocxPageLayout::validMargin,
+                        Triple(stringResource(R.string.docx_margin_right), cur.right, { v: Int -> cur.copy(right = v) }) to DocxPageLayout::validMargin,
+                        Triple(stringResource(R.string.docx_margin_header), cur.header, { v: Int -> cur.copy(header = v) }) to DocxPageLayout::validMargin,
+                        Triple(stringResource(R.string.docx_margin_footer), cur.footer, { v: Int -> cur.copy(footer = v) }) to DocxPageLayout::validMargin,
+                        Triple(stringResource(R.string.docx_margin_gutter), cur.gutter, { v: Int -> cur.copy(gutter = v) }) to DocxPageLayout::validMargin
+                    ).withIndex()) {
+                        val f = field.first
+                        var txt by remember(sel, f.second, i) { mutableStateOf(twIn(f.second)) }
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            BasicText(f.first, style = TextStyle(text, 13.sp), modifier = Modifier.weight(0.55f))
+                            BasicTextField(
+                                value = txt,
+                                onValueChange = {
+                                    txt = it
+                                    commitIf(txt, f.second, field.second, f.third, "pg:m$i")
+                                },
+                                singleLine = true,
+                                textStyle = TextStyle(text, 14.sp, FontWeight.Medium),
+                                cursorBrush = SolidColor(accent),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                modifier = Modifier
+                                    .weight(0.45f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(text.copy(0.07f))
+                                    .padding(horizontal = 10.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                    // Breaks: a real page break object into the focused paragraph, or a section
+                    // break before the first body-level paragraph (Word ignores section breaks
+                    // inside table cells).
+                    if (live) {
+                        val pid = focusedField ?: viewModel.firstEditableId()
+                        val caret = if (focusedField != null) (activeValue.selection.min - 1).coerceAtLeast(0) else 0
+                        val sbid = viewModel.firstBodyId()
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            BasicText(
+                                stringResource(R.string.docx_insert_page_break),
+                                style = TextStyle(text, 13.sp, FontWeight.Medium),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(text.copy(0.08f))
+                                    .clickable(remember { MutableInteractionSource() }, indication = null, enabled = pid != null) {
+                                        pid?.let { viewModel.insertPageBreak(it, caret) }
+                                    }
+                                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                            for (pair in listOf(
+                                stringResource(R.string.docx_break_next) to null,
+                                stringResource(R.string.docx_break_continuous) to "continuous",
+                                stringResource(R.string.docx_break_even) to "evenPage",
+                                stringResource(R.string.docx_break_odd) to "oddPage"
+                            )) {
+                                BasicText(
+                                    pair.first,
+                                    style = TextStyle(text, 13.sp, FontWeight.Medium),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(text.copy(0.08f))
+                                        .clickable(remember { MutableInteractionSource() }, indication = null, enabled = sbid != null) {
+                                            sbid?.let { viewModel.insertSectionBreak(it, pair.second) }
+                                        }
+                                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                                )
+                            }
+                        }
+                    }
+                    // Variants: different first page (this section), odd/even (global settings.xml).
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(Modifier.weight(1f)) {
+                            BasicText(stringResource(R.string.docx_first_page), style = TextStyle(text, 15.sp, FontWeight.Medium))
+                            BasicText(stringResource(R.string.docx_first_page_sub), style = TextStyle(sub, 11.sp))
+                        }
+                        LiquidToggle(selected = { DocxPageLayout.titlePg(section.sectPr) }, onSelect = { v ->
+                            if (live) viewModel.setFirstPageDifferent(section, v)
+                        }, backdrop = screenBackdrop.glass)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(Modifier.weight(1f)) {
+                            BasicText(stringResource(R.string.docx_even_odd), style = TextStyle(text, 15.sp, FontWeight.Medium))
+                            BasicText(stringResource(R.string.docx_even_odd_sub), style = TextStyle(sub, 11.sp))
+                        }
+                        LiquidToggle(selected = { viewModel.evenOddHeaders() }, onSelect = { v ->
+                            if (live) viewModel.setEvenOddHeaders(v)
+                        }, backdrop = screenBackdrop.glass)
+                    }
+                    // Header/footer rows: edit or create the referenced part; the cross removes it.
+                    for (kind in listOf(true, false)) {
+                        val kindLabel = stringResource(if (kind) R.string.docx_header else R.string.docx_footer)
+                        for (variant in listOf(
+                            stringResource(R.string.docx_variant_default) to "default",
+                            stringResource(R.string.docx_variant_first) to "first",
+                            stringResource(R.string.docx_variant_even) to "even"
+                        )) {
+                            val rid = DocxPageLayout.reference(section.sectPr, kind, variant.second)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Column(Modifier.weight(1f)) {
+                                    BasicText("$kindLabel · ${variant.first}", style = TextStyle(text, 14.sp, FontWeight.Medium))
+                                    BasicText(
+                                        if (rid != null) stringResource(R.string.docx_hf_referenced, rid) else stringResource(R.string.docx_hf_absent),
+                                        style = TextStyle(sub, 11.sp)
+                                    )
+                                }
+                                Icon(
+                                    Icons.Rounded.Edit, stringResource(R.string.docx_hf_edit),
+                                    Modifier
+                                        .size(20.dp)
+                                        .clickable(remember { MutableInteractionSource() }, indication = null, enabled = live) {
+                                            val path = rid?.let { viewModel.hfPathOf(it) } ?: viewModel.hfCreate(section, kind, variant.second)
+                                            if (path != null) {
+                                                hfPath0 = path; hfKind0 = kind; hfVariant0 = variant.second
+                                                panel = DocPanel.HEADERS
+                                            }
+                                        },
+                                    tint = if (live) text else sub
+                                )
+                                if (rid != null) {
+                                    Icon(
+                                        Icons.Rounded.Close, stringResource(R.string.docx_hf_remove),
+                                        Modifier
+                                            .size(20.dp)
+                                            .clickable(remember { MutableInteractionSource() }, indication = null, enabled = live) {
+                                                viewModel.hfRemove(section, kind, variant.second)
+                                            },
+                                        tint = sub
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Header/footer part editing: the referenced part's paragraphs as plain fields; the VM op
+        // re-serializes through the same paragraph kernel the body uses, so rPr/objects survive.
+        if (panel == DocPanel.HEADERS) {
+            val live = viewModel.editable && viewModel.editMode
+            val path0 = hfPath0
+            if (path0 != null) {
+                val parasList = viewModel.hfParas(path0)
+                GlassDialog(
+                    visible = true,
+                    onDismiss = { panel = DocPanel.NONE },
+                    backdrop = screenBackdrop.glass,
+                    title = stringResource(if (hfKind0) R.string.docx_header else R.string.docx_footer) +
+                        " · " + hfVariant0.replaceFirstChar { it.uppercase() }
+                ) {
+                    Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        if (parasList.isEmpty()) BasicText(stringResource(R.string.docx_hf_empty), style = TextStyle(sub, 13.sp))
+                        for (p in parasList) {
+                            var txt by remember(path0, p.id) { mutableStateOf(viewModel.hfText(path0, p.id)) }
+                            if (p.editable && live) {
+                                BasicTextField(
+                                    value = txt,
+                                    onValueChange = {
+                                        txt = it
+                                        viewModel.hfTyped(path0, p.id, it)
+                                    },
+                                    textStyle = TextStyle(text, 15.sp, FontWeight.Medium),
+                                    cursorBrush = SolidColor(accent),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(text.copy(0.07f))
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    decorationBox = { inner ->
+                                        if (txt.isEmpty()) BasicText(stringResource(R.string.docx_hf_hint), style = TextStyle(sub, 15.sp))
+                                        inner()
+                                    }
+                                )
+                            } else {
+                                BasicText(
+                                    viewModel.hfText(path0, p.id).ifEmpty { stringResource(R.string.docx_hf_fieldlocked) },
+                                    style = TextStyle(text, 15.sp, FontWeight.Medium)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         UnsavedChangesDialog(
             visible = confirmExit,
+
             onDiscard = { confirmExit = false; onBack() },
             onCancel = { confirmExit = false },
             onSave = { confirmExit = false; exitAfterSave = true; save(false) },

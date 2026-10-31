@@ -1013,4 +1013,44 @@
     <string name="docx_no_revisions">Nessuna modifica in sospeso</string>
     <string name="docx_revisions_readonly">La risoluzione richiede la Modalità modifica</string>
 
+    <!-- Page layout (P3) -->
+    <string name="docx_page_setup">Impostazioni pagina</string>
+    <string name="docx_section_n">Sezione %1$d</string>
+    <string name="docx_section_info">%1$s × %2$s pollici</string>
+    <string name="docx_orientation">Orizzontale</string>
+    <string name="docx_orientation_sub">Scambia larghezza e altezza di questa sezione</string>
+    <string name="docx_paper_a4">A4</string>
+    <string name="docx_paper_letter">Lettera</string>
+    <string name="docx_paper_legal">Legal</string>
+    <string name="docx_page_width">Larghezza pagina</string>
+    <string name="docx_page_height">Altezza pagina</string>
+    <string name="docx_margin_top">Margine superiore</string>
+    <string name="docx_margin_bottom">Margine inferiore</string>
+    <string name="docx_margin_left">Margine sinistro</string>
+    <string name="docx_margin_right">Margine destro</string>
+    <string name="docx_margin_header">Distanza intestazione</string>
+    <string name="docx_margin_footer">Distanza piè di pagina</string>
+    <string name="docx_margin_gutter">Riscontro</string>
+    <string name="docx_insert_page_break">Interruzione di pagina</string>
+    <string name="docx_break_next">Pagina successiva</string>
+    <string name="docx_break_continuous">Continua</string>
+    <string name="docx_break_even">Pagina pari</string>
+    <string name="docx_break_odd">Pagina dispari</string>
+    <string name="docx_first_page">Prima pagina diversa</string>
+    <string name="docx_first_page_sub">Nessuna intestazione o piè di pagina sulla prima pagina della sezione</string>
+    <string name="docx_even_odd">Pari e dispari diversi</string>
+    <string name="docx_even_odd_sub">Le pagine pari usano intestazioni e piè di pagina propri</string>
+    <string name="docx_header">Intestazione</string>
+    <string name="docx_footer">Piè di pagina</string>
+    <string name="docx_variant_default">Predefinito</string>
+    <string name="docx_variant_first">Prima pagina</string>
+    <string name="docx_variant_even">Pari</string>
+    <string name="docx_hf_referenced">Impostato in questa sezione (%1$s)</string>
+    <string name="docx_hf_absent">Non impostato — eredita dalla sezione precedente</string>
+    <string name="docx_hf_edit">Modifica</string>
+    <string name="docx_hf_remove">Rimuovi</string>
+    <string name="docx_hf_empty">Questa intestazione è vuota</string>
+    <string name="docx_hf_hint">Digita il testo dell\'intestazione…</string>
+    <string name="docx_hf_fieldlocked">(non modificabile)</string>
+
 </resources>

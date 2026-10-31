@@ -1003,4 +1003,44 @@
     <string name="docx_no_revisions">Sem alterações pendentes</string>
     <string name="docx_revisions_readonly">Resolver requer o Modo de edição</string>
 
+    <!-- Page layout (P3) -->
+    <string name="docx_page_setup">Configuração de página</string>
+    <string name="docx_section_n">Seção %1$d</string>
+    <string name="docx_section_info">%1$s × %2$s polegadas</string>
+    <string name="docx_orientation">Paisagem</string>
+    <string name="docx_orientation_sub">Troca a largura e a altura desta seção</string>
+    <string name="docx_paper_a4">A4</string>
+    <string name="docx_paper_letter">Carta</string>
+    <string name="docx_paper_legal">Ofício</string>
+    <string name="docx_page_width">Largura da página</string>
+    <string name="docx_page_height">Altura da página</string>
+    <string name="docx_margin_top">Margem superior</string>
+    <string name="docx_margin_bottom">Margem inferior</string>
+    <string name="docx_margin_left">Margem esquerda</string>
+    <string name="docx_margin_right">Margem direita</string>
+    <string name="docx_margin_header">Distância do cabeçalho</string>
+    <string name="docx_margin_footer">Distância do rodapé</string>
+    <string name="docx_margin_gutter">Margem central</string>
+    <string name="docx_insert_page_break">Quebra de página</string>
+    <string name="docx_break_next">Próxima página</string>
+    <string name="docx_break_continuous">Contínua</string>
+    <string name="docx_break_even">Página par</string>
+    <string name="docx_break_odd">Página ímpar</string>
+    <string name="docx_first_page">Primeira página diferente</string>
+    <string name="docx_first_page_sub">Sem cabeçalho nem rodapé na primeira página da seção</string>
+    <string name="docx_even_odd">Pares e ímpares diferentes</string>
+    <string name="docx_even_odd_sub">As páginas pares usam cabeçalhos e rodapés próprios</string>
+    <string name="docx_header">Cabeçalho</string>
+    <string name="docx_footer">Rodapé</string>
+    <string name="docx_variant_default">Padrão</string>
+    <string name="docx_variant_first">Primeira página</string>
+    <string name="docx_variant_even">Par</string>
+    <string name="docx_hf_referenced">Definido nesta seção (%1$s)</string>
+    <string name="docx_hf_absent">Não definido — herda da seção anterior</string>
+    <string name="docx_hf_edit">Editar</string>
+    <string name="docx_hf_remove">Remover</string>
+    <string name="docx_hf_empty">Este cabeçalho está vazio</string>
+    <string name="docx_hf_hint">Escreva o texto do cabeçalho…</string>
+    <string name="docx_hf_fieldlocked">(não editável)</string>
+
 </resources>

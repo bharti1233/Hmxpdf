@@ -1008,4 +1008,44 @@
     <string name="docx_no_revisions">Sin cambios pendientes</string>
     <string name="docx_revisions_readonly">Resolver requiere el Modo edición</string>
 
+    <!-- Page layout (P3) -->
+    <string name="docx_page_setup">Configuración de página</string>
+    <string name="docx_section_n">Sección %1$d</string>
+    <string name="docx_section_info">%1$s × %2$s pulgadas</string>
+    <string name="docx_orientation">Horizontal</string>
+    <string name="docx_orientation_sub">Intercambia el ancho y el alto de esta sección</string>
+    <string name="docx_paper_a4">A4</string>
+    <string name="docx_paper_letter">Carta</string>
+    <string name="docx_paper_legal">Oficio</string>
+    <string name="docx_page_width">Ancho de página</string>
+    <string name="docx_page_height">Alto de página</string>
+    <string name="docx_margin_top">Margen superior</string>
+    <string name="docx_margin_bottom">Margen inferior</string>
+    <string name="docx_margin_left">Margen izquierdo</string>
+    <string name="docx_margin_right">Margen derecho</string>
+    <string name="docx_margin_header">Distancia del encabezado</string>
+    <string name="docx_margin_footer">Distancia del pie de página</string>
+    <string name="docx_margin_gutter">Gutter</string>
+    <string name="docx_insert_page_break">Salto de página</string>
+    <string name="docx_break_next">Página siguiente</string>
+    <string name="docx_break_continuous">Continuo</string>
+    <string name="docx_break_even">Página par</string>
+    <string name="docx_break_odd">Página impar</string>
+    <string name="docx_first_page">Primera página distinta</string>
+    <string name="docx_first_page_sub">Sin encabezado ni pie en la primera página de la sección</string>
+    <string name="docx_even_odd">Pares e impares distintos</string>
+    <string name="docx_even_odd_sub">Las páginas pares usan sus propios encabezados y pies</string>
+    <string name="docx_header">Encabezado</string>
+    <string name="docx_footer">Pie de página</string>
+    <string name="docx_variant_default">Predeterminado</string>
+    <string name="docx_variant_first">Primera página</string>
+    <string name="docx_variant_even">Par</string>
+    <string name="docx_hf_referenced">Definido en esta sección (%1$s)</string>
+    <string name="docx_hf_absent">Sin definir — hereda de la sección anterior</string>
+    <string name="docx_hf_edit">Editar</string>
+    <string name="docx_hf_remove">Quitar</string>
+    <string name="docx_hf_empty">Este encabezado está vacío</string>
+    <string name="docx_hf_hint">Escribe el texto del encabezado…</string>
+    <string name="docx_hf_fieldlocked">(no editable)</string>
+
 </resources>
