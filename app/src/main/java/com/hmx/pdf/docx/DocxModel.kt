@@ -6,13 +6,18 @@ import androidx.compose.runtime.Immutable
  * One character's formatting: its run's raw `<w:rPr>` (kept verbatim, edited element by element),
  * the `<w:hyperlink …>` start tag wrapping it, or — for [obj] — a whole run kept verbatim (a
  * picture, a page break, a footnote mark…) that stands as a single U+FFFC in the paragraph text.
+ * [rev] marks the character as part of a tracked change (`w:ins`/`w:del`), not ordinary content.
  */
 @Immutable
-data class CharFmt(val rPr: String, val link: String? = null, val obj: String? = null) {
+data class CharFmt(val rPr: String, val link: String? = null, val obj: String? = null, val rev: Rev? = null) {
     companion object {
         val Plain = CharFmt("")
     }
 }
+
+/** A character's tracked-change flag: an insertion ([ins]) or a still-pending deletion. */
+@Immutable
+data class Rev(val ins: Boolean, val id: Int)
 
 /** U+FFFC stands for an object run inside [DocPara.text]. */
 const val OBJ_CHAR = '\uFFFC'
@@ -41,7 +46,9 @@ class DocPara(
      * Where Word started a new page inside this paragraph when it last laid the file out
      * (`w:lastRenderedPageBreak`), as offsets into [text]. The viewer shows Word's pages by them.
      */
-    val marks: List<Int> = emptyList()
+    val marks: List<Int> = emptyList(),
+    /** Author/date of every tracked change in this paragraph, by revision id (`w:id`). */
+    val revs: Map<Int, RevMeta> = emptyMap()
 ) : DocBlock {
     fun edited(
         text: String = this.text,
@@ -50,8 +57,9 @@ class DocPara(
         id: Long = this.id,
         openTag: String = this.openTag,
         extras: String = this.extras,
-        marks: List<Int> = this.marks
-    ): DocPara = DocPara(id, null, openTag, pPr, extras, text, fmts, editable, marks.filter { it in 0..text.length })
+        marks: List<Int> = this.marks,
+        revs: Map<Int, RevMeta> = this.revs
+    ): DocPara = DocPara(id, null, openTag, pPr, extras, text, fmts, editable, marks.filter { it in 0..text.length }, revs)
 
     val isEmpty: Boolean get() = text.isEmpty()
 }
