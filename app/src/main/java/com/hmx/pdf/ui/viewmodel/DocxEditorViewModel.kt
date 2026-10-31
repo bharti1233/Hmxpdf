@@ -13,6 +13,11 @@ import com.hmx.pdf.data.repository.RecentFilesManager
 import com.hmx.pdf.data.repository.SaveRecovery
 import com.hmx.pdf.docx.DocBlock
 import com.hmx.pdf.docx.CommentInfo
+import com.hmx.pdf.docx.CharFmt
+import com.hmx.pdf.docx.DocIds
+import com.hmx.pdf.docx.DocxPageLayout
+import com.hmx.pdf.docx.OBJ_CHAR
+import com.hmx.pdf.docx.PageSetup
 import com.hmx.pdf.docx.DocPara
 import com.hmx.pdf.docx.DocState
 import com.hmx.pdf.docx.DocxComments
@@ -109,6 +114,7 @@ class DocxEditorViewModel : ViewModel() {
     internal fun primeForTest(parsed: Pair<DocxPackage, DocState>) {
         pkg = parsed.first; doc = parsed.second; saved = parsed.second; original = parsed.second
         testFileMirror = true
+        resetPageLayoutExtras()
     }
 
     /**
@@ -172,6 +178,7 @@ class DocxEditorViewModel : ViewModel() {
             saved = parsed.second
             original = parsed.second
             meta = Meta(fileName = name, fileUri = local, sourceUri = uri, isLoading = false)
+            resetPageLayoutExtras()
             withContext(Dispatchers.IO) {
                 runCatching {
                     RecentFilesManager.addRecent(context, RecentFile(name = name, uriString = uri.toString(), timestamp = System.currentTimeMillis()))
@@ -437,6 +444,16 @@ class DocxEditorViewModel : ViewModel() {
         mapParas(all) { p -> if (accept) DocxRevisions.acceptAll(p) else DocxRevisions.rejectAll(p) }
     }
 
+    /** The first editable paragraph (the breaks and page-setup fallback target), or null. */
+    fun firstEditableId(): Long? = doc?.blocks?.let { firstEditable(it)?.id }
+
+    /** The first body-level editable paragraph — the only valid place for a section break. */
+    fun firstBodyId(): Long? {
+        val d = doc ?: return null
+        for (b in d.blocks) if (b is DocPara && b.editable) return b.id
+        return null
+    }
+
     /** The first editable paragraph (the add-comment anchor fallback), or null. */
     private fun firstEditable(blocks: List<com.hmx.pdf.docx.DocBlock>): DocPara? {
         var found: DocPara? = null
@@ -455,7 +472,178 @@ class DocxEditorViewModel : ViewModel() {
         return cm.items.filter { it.id in anchored }
     }
 
-    // ── saving ─────────────────────────────────────────────────────────────────
+    // ── page layout (P3) ────────────────────────────────────────────────────────
+
+    /**
+     * The trailing section's page setup as the document blocks hold it right now (not the mirror's
+     * `pkg.page`), so preview and PDF follow the undo stack, never a stale value.
+     */
+    fun livePage(): PageSetup {
+        val d = doc ?: return pkg?.page ?: PageSetup()
+        val last = DocxPageLayout.sections(d).lastOrNull() ?: return pkg?.page ?: PageSetup()
+        return DocxPageLayout.pageSetupOf(last.sectPr)
+    }
+
+    /** Every section in current document order, keyed for the page-setup panel's picker. */
+    fun sectionsOf(): List<DocxPageLayout.Section> {
+        val d = doc ?: return emptyList()
+        return DocxPageLayout.sections(d)
+    }
+
+    private fun commitSect(section: DocxPageLayout.Section, sectPr: String) {
+        if (!editMode || !editable) return
+        val d = doc ?: return
+        val next = DocxPageLayout.withSect(d, section, sectPr)
+        if (next.blocks !== d.blocks) { lastKey = null; commit(next) }
+    }
+
+    /** One section's page setup, orientation included. [key] coalesces field-by-field undo steps. */
+    fun setSectionSetup(section: DocxPageLayout.Section, s: PageSetup, key: String? = null) {
+        if (s == DocxPageLayout.pageSetupOf(section.sectPr)) return
+        if (!editMode || !editable) return
+        val d = doc ?: return
+        lastKey = key
+        commit(DocxPageLayout.withSect(d, section, DocxPageLayout.withPageSetup(section.sectPr, s)), key)
+    }
+
+    fun setFirstPageDifferent(section: DocxPageLayout.Section, on: Boolean) {
+        if (on == DocxPageLayout.titlePg(section.sectPr)) return
+        commitSect(section, DocxPageLayout.withTitlePg(section.sectPr, on))
+    }
+
+    /** Inserts a section break paragraph before [beforeId] ("nextPage"/"continuous"/"evenPage"/"oddPage"). */
+    fun insertSectionBreak(beforeId: Long, type: String?): Boolean {
+        if (!editMode || !editable) return false
+        val d = doc ?: return false
+        val source = DocxPageLayout.sectionAt(d, beforeId)
+        val next = DocxPageLayout.insertSectionBreak(d, beforeId, source, type) ?: return false
+        lastKey = null
+        commit(next)
+        return true
+    }
+
+    /** Inserts a page break into [id] at [caret] (a structural object, not text: untracked). */
+    fun insertPageBreak(id: Long, caret: Int): Boolean {
+        if (!editMode || !editable) return false
+        val d = doc ?: return false
+        val p = findPara(d.blocks, id) ?: return false
+        var at = caret.coerceIn(0, p.text.length)
+        while (at > 0 && p.text[at - 1] == OBJ_CHAR) at--
+        val np = DocxEdits.typed(p, p.text.substring(0, at) + OBJ_CHAR + p.text.substring(at), hnBreakFmt())
+        if (np === p) return false
+        lastKey = null
+        commit(DocState(replacePara(d.blocks, np) ?: return false))
+        return true
+    }
+
+    private fun hnBreakFmt() = CharFmt(rPr = "", link = null, obj = DocxPageLayout.PAGE_BREAK_OBJ)
+
+    /** Toggles the settings-level odd/even headers flag (settings.xml is spliced at save). */
+    fun setEvenOddHeaders(on: Boolean) {
+        if (!editMode || !editable) return
+        if (on == evenOddHeaders()) return
+        // Turning the flag off in a package without a settings part is a no-op (nothing to remove).
+        if (!on && pkg?.settings == null) return
+        val want = DocxPageLayout.withEvenOdd(pkg?.settings, on)
+        if (want == pkg?.settings) return
+        settingsChanged = true
+        pkg = pkg?.copy(settings = want) ?: return
+        lastKey = null
+    }
+
+    fun evenOddHeaders(): Boolean = DocxPageLayout.hasEvenOdd(pkg?.settings)
+
+    // ── headers & footers (P3): part contents live here, references live in sections ──
+
+    private val hfChanged = HashMap<String, DocState>()
+    private val hfRelIds = HashMap<String, String>()
+    private var settingsChanged = false
+
+    /** Saved-parse cache per part path: paragraph ids stay stable across recompositions. */
+    private val hfCache = HashMap<String, DocState>()
+
+    private fun hfWalk(state: DocState): List<DocPara> {
+        val out = ArrayList<DocPara>()
+        forEachPara(state.blocks) { out.add(it) }
+        return out
+    }
+
+    /** The paragraphs of one header/footer part: the live edit when present, else the cached parse. */
+    fun hfParas(path: String): List<DocPara> {
+        hfChanged[path]?.let { return hfWalk(it) }
+        val saved = hfCache.getOrPut(path) { DocxPageLayout.hfState(pkg?.hfParts?.get(path) ?: "") }
+        return hfWalk(saved)
+    }
+
+    /** The field buffer of one header/footer paragraph. */
+    fun hfText(path: String, paraId: Long): String = hfParas(path).firstOrNull { it.id == paraId }?.text ?: ""
+
+    /** Edits one header/footer paragraph's text (package state; no undo step — comments precedent). */
+    fun hfTyped(path: String, paraId: Long, newText: String) {
+        if (!editMode || !editable) return
+        val cur = hfParas(path)
+        val idx = cur.indexOfFirst { it.id == paraId }
+        if (idx < 0 || cur[idx].text == newText) return
+        val p = cur[idx]
+        // Headers keep their paragraph's own last ink while typing (styles/fonts preserved).
+        val np = DocxEdits.typed(p, newText, DocxEdits.fmtAt(p, p.text.length))
+        val base = hfChanged[path] ?: hfCache.getOrPut(path) { DocxPageLayout.hfState(pkg?.hfParts?.get(path) ?: "") }
+        val next = DocState(replacePara(base.blocks, np) ?: return)
+        hfChanged[path] = next
+    }
+
+    /** Creates a brand-new header/footer part and references it on [section]; returns its path. */
+    fun hfCreate(section: DocxPageLayout.Section, header: Boolean, variant: String): String? {
+        if (!editMode || !editable) return null
+        val p = pkg ?: return null
+        if (DocxPageLayout.reference(section.sectPr, header, variant) != null) return null
+        val path = DocxPageLayout.freePart(p.hfParts.keys + hfChanged.keys, !header)
+        if (path in hfChanged) return null
+        val para = DocPara(
+            id = DocIds.next(), origin = null, openTag = "<w:p>", pPr = "", extras = "",
+            text = "", fmts = emptyList(), editable = true
+        )
+        hfChanged[path] = DocState(listOf(para))
+        val id = freeRelId()
+        hfRelIds[path] = id
+        commitSect(section, DocxPageLayout.withReference(section.sectPr, header, variant, id))
+        return path
+    }
+
+    /** Removes this section's reference to a header/footer variant; other variants/sections untouched. */
+    fun hfRemove(section: DocxPageLayout.Section, header: Boolean, variant: String) {
+        if (!editMode || !editable) return
+        if (DocxPageLayout.reference(section.sectPr, header, variant) == null) return
+        commitSect(section, DocxPageLayout.withReference(section.sectPr, header, variant, null))
+    }
+
+    private fun freeRelId(): String {
+        val ids = Regex("Id=\"(rId\\d+)\"").findAll(pkg?.relsXml ?: "").mapNotNull { m ->
+            m.groupValues[1].removePrefix("rId").toIntOrNull()
+        }
+        return "rId${(ids.maxOrNull() ?: 0) + 1}"
+    }
+
+    /**
+     * The header/footer part path a section reference points at ([rid]). `rels` maps id → resolved
+     * zip path, and `hfParts` membership is the type check (only header/footer rels got collected).
+     */
+    fun hfPathOf(rid: String): String? {
+        val p = pkg ?: return null
+        return p.rels[rid]?.takeIf { it in p.hfParts }
+    }
+
+    /** Package-level layout state belongs to one document: clearing at every (re)load. */
+    private fun resetPageLayoutExtras() {
+        hfChanged.clear(); hfRelIds.clear(); hfCache.clear(); settingsChanged = false
+    }
+
+    /** The package half of save: header/footer parts and settings ride along with the body patch. */
+    private fun extras() = DocxWriter.Extras(
+        hfSave = hfChanged.toMap(),
+        hfRelIds = hfRelIds.toMap(),
+        settings = if (settingsChanged) pkg?.settings else null
+    )
 
     private fun buildPatched(context: Context): File? {
         val p = pkg ?: return null
@@ -465,7 +653,7 @@ class DocxEditorViewModel : ViewModel() {
         val safe = meta.fileName.replace(Regex("[^A-Za-z0-9._-]"), "_").ifBlank { "document.docx" }
             .let { if (it.lowercase().endsWith(".docx")) it else "$it.docx" }
         val out = File(dir, "edited_${System.currentTimeMillis()}_$safe")
-        return runCatching { DocxWriter.write(p, d, src, out); out }.getOrElse { out.delete(); null }
+        return runCatching { DocxWriter.write(p, d, src, out, extras()) }.getOrElse { out.delete(); null }
     }
 
     sealed class SaveResult {
@@ -608,7 +796,8 @@ class DocxEditorViewModel : ViewModel() {
      * included; and only if that fails, the old web-preview converter.
      */
     fun exportToPdf(context: Context, onDone: (Uri?) -> Unit) {
-        val p = pkg
+        // The fallback renderer follows the live page setup (blocks), not a possibly-stale mirror.
+        val p = pkg?.let { base -> base.copy(page = livePage()) }
         val d = doc
         val name = meta.fileName.ifBlank { "Document.docx" }
         currentFile(context) { src ->
