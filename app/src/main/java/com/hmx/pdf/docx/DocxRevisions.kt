@@ -67,7 +67,7 @@ object DocxRevisions {
     /** The pending revisions of [p], in document order, one entry per id. */
     fun pending(p: DocPara): List<Rev> {
         val seen = LinkedHashMap<Int, Rev>()
-        for (f in p.fmts) f.rev?.let { seen.putIfAbsent(it.id, it) }
+        for (f in p.fmts) f.rev?.let { if (it.id !in seen) seen[it.id] = it }
         return seen.values.toList()
     }
 
