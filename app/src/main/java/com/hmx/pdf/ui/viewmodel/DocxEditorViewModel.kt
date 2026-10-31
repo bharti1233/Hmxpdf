@@ -119,6 +119,7 @@ class DocxEditorViewModel : ViewModel() {
     var tracking by mutableStateOf(false)
         private set
 
+    @JvmName("trackChanges") // clashes with the property's generated JVM setter otherwise
     fun setTracking(on: Boolean) {
         if (on && (!editMode || !editable)) return
         if (!on) lastCapture = null
