@@ -162,8 +162,8 @@ object DocxPageLayout {
         return DocState(blocks)
     }
 
-    /** The break object the reader already models (`w:br type="page"` as an OBJ_CHAR run). */
-    const val PAGE_BREAK_OBJ = "<w:br w:type=\"page\"/>"
+    /** The break object the reader already models: the full `w:br type="page"` run as an OBJ_CHAR fmt. */
+    const val PAGE_BREAK_OBJ = "<w:r><w:br w:type=\"page\"/></w:r>"
 
     /** Next free "header|footerN.xml" part name for creating a part. */
     fun freePart(parts: Set<String>, footer: Boolean): String {

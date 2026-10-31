@@ -148,7 +148,7 @@ class DocxPageLayoutTest {
     @Test
     fun sectionsFoundInOrderIncludingTrailing() {
         val s1 = "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/></w:sectPr>"
-        val s2 = "<w:sectPr><w:pgSz w:w=\"16838\" w:h=\"11906\"/></w:sectPr>"
+        val s2 = "<w:sectPr><w:pgSz w:w=\"16838\" w:h=\"11906\" w:orient=\"landscape\"/></w:sectPr>"
         val body = "<w:p><w:pPr>$s1</w:pPr><w:r><w:t>one</w:t></w:r></w:p>" +
             "<w:p><w:r><w:t>two</w:t></w:r></w:p>" +
             "<w:p><w:pPr><w:ind w:left=\"2\"/>$s2</w:pPr><w:r><w:t>three</w:t></w:r></w:p>"
@@ -284,12 +284,9 @@ class DocxPageLayoutTest {
         val (pkg, state) = read(original)
         val s = lastSect(state)
         val path = "word/header2.xml"
-        val para = DocPara(
-            id = 501, origin = null, openTag = "<w:p>", pPr = "", extras = "",
-            text = "My header", fmts = emptyList(), editable = true
-        )
+        // Parse a real part the same way the view model does: consistent fmts, para origin kept.
         val extra = DocxWriter.Extras(
-            hfSave = mapOf(path to DocState(listOf(para))),
+            hfSave = mapOf(path to DocxPageLayout.hfState(hfXml("w:hdr", "My header"))),
             hfRelIds = mapOf(path to "rId9")
         )
         val withRef = DocxPageLayout.withReference(s.sectPr, true, "default", "rId9")
@@ -370,8 +367,10 @@ class DocxPageLayoutTest {
             "<w:zoom w:percent=\"100\"/><w:defaultTabStop w:val=\"720\"/><w:compat/></w:settings>"
         val on = DocxPageLayout.withEvenOdd(settings, true)
         assertTrue(DocxPageLayout.hasEvenOdd(on))
-        // schema order: before the first anchor (zoom) — never dropped inside w:compat
-        assertTrue(on.indexOf("evenAndOddHeaders") < on.indexOf("defaultTabStop"))
+        // schema order: evenAndOddHeaders sits after defaultTabStop, before Word's late settings
+        // group (bookFold…/compat) — the first anchor defines the insert point.
+        assertTrue(on.indexOf("evenAndOddHeaders") > on.indexOf("defaultTabStop"))
+        assertTrue(on.indexOf("evenAndOddHeaders") < on.indexOf("<w:compat"))
         assertTrue(on.contains("<w:compat/>"))
         val off = DocxPageLayout.withEvenOdd(on, false)
         assertFalse(DocxPageLayout.hasEvenOdd(off))
@@ -404,7 +403,8 @@ class DocxPageLayoutTest {
         assertEquals(Rev(true, 4), p2.fmts[17].rev)
         assertEquals(12240, pkg2.page.width)
         val accepted = DocxRevisions.acceptAll(p2)
-        assertEquals(17, accepted.text.length)
+        // Accepting keeps the inserted run's text: 16 + 9 + 6 = "HMXPDF supports and DOCX files."
+        assertEquals("HMXPDF supports and DOCX files.", accepted.text)
         assertFalse(accepted.fmts.any { it.rev != null })
     }
 }
