@@ -198,7 +198,7 @@ class DocxPageLayoutTest {
         val (pkg, state) = read(original)
         val p = paras(state).first()
         // The view model's op: an object run with the page-break payload joins the field text.
-        val np = DocxEdits.typed(p, p.text + OBJ_CHAR, CharFmt(obj = DocxPageLayout.PAGE_BREAK_OBJ))
+        val np = DocxEdits.typed(p, p.text + OBJ_CHAR, CharFmt(rPr = "", obj = DocxPageLayout.PAGE_BREAK_OBJ))
         val bytes = save(original, pkg, DocState(replacePara(state.blocks, np)!!))
         val reopened = read(bytes)
         val p2 = paras(reopened.second).first()
