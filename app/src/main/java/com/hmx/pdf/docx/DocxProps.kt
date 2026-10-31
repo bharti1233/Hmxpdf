@@ -216,10 +216,17 @@ internal object Props {
      * removed and [element] (when non-null) inserted where the schema's sequence puts it. Word
      * rejects property elements out of order, so this never appends blindly.
      */
-    fun setChild(props: String, wrapper: String, order: List<String>, local: String, element: String?): String {
+    fun setChild(props: String, wrapper: String, order: List<String>, local: String, element: String?): String =
+        setChildWhere(props, wrapper, order, local, element) { n, _ -> n.local == local }
+
+    /**
+     * Same, with a finer removal filter: [remove] decides which children go so callers can touch
+     * one of several same-name children (a section's headerReference/default keeps first/even).
+     */
+    fun setChildWhere(props: String, wrapper: String, order: List<String>, local: String, element: String?, remove: (XNode, String) -> Boolean): String {
         val root = if (props.isEmpty()) null else XmlScan.scan(props).children.firstOrNull()
         val children = ArrayList<Pair<String, String>>()
-        if (root != null) for (c in root.children) if (c.local != local) children.add(c.local to c.text(props))
+        if (root != null) for (c in root.children) if (!remove(c, props)) children.add(c.local to c.text(props))
         if (element != null) {
             val idx = order.indexOf(local)
             var at = children.size
@@ -241,6 +248,16 @@ internal object Props {
 
     fun setR(rPr: String, local: String, element: String?) = setChild(rPr, "w:rPr", RPR_ORDER, local, element)
     fun setP(pPr: String, local: String, element: String?) = setChild(pPr, "w:pPr", PPR_ORDER, local, element)
+
+    /** ECMA-376 CT_SectPr child sequence (Word rejects these out of order like pPr children). */
+    val SECTPR_ORDER = listOf(
+        "headerReference", "footerReference", "footnotePr", "endnotePr", "type", "pgSz", "pgMar",
+        "paperSrc", "pgBorders", "lnNumType", "pgNumType", "cols", "formProt", "vAlign", "noEndnote",
+        "titlePg", "textDirection", "bidi", "rtlGutter", "docGrid", "printerSettings", "sectPrChange"
+    )
+
+    fun setSect(sectPr: String, local: String, element: String?) =
+        setChild(sectPr, "w:sectPr", SECTPR_ORDER, local, element)
 
     /** The raw XML of the child [local] of a props element, or null. */
     fun child(props: String, local: String): String? {

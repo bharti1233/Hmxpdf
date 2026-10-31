@@ -74,7 +74,9 @@ class DocRaw(
     val xml: String,
     /** Read-only content to show for it (a table of contents' paragraphs, a cover page…). */
     val preview: List<DocBlock> = emptyList()
-) : DocBlock, TableItem, RowItem
+) : DocBlock, TableItem, RowItem {
+    fun withXml(xml: String) = DocRaw(id, xml, preview)
+}
 
 @Immutable
 class DocTable(
@@ -111,7 +113,12 @@ data class PageSetup(
     val left: Int = 1440,
     val right: Int = 1440,
     val top: Int = 1440,
-    val bottom: Int = 1440
+    val bottom: Int = 1440,
+    /** `w:pgSz@w:orient` — informational (dimensions carry the truth); true = landscape. */
+    val landscape: Boolean = false,
+    val header: Int = 720,
+    val footer: Int = 720,
+    val gutter: Int = 0
 )
 
 @Immutable
