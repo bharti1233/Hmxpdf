@@ -17,14 +17,30 @@ object DocxWriter {
     private const val NUMBERING_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering"
     private const val STYLES_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
     private const val COMMENTS_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
+    private const val SETTINGS_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings"
+    private const val HF_HEADER_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/header"
+    private const val HF_FOOTER_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer"
     private const val W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
-    fun write(pkg: DocxPackage, state: DocState, source: File, dest: File) {
-        val parts = parts(pkg, state)
+    fun write(pkg: DocxPackage, state: DocState, source: File, dest: File, extras: Extras = Extras()) {
+        val parts = parts(pkg, state, extras)
         source.inputStream().buffered().use { input ->
             dest.outputStream().buffered().use { out -> rewrite(input, out, parts.first, parts.second) }
         }
     }
+
+    /**
+     * The pieces the package needs beyond the document body: edited header/footer parts (existing
+     * paths are replaced, new ones become add + relationship + content-type override; the [Extras]
+     * carries the relationship ids the section references already point at) and a settings.xml
+     * replacement for the odd/even flag. Empty by default, so callers that don't touch these pay nothing.
+     */
+    class Extras(
+        val hfSave: Map<String, DocState> = emptyMap(),
+        /** `path → relationship id` for added (brand-new) parts above; existing paths don't need one. */
+        val hfRelIds: Map<String, String> = emptyMap(),
+        val settings: String? = null
+    )
 
     fun documentXml(pkg: DocxPackage, state: DocState): String {
         val sb = StringBuilder(pkg.xml.length + 1024)
@@ -35,7 +51,7 @@ object DocxWriter {
     }
 
     /** (entry → new bytes, new entries). */
-    private fun parts(pkg: DocxPackage, state: DocState): Pair<Map<String, ByteArray>, Map<String, ByteArray>> {
+    private fun parts(pkg: DocxPackage, state: DocState, extras: Extras = Extras()): Pair<Map<String, ByteArray>, Map<String, ByteArray>> {
         val replace = HashMap<String, ByteArray>()
         val add = LinkedHashMap<String, ByteArray>()
         val docXml = documentXml(pkg, state)
@@ -86,6 +102,32 @@ object DocxWriter {
                 types = addOverride(types, "/" + pkg.stylesPath, "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml")
             }
         }
+        for ((path, ds) in extras.hfSave) {
+            val header = !path.substringAfterLast('/').startsWith("footer")
+            val xml = DocxPageLayout.hfXml(ds.blocks, header)
+            if (path in pkg.hfParts) {
+                replace[path] = xml.toByteArray(Charsets.UTF_8)
+            } else {
+                add[path] = xml.toByteArray(Charsets.UTF_8)
+                val type = if (header) HF_HEADER_TYPE else HF_FOOTER_TYPE
+                val target = relTarget(dir, path)
+                val kind = "application/vnd.openxmlformats-officedocument.wordprocessingml.${if (header) "header" else "footer"}+xml"
+                extras.hfRelIds[path]?.let {
+                    // The relationship id is caller-chosen: the section reference points at it already.
+                    rels = addRelWithId(rels, type, target, it)
+                } ?: run { rels = addRel(rels, type, target) }
+                types = addOverride(types, "/" + path, kind)
+            }
+        }
+        extras.settings?.let { settingsXml ->
+            if (pkg.settingsPath != null && pkg.settings != null) replace[pkg.settingsPath!!] = settingsXml.toByteArray(Charsets.UTF_8)
+            else {
+                val p = pkg.settingsPath ?: "word/settings.xml"
+                add[p] = settingsXml.toByteArray(Charsets.UTF_8)
+                rels = addRel(rels, SETTINGS_TYPE, relTarget(dir, p))
+                types = addOverride(types, "/" + p, "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml")
+            }
+        }
         if (rels != pkg.relsXml && rels != null) {
             if (pkg.relsXml != null) replace[pkg.relsPath] = rels.toByteArray(Charsets.UTF_8) else add[pkg.relsPath] = rels.toByteArray(Charsets.UTF_8)
         }
@@ -106,12 +148,20 @@ object DocxWriter {
     }
 
     private fun addRel(rels: String?, type: String, target: String): String {
-        val base = rels ?: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"></Relationships>"
+        val base = rels ?: newRels()
         var n = 1
         while (base.contains("Id=\"rIdCp$n\"")) n++
+        return addRelWithId(base, type, target, "rIdCp$n")
+    }
+
+    private fun newRels() = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"></Relationships>"
+
+    /** Same, with a caller-chosen id (the document's section reference is written with it in the same commit). */
+    private fun addRelWithId(rels: String?, type: String, target: String, id: String): String {
+        val base = rels ?: newRels()
         val close = base.lastIndexOf("</")
-        return base.substring(0, close) + "<Relationship Id=\"rIdCp$n\" Type=\"$type\" Target=\"$target\"/>" + base.substring(close)
+        return base.substring(0, close) + "<Relationship Id=\"$id\" Type=\"$type\" Target=\"$target\"/>" + base.substring(close)
     }
 
     private fun addOverride(types: String?, partName: String, contentType: String): String? {

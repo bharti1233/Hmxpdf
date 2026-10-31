@@ -33,6 +33,11 @@ class DocxPackage(
     /** Zip entry path → bytes, for pictures. */
     val media: Map<String, ByteArray>,
     val page: PageSetup,
+    /** Zip entry path → xml, for header/footer parts (`relationships/header` and `/footer`). */
+    val hfParts: Map<String, String> = emptyMap(),
+    /** `word/settings.xml` xml (for `w:evenAndOddHeaders`), null when the part doesn't exist. */
+    val settingsPath: String? = null,
+    val settings: String? = null,
     /** False for documents this editor can show but can't safely write (Strict OOXML, odd prefixes). */
     val writable: Boolean
 ) {
@@ -93,13 +98,22 @@ object DocxReader {
         val page = body.children.lastOrNull { it.local == "sectPr" }?.let { s ->
             val sz = s.child("pgSz")
             val mar = s.child("pgMar")
-            fun tw(n: XNode?, a: String, d: Int) = n?.attr(xml, a)?.toFloatOrNull()?.toInt() ?: d
+            fun nm(n: XNode?, a: String, d: Int) = n?.attr(xml, a)?.toFloatOrNull()?.toInt() ?: d
             PageSetup(
-                width = tw(sz, "w", 11906), height = tw(sz, "h", 16838),
-                left = tw(mar, "left", 1440), right = tw(mar, "right", 1440),
-                top = tw(mar, "top", 1440), bottom = tw(mar, "bottom", 1440)
+                width = nm(sz, "w", 11906), height = nm(sz, "h", 16838),
+                left = nm(mar, "left", 1440), right = nm(mar, "right", 1440),
+                top = nm(mar, "top", 1440), bottom = nm(mar, "bottom", 1440),
+                landscape = sz?.attr(xml, "orient").equals("landscape", true),
+                header = nm(mar, "header", 720), footer = nm(mar, "footer", 720),
+                gutter = nm(mar, "gutter", 0)
             )
         } ?: PageSetup()
+
+        val hfParts = rels.filter { !it.external && (it.type.endsWith("/header") || it.type.endsWith("/footer")) }
+            .mapNotNull { r -> relMap[r.id]?.let { it to r.type } }
+            .associate { (path, _) -> path to (parts[path] ?: "") }
+        val settingsPath = rels.firstOrNull { it.type.endsWith("/settings") && !it.external }?.target
+            ?: "$dir/settings.xml".takeIf { parts.containsKey(it) }
 
         val pkg = DocxPackage(
             mainPath = mainPath,
@@ -119,6 +133,9 @@ object DocxReader {
             contentTypes = parts["[Content_Types].xml"],
             media = media,
             page = page,
+            hfParts = hfParts,
+            settingsPath = settingsPath,
+            settings = settingsPath?.let { parts[it] },
             writable = writable
         )
         return pkg to DocState(blocks)
