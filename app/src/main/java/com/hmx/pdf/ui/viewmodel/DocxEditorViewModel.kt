@@ -19,7 +19,9 @@ import com.hmx.pdf.docx.DocxComments
 import com.hmx.pdf.docx.DocxEdits
 import com.hmx.pdf.docx.DocxPackage
 import com.hmx.pdf.docx.DocxReader
+import com.hmx.pdf.docx.DocxRevisions
 import com.hmx.pdf.docx.DocxWriter
+import com.hmx.pdf.docx.RevMeta
 import com.hmx.pdf.docx.findPara
 import com.hmx.pdf.docx.forEachPara
 import com.hmx.pdf.docx.mapContainerOf
@@ -107,6 +109,20 @@ class DocxEditorViewModel : ViewModel() {
     internal fun primeForTest(parsed: Pair<DocxPackage, DocState>) {
         pkg = parsed.first; doc = parsed.second; saved = parsed.second; original = parsed.second
         testFileMirror = true
+    }
+
+    /**
+     * Track Changes. Off by default every session (nothing is captured until asked, matching the
+     * editor's other opt-in behavior). Enabling needs Edit Mode; disabling — which the pending
+     * revisions all survive — is always allowed.
+     */
+    var tracking by mutableStateOf(false)
+        private set
+
+    fun setTracking(on: Boolean) {
+        if (on && (!editMode || !editable)) return
+        if (!on) lastCapture = null
+        tracking = on
     }
 
     private var started = false
@@ -211,14 +227,81 @@ class DocxEditorViewModel : ViewModel() {
 
     fun para(id: Long): DocPara? = doc?.let { findPara(it.blocks, id) }
 
-    /** Typing: the field's text changed. */
-    fun typed(id: Long, newText: String, typing: com.hmx.pdf.docx.CharFmt) {
-        if (!editMode) return
-        val d = doc ?: return
-        val p = findPara(d.blocks, id) ?: return
-        val np = DocxEdits.typed(p, newText, typing)
-        if (np === p) return
-        replacePara(d.blocks, np)?.let { commit(DocState(it), "type$id") }
+    // ── tracked-change capture ─────────────────────────────────────────────────
+
+    /** One row of the Revisions panel: a pending insertion or deletion. */
+    data class RevisionInfo(
+        val paraId: Long,
+        /** The revision id (`w:id`). An edit that replaced text carries both its shapes under it. */
+        val id: Int,
+        val ins: Boolean,
+        /** The revised text, abbreviated. */
+        val excerpt: String,
+        val author: String,
+        val date: String
+    )
+
+    /** Every pending tracked change, in document order, tables and previews included. */
+    fun pendingRevisions(): List<RevisionInfo> {
+        val out = ArrayList<RevisionInfo>()
+        doc?.blocks?.let { blocks ->
+            forEachPara(blocks) { p ->
+                for (r in DocxRevisions.pending(p)) out.add(
+                    RevisionInfo(p.id, r.id, r.ins, DocxRevisions.excerpt(p, r.id), p.revs[r.id]?.author ?: "", p.revs[r.id]?.date ?: "")
+                )
+            }
+        }
+        return out
+    }
+
+    /**
+     * The revision a capture lands under — null with tracking off (plain editing path). Continuous
+     * typing coalesces into one revision, exactly like its undo step (same key, same window);
+     * every other action passes a fresh key.
+     */
+    private fun capture(key: String): Pair<Int, RevMeta>? {
+        if (!tracking) return null
+        val now = System.currentTimeMillis()
+        lastCapture?.let { last -> if (last.first == key && now - lastCaptureAt < 1500) {
+            lastCaptureAt = now
+            return last.second to last.third
+        } }
+        val meta = RevMeta(COMMENT_AUTHOR, docDate())
+        val c = Triple(key, DocxRevisions.nextId(), meta)
+        lastCapture = c
+        lastCaptureAt = now
+        return c.second to c.third
+    }
+
+    private var lastCapture: Triple<String, Int, RevMeta>? = null
+    private var lastCaptureAt = 0L
+    private var captureOps = 0
+
+    /** The unique key of a one-shot action (each replace is its own revision). */
+    private fun freshKey(): String = "op${captureOps++}"
+
+    /** `w:date` in the machine format comments use: fixed US locale, no java.time (min SDK 23). */
+    private fun docDate(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).format(Date()) + "Z"
+
+    /**
+     * Typing: the field's text changed. Returns the committed paragraph's caret when tracking
+     * captured the edit (retained deleted text re-enters the paragraph, so the field must
+     * re-read its buffer), or -1 — today's plain path, no re-read.
+     */
+    fun typed(id: Long, newText: String, typing: com.hmx.pdf.docx.CharFmt): Int {
+        if (!editMode) return -1
+        val d = doc ?: return -1
+        val p = findPara(d.blocks, id) ?: return -1
+        val np = if (tracking) {
+            val (revId, meta) = capture("type$id")!!
+            DocxEdits.typed(p, newText, typing, revId, meta)
+        } else DocxEdits.typed(p, newText, typing)
+        if (np === p) return -1
+        commit(DocState(replacePara(d.blocks, np) ?: return -1), "type$id")
+        if (!tracking) return -1
+        val (pre, suf) = DocxEdits.diff(p.text, newText)
+        val retained = (pre until p.text.length - suf).count { p.fmts[it].rev == null }
+        return pre + retained + (newText.length - suf - pre)
     }
 
     fun replace(para: DocPara, grouped: Boolean = false) {
@@ -232,8 +315,11 @@ class DocxEditorViewModel : ViewModel() {
         if (!editMode) return null
         val d = doc ?: return null
         val p0 = findPara(d.blocks, id) ?: return null
-        val p = DocxEdits.typed(p0, text, typing)
-        val (a, b) = DocxEdits.split(p, at.coerceIn(0, p.text.length), pkg!!.styles)
+        val np = if (tracking) {
+            val (revId, meta) = capture("type$id")!!
+            DocxEdits.typed(p0, text, typing, revId, meta)
+        } else DocxEdits.typed(p0, text, typing)
+        val (a, b) = DocxEdits.split(np, at.coerceIn(0, np.text.length), pkg!!.styles)
         val blocks = mapContainerOf(d.blocks, id) { list ->
             val out = ArrayList<DocBlock>(list.size + 1)
             for (x in list) if (x is DocPara && x.id == id) { out.add(a); out.add(b) } else out.add(x)
@@ -293,12 +379,14 @@ class DocxEditorViewModel : ViewModel() {
             if (ms.isNotEmpty()) { ids.add(p.id); hits[p.id] = ms }
         }
         if (ids.isEmpty()) return
-        mapParas(ids) { p -> hits[p.id]?.let { DocxEdits.replaceAllIn(p, it, replacement) } ?: p }
+        val (revId, meta) = if (tracking) capture("replace-all${freshKey()}")!! else null to null
+        mapParas(ids) { p -> hits[p.id]?.let { DocxEdits.replaceAllIn(p, it, replacement, revId, meta) } ?: p }
     }
 
     /** Replaces one match on its paragraph — one undo step. The range must come from a live match. */
     fun replaceOne(id: Long, range: IntRange, replacement: String) {
-        mapParas(listOf(id)) { cur -> DocxEdits.replaceRange(cur, range.first, range.last + 1, replacement) }
+        val (revId, meta) = if (tracking) capture(freshKey())!! else null to null
+        mapParas(listOf(id)) { cur -> DocxEdits.replaceRange(cur, range.first, range.last + 1, replacement, revId, meta) }
     }
 
     // ── comments ───────────────────────────────────────────────────────────────
@@ -330,6 +418,22 @@ class DocxEditorViewModel : ViewModel() {
         val all = ArrayList<Long>()
         doc?.blocks?.let { blocks -> forEachPara(blocks) { p -> all.add(p.id) } }
         mapParas(all) { DocxComments.stripPara(it, id) }
+    }
+
+    // ── tracked-change resolution ──────────────────────────────────────────────
+
+    /** Resolves the one pending revision of [info] — one undo step, other revisions untouched. */
+    fun resolveRevision(info: RevisionInfo, accept: Boolean) {
+        if (!editMode || !editable) return
+        mapParas(listOf(info.paraId)) { p -> if (accept) DocxRevisions.accept(p, info.id) else DocxRevisions.reject(p, info.id) }
+    }
+
+    /** Accepts or rejects every pending revision at once — a single commit, one undo step. */
+    fun resolveAllRevisions(accept: Boolean) {
+        if (!editMode || !editable) return
+        val all = ArrayList<Long>()
+        doc?.blocks?.let { blocks -> forEachPara(blocks) { p -> all.add(p.id) } }
+        mapParas(all) { p -> if (accept) DocxRevisions.acceptAll(p) else DocxRevisions.rejectAll(p) }
     }
 
     /** The first editable paragraph (the add-comment anchor fallback), or null. */
