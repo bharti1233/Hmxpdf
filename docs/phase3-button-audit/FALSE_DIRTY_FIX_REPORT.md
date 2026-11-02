@@ -48,7 +48,7 @@ Existing coverage retained: typing/formatting dirty in Edit Mode, every mutation
 | Environment | Result |
 |---|---|
 | Local unit tests / builds | **Not run** — per the user's instruction this device is low on resources; no local Gradle/APK execution. |
-| CI (`android.yml`: `testPlayDebugUnitTest`, lint, signed release) | Runs on push. Status to be appended. |
+| CI run [`41421998118`](https://github.com/bharti1233/Hmxpdf/actions/runs/41421998118) @ `fefe9a6` | **Success.** `build`: JVM unit tests ✔, Android lint ✔, debug APK ✔. `release`: signed release APK ✔, signed release bundle ✔. `release-guard` ✔. Live Gradle logs do not print per-module counts on success; this wave adds exactly 3 `@Test` cases to the app suite that previously reported 271 completed / 44 pre-existing `@Ignore` skips (expected ≈274 completed, no new skips). |
 
 ## 6. Remaining limitations
 
