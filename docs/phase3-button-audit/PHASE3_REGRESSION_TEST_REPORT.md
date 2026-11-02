@@ -1,12 +1,12 @@
 # HMXPDF — Phase 3 Regression Test Report
 
-Branch `release/hmxpdf-2.1.1-build` @ `60b8218` (baseline CI: run `41328856513`, green). Companion: `BUTTON_ISSUE_REGISTER.md` (per-issue status), `DOCX_PAGE_SETUP_AUDIT.md` (root causes), `PHASE3_BUG_FIX_REPORT.md`.
+Branch `release/hmxpdf-2.1.1-build` @ `60b8218` (baseline CI: run `41328856513`, green). Ending commit of the fix wave: `96773ab` (final run `41417314759`, green — §1). Companion: `BUTTON_ISSUE_REGISTER.md` (per-issue status), `DOCX_PAGE_SETUP_AUDIT.md` (root causes), `PHASE3_BUG_FIX_REPORT.md`.
 
 ## 1. Where the tests run
 
 | Environment | Result |
 |-------------|--------|
-| GitHub Actions (push to this branch, workflow `android.yml`) | **Executor of record.** Jobs: `./gradlew testPlayDebugUnitTest :pdf-core:test :ocr-core:test`, `lintPlayDebug`, `assemblePlayDebug`. The new JVM tests in this wave run in `testPlayDebugUnitTest`. **A run with these tests has not been published yet — commit+push await explicit user authorization; the run URL and per-job results will be added to `PHASE3_BUG_FIX_REPORT.md` right after the authorized push.** Baseline at `60b8218` was green before any of these changes. |
+| GitHub Actions (push to this branch, workflow `android.yml`) | **Executor of record — this wave's run is green.** Final run [`41417314759`](https://github.com/bharti1233/Hmxpdf/actions/runs/41417314759) @ `96773ab`: `build` (JVM unit tests + lint) SUCCESS, `release` (signed APK) SUCCESS, `release-guard` SUCCESS. The new JVM tests run in `testPlayDebugUnitTest`; from the identical test set one commit earlier (run `41415983417`, which failed on the test's own sanity assert after 270/271 passed) the app task comprised **271 completed / 44 skipped** — the 44 skips are the repo's pre-existing `@Ignore("Requires Android Context")` tests, none added here. Baseline at `60b8218` was green before any of these changes. |
 | This Android device (Termux/Gradle) | **Not runnable.** Attempt performed per workflow: `sh gradlew testPlayDebugUnitTest --offline` with JDK 17 (`/usr/lib/jvm/java-17-openjdk-arm64`) — Gradle configured and ran for ~3 min, then **failed at SDK resolution** (`SDK location not found… define ANDROID_HOME / sdk.dir`). No Android SDK exists anywhere on this device (searched `ANDROID_HOME`, `/home`, `/opt`, `/mnt/sdcard/Android`, `HMX-Build-Engine`, `android-code-studio-dev`). Per the task rules, no APK/AAB build was attempted locally at any point. Static self-review (diff re-read, call-site greps) is documented in the bug-fix report instead. |
 
 ## 2. Tests added or changed in this wave
@@ -50,4 +50,4 @@ Branch `release/hmxpdf-2.1.1-build` @ `60b8218` (baseline CI: run `41328856513`,
 
 ## 5. What counts as "green"
 
-The acceptance criterion "Phase 1/1.1/2 tests remain green" is *verified by CI after the authorized push*; this report preserves the pre-push truth: **nothing ran yet, nothing passed yet.** The two intentionally removed assertions (`sectionBreakInsertCarriesTypeBeforeTargetParagraph`'s wrong-type check) are substitutions locking the corrected ECMA-376 semantics, not skipped failures.
+**Verified: CI run `41417314759` @ `96773ab` is green** (jobs listed in §1) — the pre-existing Phase 1/1.1/2 suites plus the 11 new/rewritten cases all pass. En route there were three honest CI failures (two compile slips, one wrong sanity assert in a test fixture), each fixed in a same-class commit; the app task's one real intermediate failure (`DocxPageSetupViewModelTest.kt:190`) was the test fixture's own assumption, not a product regression — 270/271 passed in that run. The two intentionally removed assertions (`sectionBreakInsertCarriesTypeBeforeTargetParagraph`'s wrong-type check) are substitutions locking the corrected ECMA-376 semantics, not skipped failures.

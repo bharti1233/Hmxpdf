@@ -1,6 +1,6 @@
 # HMXPDF — Full Source-Code Audit (Phase 3 testing branch)
 
-Branch `release/hmxpdf-2.1.1-build` @ `60b8218` ("Reset head"). Read-only audit: **no source code was modified, no commits/pushes made** (the only new files in the work tree are these four report files, uncommitted). CI baseline for this exact commit: run `41328856513` — build/release/release-guard **all success**.
+Branch `release/hmxpdf-2.1.1-build` @ `60b8218` ("Reset head"). Read-only audit: **no source code was modified, no commits/pushes made** (the only new files in the work tree are these report files — uncommitted at audit time; the subsequent Phase 3 fix wave committed them, ending @ `96773ab`). CI baseline for this exact commit: run `41328856513` — build/release/release-guard **all success**.
 
 ## 1. Architecture (verified by reading, not filenames)
 

@@ -86,7 +86,7 @@ Every fix must stay inside `docx/` kernels + VM + chrome-sync; the `DocxWriter` 
 
 ---
 
-## Phase 3 fix status — 2026-11-02 (implementation wave @ `60b8218`, uncommitted)
+## Phase 3 fix status — 2026-11-02 (implementation wave, committed & CI-green @ ending `96773ab`)
 
 States: **Fixed & test-verified** (JVM unit test covers it) · **Fixed — needs device verification** · **Partially fixed** · **Not fixed** (reason). Details per issue in `PHASE3_BUG_FIX_REPORT.md`; test inventory in `PHASE3_REGRESSION_TEST_REPORT.md`.
 

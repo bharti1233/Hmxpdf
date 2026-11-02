@@ -1,6 +1,6 @@
 # HMXPDF — Phase 3 Bug Fix Report
 
-Branch `release/hmxpdf-2.1.1-build`. Baseline commit `60b821837f1527acc449b0bfc3b8b8580c79cf68` (CI run `41328856513` green). **The wave's changes are complete but uncommitted — commit/push await the user's explicit authorization, and the ending commit hash plus the post-push CI run URL will be appended to this report immediately after that push.**
+Branch `release/hmxpdf-2.1.1-build`. Baseline commit `60b821837f1527acc449b0bfc3b8b8580c79cf68` (CI run `41328856513` green). **Ending commit `96773ab` (`96773abc72d9e65a5a6651d864dfaf89f59036fd`)** — committed and pushed on the user's explicit authorization. Commit chain: `a0e718e` (the whole implementation wave + audit documents) → `78dfcba` (CI fix: `onClick(enabled)` overload missing in this Compose version → gate inside the semantics action; null-safe `recordSaved` snapshot) → `65f0392` (CI fix: `const val` → `val` inside the test class) → `96773ab` (test fix: fixture sanity assert read the document rels only — `rId1` is a root-`_rels/.rels` entry, not a document-rels id). All three CI-fix commits touch test scaffolding or compile-gating only; no product logic changed after `a0e718e`.
 
 Companions: `BUTTON_ISSUE_REGISTER.md` (per-issue status table), `DOCX_PAGE_SETUP_AUDIT.md` (§7 per-root-cause status), `PHASE3_REGRESSION_TEST_REPORT.md` (test inventory + execution environment).
 
@@ -31,7 +31,7 @@ Totals: 15 files, +326/−88 at report time. No debug prints, no hardcoded test 
 
 ## 3. Per-issue outcomes (summary)
 
-Fixed & test-verified: PS-02, PS-03, PS-10, A1. Fixed, kernel-verified pass-through pending CI: PS-01 (+R5 placement), rebase fix. Fixed, needs device verification (visual/behavior): PS-04, PS-05, PS-08, PS-09 (A-DV items), A6-surface. Partially fixed: PS-09 (visible invalid feedback + comma normalize; commit-debounce deferred — whole-number commit also drives live preview updates; a blur-based redesign needs device focus handling). Not fixed by design: PS-07 per-section render geometry (data layer correct; boundary breaking now spec-correct). Not fixed — out of wave scope: PS-06/A8, A2/A3/A4/A7/A9–A13 (A5, A6-page-setup, A1 excepted as covered above). Per-issue detail with root causes: register appendix.
+Fixed & test-verified: PS-02, PS-03, PS-10, A1. Fixed, kernel-verified & CI-green: PS-01 (+R5 placement), rebase fix. Fixed, needs device verification (visual/behavior): PS-04, PS-05, PS-08, PS-09 (A-DV items), A6-surface. Partially fixed: PS-09 (visible invalid feedback + comma normalize; commit-debounce deferred — whole-number commit also drives live preview updates; a blur-based redesign needs device focus handling). Not fixed by design: PS-07 per-section render geometry (data layer correct; boundary breaking now spec-correct). Not fixed — out of wave scope: PS-06/A8, A2/A3/A4/A7/A9–A13 (A5, A6-page-setup, A1 excepted as covered above). Per-issue detail with root causes: register appendix.
 
 ## 4. Known limitations (documented, deliberate)
 
@@ -52,16 +52,28 @@ Fixed & test-verified: PS-02, PS-03, PS-10, A1. Fixed, kernel-verified pass-thro
 
 ## 6. Final numbers
 
-- Starting commit `60b8218`; ending commit **pending the authorized commit+push** (append below after push).
-- CI: baseline run `41328856513` green @ `60b8218`; **this wave's run pending push** — URL and per-job results (test/lint/build) to be appended here.
+- Starting commit `60b8218`; ending commit **`96773abc72d9e65a5a6651d864dfaf89f59036fd`** (pushed `60b8218..a0e718e` then three CI-fix commits).
+- CI: baseline run `41328856513` green @ `60b8218`. **This wave's final run is green.**
 - Local test execution: impossible — no Android SDK on this device (documented attempt, §1 of the regression report). No APK/AAB was built locally.
 - `main` status: untouched (no checkout, no merge, no push, no reset).
 
 ---
 
-*Post-push appendix (fill immediately after the authorized push):*
+*Post-push appendix (final CI results):*
 
 ```
-Ending commit: <hash>
-CI run: <url> — jobs: unit tests <result>, lint <result>, assemblePlayDebug <result>
+Ending commit: 96773abc72d9e65a5a6651d864dfaf89f59036fd
+  chain: a0e718e (fix wave) -> 78dfcba -> 65f0392 -> 96773ab (ci fixes, test scaffolding only)
+CI run (final, green): https://github.com/bharti1233/Hmxpdf/actions/runs/41417314759
+  jobs: build (JVM unit tests + lint) SUCCESS · release (signed APK) SUCCESS · release-guard SUCCESS
+  :app:testPlayDebugUnitTest — from the identical test set one commit earlier (run 41415983417
+  breakdown line): 271 completed, 44 skipped — the 44 skips are the repo's pre-existing
+  @Ignore("Requires Android Context") tests; no skip was added by this wave. Final run: 0 failures.
+Intermediate runs (transparency):
+  41414243999 failed — 2 Kotlin compile errors fixed in 78dfcba (onClick overload, recordSaved)
+  41414929475 failed — in-test const val fixed in 65f0392
+  41415983417 failed — 1 real test failure: the test's own sanity assert (knew that rId1
+      belongs to the root rels, not document rels) fixed in 96773ab; 270/271 passed in that run
 ```
+
+Per-issue statuses in the companion docs (`BUTTON_ISSUE_REGISTER.md`, `DOCX_PAGE_SETUP_AUDIT.md` §7) reflect the ending commit. Remaining work is the device-verification checklist (§5) — nothing else is pending on CI.

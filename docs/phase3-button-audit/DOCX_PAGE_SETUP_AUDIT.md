@@ -154,7 +154,7 @@ Bottom line: **no Page Setup control is a dead wire** — every listener reaches
 
 ---
 
-## 7. Fix status (implementation wave, 2026-11-02 @ `60b8218`, uncommitted)
+## 7. Fix status (implementation wave, 2026-11-02, committed & CI-green @ ending `96773ab`)
 
 Full details: `PHASE3_BUG_FIX_REPORT.md`; test evidence: `PHASE3_REGRESSION_TEST_REPORT.md`.
 
