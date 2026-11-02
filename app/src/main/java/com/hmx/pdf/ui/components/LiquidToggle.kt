@@ -142,8 +142,10 @@ fun LiquidToggle(
             .semantics {
                 role = Role.Switch
                 toggleableState = ToggleableState(selected())
-                onClick(enabled) {
-                    onSelect(!selected())
+                onClick {
+                    // (no enabled overload on this Compose version's semantics; gate here since
+                    // dispatch through accessibility is wrapped by the drag path's own gate)
+                    if (enabled) onSelect(!selected())
                     true
                 }
             },

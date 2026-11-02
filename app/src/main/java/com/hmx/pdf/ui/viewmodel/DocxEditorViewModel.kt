@@ -749,7 +749,9 @@ class DocxEditorViewModel : ViewModel() {
                 }
             }
             meta = meta.copy(saving = false)
-            if (result is SaveResult.Saved) recordSaved(snapshot)
+            // Saved implies snapshot != null (the write path needs a document); the nullable val
+            // is just the state field's type.
+            if (result is SaveResult.Saved) snapshot?.let { recordSaved(it) }
             onDone(result)
         }
     }
