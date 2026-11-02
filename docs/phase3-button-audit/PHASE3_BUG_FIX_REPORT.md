@@ -76,4 +76,4 @@ Intermediate runs (transparency):
       belongs to the root rels, not document rels) fixed in 96773ab; 270/271 passed in that run
 ```
 
-Per-issue statuses in the companion docs (`BUTTON_ISSUE_REGISTER.md`, `DOCX_PAGE_SETUP_AUDIT.md` §7) reflect the ending commit. Remaining work is the device-verification checklist (§5) — nothing else is pending on CI.
+Per-issue statuses in the companion docs (`BUTTON_ISSUE_REGISTER.md`, `DOCX_PAGE_SETUP_AUDIT.md` §7) reflect the ending commit. This appendix was added by docs commit `8efa894` (markdown only, code identical to `96773ab`). Remaining work is the device-verification checklist (§5) — nothing else is pending on CI.
