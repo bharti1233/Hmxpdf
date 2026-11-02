@@ -28,7 +28,12 @@ class DocxPageSetupViewModelTest {
     private val ns = "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" " +
         "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\""
     private val CT_MAIN = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+    private val CT_SETTINGS = "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"
     private val REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+
+    /** A Word-like settings part (no odd/even flag yet, like most real files). */
+    private val SETTINGS = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+        "<w:settings $ns><w:zoom w:percent=\"100\"/><w:defaultTabStop w:val=\"708\"/></w:settings>"
 
     /** Body paragraph plus a one-cell table and a real trailing sectPr, like a fresh Word file. */
     private fun body(): String {
@@ -40,20 +45,29 @@ class DocxPageSetupViewModelTest {
         return para + table
     }
 
-    private fun docx(sectPr: String = "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/></w:sectPr>"): ByteArray {
+    private fun docx(
+        sectPr: String = "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/></w:sectPr>",
+        settings: String? = null
+    ): ByteArray {
         val document = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
             "<w:document $ns><w:body>" + body() + sectPr + "</w:body></w:document>"
+        val rels = "<?xml version=\"1.0\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
+            "<Relationship Id=\"rId8\" Type=\"$REL/styles\" Target=\"styles.xml\"/>" +
+            (settings?.let { "<Relationship Id=\"rId9\" Type=\"$REL/settings\" Target=\"settings.xml\"/>" } ?: "") +
+            "</Relationships>"
         val parts = linkedMapOf(
             "_rels/.rels" to "<?xml version=\"1.0\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
                 "<Relationship Id=\"rId1\" Type=\"$REL/officeDocument\" Target=\"word/document.xml\"/></Relationships>",
-            "word/_rels/document.xml.rels" to "<?xml version=\"1.0\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
-                "<Relationship Id=\"rId8\" Type=\"$REL/styles\" Target=\"styles.xml\"/></Relationships>",
+            "word/_rels/document.xml.rels" to rels,
             "word/document.xml" to document,
             "[Content_Types].xml" to "<?xml version=\"1.0\"?>" +
                 "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">" +
                 "<Default Extension=\"xml\" ContentType=\"application/xml\"/>" +
-                "<Override PartName=\"/word/document.xml\" ContentType=\"$CT_MAIN\"/></Types>"
+                "<Override PartName=\"/word/document.xml\" ContentType=\"$CT_MAIN\"/>" +
+                (settings?.let { "<Override PartName=\"/word/settings.xml\" ContentType=\"$CT_SETTINGS\"/>" } ?: "") +
+                "</Types>"
         )
+        settings?.let { parts["word/settings.xml"] = it }
         val bos = ByteArrayOutputStream()
         ZipOutputStream(bos).use { z ->
             for ((n, c) in parts) { z.putNextEntry(ZipEntry(n)); z.write(c.toByteArray()); z.closeEntry() }
@@ -154,6 +168,50 @@ class DocxPageSetupViewModelTest {
         edit(v)
         v.setEvenOddHeaders(true)
         v.setSectionSetup(v.sectionsOf().first(), DocxPageLayout.pageSetupOf(v.sectionsOf().first().sectPr).copy(top = 700), "pg:top")
+        assertTrue(v.dirty)
+        v.recordSaved(v.doc!!)
+        assertFalse(v.dirty)
+    }
+
+    // ── dirty lifecycle: opening a real Word file is clean ─────────────────────
+
+    @Test
+    fun openingSettingsBearingWordDocumentIsCleanInViewAndEditMode() {
+        // Every real Word file carries word/settings.xml. Opening must be clean even though the
+        // session's settings override is still null: dirty compares the EFFECTIVE settings part
+        // (override, else loaded part), not the raw null marker.
+        val v = vm(docx(settings = SETTINGS))
+        assertFalse(v.dirty)
+        // View-mode work while scrolling/zooming/paginating: section scans, page-setup reads,
+        // layout recalculation — pure reads, never edits.
+        repeat(3) {
+            v.sectionsOf().forEach { DocxPageLayout.pageSetupOf(it.sectPr) }
+            v.livePage()
+        }
+        assertFalse(v.dirty)
+        // Entering Edit Mode is not a modification by itself.
+        edit(v)
+        assertFalse(v.dirty)
+        v.sectionsOf(); v.livePage()
+        assertFalse(v.dirty)
+    }
+
+    @Test
+    fun settingsBearingDocumentGoesCleanAfterSaveAndStillDirtyOnRealSettingsEdits() {
+        val v = vm(docx(settings = SETTINGS))
+        edit(v)
+        val s = v.sectionsOf().first()
+        v.setSectionSetup(s, DocxPageLayout.pageSetupOf(s.sectPr).copy(top = 700), "pg:top")
+        assertTrue(v.dirty)
+        // A body-only save baselines the loaded (effective) settings part — not the null override.
+        v.recordSaved(v.doc!!)
+        assertFalse(v.dirty)
+        // Genuine settings edits still dirty, and an on→off round trip restores the loaded bytes.
+        v.setEvenOddHeaders(true)
+        assertTrue(v.dirty)
+        v.setEvenOddHeaders(false)
+        assertFalse(v.dirty)
+        v.setEvenOddHeaders(true)
         assertTrue(v.dirty)
         v.recordSaved(v.doc!!)
         assertFalse(v.dirty)

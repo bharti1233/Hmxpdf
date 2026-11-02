@@ -89,9 +89,14 @@ class DocxEditorViewModel : ViewModel() {
      * True when closing would lose work. Body edits change [doc]; package-side edits live *beside*
      * it (`wantSettings`, `hfChanged`) and never touch `doc`, so dirty compares them against the
      * last save/load markers ([packageSavedSettings], [packageSavedHf]) too.
+     *
+     * Settings compare the *effective* part ([effectiveSettings]): the raw [wantSettings] is null
+     * until the toggle is used, while every real Word document ships a `word/settings.xml` — so
+     * comparing the raw override against the loaded part marked the whole document dirty the
+     * moment it opened (false Save dot + Back prompt with zero edits).
      */
     val dirty: Boolean get() = doc != null && doc !== saved ||
-        wantSettings != packageSavedSettings ||
+        effectiveSettings() != packageSavedSettings ||
         hfChanged.any { (path, st) -> st !== packageSavedHf[path] }
     // The test-mirror half sits alone: unparenthesized, the elvis binds to the getter's left side
     // (`(mirror ?: uri) == "file"`) and any forced Boolean would compare against "file" as false.
@@ -586,6 +591,13 @@ class DocxEditorViewModel : ViewModel() {
     /** The spliced settings.xml once the even/odd toggle is on (DocxPackage has no copy()). */
     private var wantSettings: String? = null
 
+    /**
+     * The settings part the session would save: the pending edit when one exists, else the
+     * loaded part. [dirty] and [recordSaved] must both speak this value — the raw override is
+     * null for "untouched", which is not the same as "the document has no settings".
+     */
+    private fun effectiveSettings(): String? = wantSettings ?: pkg?.settings
+
     /** What the last save made durable (or the load put in `pkg`): the dirty baseline for package edits. */
     private var packageSavedSettings: String? = null
     private val packageSavedHf = HashMap<String, DocState>()
@@ -695,7 +707,10 @@ class DocxEditorViewModel : ViewModel() {
     /** The save succeeded: body and package snapshots become the dirty baseline (also a test seam). */
     internal fun recordSaved(snapshot: DocState) {
         saved = snapshot
-        packageSavedSettings = wantSettings
+        // The effective part, not the raw override: a save with no settings edit still makes the
+        // loaded settings part the baseline (a null override compared against it would keep the
+        // document dirty forever after saving).
+        packageSavedSettings = effectiveSettings()
         packageSavedHf.clear()
         packageSavedHf.putAll(hfChanged)
     }

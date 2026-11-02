@@ -152,12 +152,27 @@ class DocxEditorViewModeTest {
         val v = vm()
         assertNull(v.split(bodyId(v), "beta", 2, CharFmt.Plain))
         assertEquals(2, paras(v.doc!!).count())
+        assertFalse(v.dirty)
         v.setEditMode(true)
         val newId = v.split(bodyId(v), "beta", 2, CharFmt.Plain)
+        assertTrue(v.dirty) // inserting content dirties
         val after = paras(v.doc!!)
         assertEquals(3, after.count())
         assertEquals("be", after[0].text)
         assertEquals("ta", after.first { it.id == newId }.text)
+    }
+
+    @Test
+    fun deletingContentMarksDirty() {
+        val v = vm()
+        v.setEditMode(true)
+        val id = bodyId(v)
+        val newId = v.split(id, "alphabet", 2, CharFmt.Plain)!!
+        assertTrue(v.dirty)
+        // Backspace at the start of the split tail joins it back — a real structural edit.
+        val joined = v.mergeWithPrevious(newId)!!
+        assertEquals(id, joined.first)
+        assertTrue(v.dirty)
     }
 
     @Test
