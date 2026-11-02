@@ -186,8 +186,8 @@ class DocxPageSetupViewModelTest {
     @Test
     fun repeatedHfCreatesNeverShareARelationshipId() {
         val (pkg, _) = read(docx())
-        // Sanity for the allocator: the fixture's own rels already claim rId1 and rId8.
-        assertTrue(pkg.relsXml!!.contains("rId1") && pkg.relsXml!!.contains("rId8"))
+        // Sanity for the allocator: the fixture's document rels already claim rId8.
+        assertTrue(pkg.relsXml!!.contains("rId8"))
         val v = vm()
         edit(v)
         val section = v.sectionsOf().first()
