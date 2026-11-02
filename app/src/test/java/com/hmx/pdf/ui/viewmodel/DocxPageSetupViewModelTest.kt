@@ -28,7 +28,7 @@ class DocxPageSetupViewModelTest {
     private val ns = "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" " +
         "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\""
     private val CT_MAIN = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
-    private const val REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    private val REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
     /** Body paragraph plus a one-cell table and a real trailing sectPr, like a fresh Word file. */
     private fun body(): String {
