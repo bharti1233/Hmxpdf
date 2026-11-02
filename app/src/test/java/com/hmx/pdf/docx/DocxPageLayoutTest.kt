@@ -207,25 +207,54 @@ class DocxPageLayoutTest {
         assertTrue(p2.text.startsWith("Chapter one"))
     }
 
-    // ── section break (P3-3) ───────────────────────────────────────────────────
+    // ── section break (P3-3, R1) ───────────────────────────────────────────────
 
+    /**
+     * ECMA-376 §17.6.22: a sectPr terminates its own section, and its w:type says how THAT section
+     * STARTS. So after inserting a break before [target], the user's chosen type must land on the
+     * FOLLOWING terminator (the body-level sectPr), while the boundary paragraph keeps an
+     * unmodified copy of the source properties — Word's split, not a re-styled clone.
+     */
     @Test
-    fun sectionBreakInsertCarriesTypeBeforeTargetParagraph() {
+    fun sectionBreakTypeStampsTheFollowingSectionNotTheBoundary() {
+        val original = docx(
+            "<w:p><w:r><w:t>alpha</w:t></w:r></w:p><w:p><w:r><w:t>beta</w:t></w:r></w:p>" +
+                "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/></w:sectPr>"
+        )
+        val (pkg, state) = read(original)
+        val target = paras(state)[1]
+        val next = DocxPageLayout.insertSectionBreak(state, target.id, DocxPageLayout.sections(state).last(), "continuous")!!
+        val boundary = paras(next).first { it.text.isEmpty() }
+        assertTrue(boundary.pPr.contains("w:sectPr"))
+        assertTrue(boundary.pPr.contains("<w:pgSz w:w=\"11906\" w:h=\"16838\"/>")) // byte-copy kept
+        assertFalse(boundary.pPr.contains("w:type")) // boundary is NOT stamped with the break type
+        assertTrue(boundary.editable)
+        val bytes = save(original, pkg, next)
+        val (_, state2) = read(bytes)
+        val secs = DocxPageLayout.sections(state2)
+        assertEquals(2, secs.size)
+        assertNull(DocxPageLayout.sectionType(secs.first { it.paraId != null }.sectPr))
+        assertEquals("continuous", DocxPageLayout.sectionType(secs.last().sectPr)) // following terminator carries it
+        assertEquals("beta", paras(state2)[2].text)
+    }
+
+    /** Next Page is OOXML's default: no w:type anywhere — and a sectPr-less doc still splits in two. */
+    @Test
+    fun sectionBreakNextPageSplitsSectPrlessDocumentWithoutStamping() {
         val original = docx(
             "<w:p><w:r><w:t>alpha</w:t></w:r></w:p><w:p><w:r><w:t>beta</w:t></w:r></w:p>"
         )
         val (pkg, state) = read(original)
         val target = paras(state)[1]
-        val next = DocxPageLayout.insertSectionBreak(state, target.id, DocxPageLayout.sections(state).last(), "continuous")!!
-        val inserted = paras(next).first { it.text.isEmpty() }
-        assertTrue(inserted.pPr.contains("w:sectPr"))
-        assertTrue(inserted.pPr.contains("<w:type w:val=\"continuous\"/>"))
-        assertTrue(inserted.editable)
+        val next = DocxPageLayout.insertSectionBreak(state, target.id, DocxPageLayout.sections(state).last(), null)!!
+        val boundary = paras(next).first { it.text.isEmpty() }
+        assertTrue(boundary.pPr.contains("<w:sectPr/>")) // minimal terminator — no inherited props to copy
+        assertTrue(DocxPageLayout.sections(next).size == 2)
         val bytes = save(original, pkg, next)
         val (_, state2) = read(bytes)
         val secs = DocxPageLayout.sections(state2)
         assertEquals(2, secs.size)
-        assertEquals("continuous", DocxPageLayout.sectionType(secs[0].sectPr))
+        secs.forEach { assertNull(DocxPageLayout.sectionType(it.sectPr)) }
         assertEquals("beta", paras(state2)[2].text)
     }
 
@@ -300,6 +329,57 @@ class DocxPageLayoutTest {
         val (pkg2, state2) = read(bytes)
         assertEquals("rId9", DocxPageLayout.reference(lastSect(state2).sectPr, true, "default"))
         assertTrue(pkg2.hfParts.containsKey("word/header2.xml"))
+    }
+
+    // ── relationship collision safety (P2/PS-03) ──────────────────────────────
+
+    /** Same id re-pointed at a different relationship corrupts the rels part — that save must fail loud. */
+    @Test
+    fun writerRelWithIdDedupesSameRelationshipAndRefusesCollisions() {
+        val scheme = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/"
+        // The document already carries the exact relationship the Extras claim: one entry stays one.
+        val original = docx(
+            body = "<w:p><w:r><w:t>x</w:t></w:r></w:p>" +
+                "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/><w:headerReference w:type=\"default\" r:id=\"rId9\"/></w:sectPr>",
+            rels = relsOf("<Relationship Id=\"rId9\" Type=\"${scheme}header\" Target=\"header2.xml\"/>"),
+            contentTypes = typesOf(override("/word/document.xml", CT_MAIN), override("/word/header2.xml", CT_HEADER)),
+            extra = mapOf("word/header2.xml" to hfXml("w:hdr", "mine"))
+        )
+        val (pkg, state) = read(original)
+        val bytes = save(
+            original, pkg, state,
+            DocxWriter.Extras(
+                hfSave = mapOf("word/header2.xml" to DocxPageLayout.hfState(hfXml("w:hdr", "mine"))),
+                hfRelIds = mapOf("word/header2.xml" to "rId9")
+            )
+        )
+        val relsEntry = entry(bytes, "word/_rels/document.xml.rels")!!
+        assertEquals(1, Regex("Id=\"rId9\"").findAll(relsEntry).count())
+        assertEquals("mine", paras(DocxPageLayout.hfState(read(bytes).first.hfParts["word/header2.xml"])).first().text)
+
+        // Same id claimed for a DIFFERENT relationship: the write throws instead of emitting a
+        // duplicate Id (Word's repair prompt), leaving the source file untouched.
+        val conflict = docx(
+            body = "<w:p><w:r><w:t>x</w:t></w:r></w:p><w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/></w:sectPr>",
+            rels = relsOf("<Relationship Id=\"rId9\" Type=\"${scheme}styles\" Target=\"styles.xml\"/>"),
+            contentTypes = typesOf(override("/word/document.xml", CT_MAIN))
+        )
+        val (pkg2, state2) = read(conflict)
+        val src = File.createTempFile("csrc", ".docx").apply { writeBytes(conflict); deleteOnExit() }
+        val out = File.createTempFile("cout", ".docx").apply { deleteOnExit() }
+        var threw = false
+        try {
+            DocxWriter.write(
+                pkg2, state2, src, out,
+                DocxWriter.Extras(
+                    hfSave = mapOf("word/header2.xml" to DocxPageLayout.hfState(hfXml("w:hdr", "mine"))),
+                    hfRelIds = mapOf("word/header2.xml" to "rId9")
+                )
+            )
+        } catch (e: IllegalStateException) {
+            threw = true
+        }
+        assertTrue(threw)
     }
 
     @Test

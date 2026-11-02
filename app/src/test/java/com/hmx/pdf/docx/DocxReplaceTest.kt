@@ -48,6 +48,16 @@ class DocxReplaceTest {
     private val other = CharFmt("<w:sz w:val=\"28\"/>")
 
     @Test
+    fun staleRangeAgainstShrunkParagraphNoOpsInsteadOfCrashing() {
+        val p = para("hi")
+        // A1: ranges collected before the paragraph shrank below them clamp to the current text —
+        // fully stale ranges no-op (same instance), partially clipped ranges replace the remainder.
+        assertSame(p, DocxEdits.replaceRange(p, 4, 6, "new"))
+        assertSame(p, DocxEdits.replaceRange(p, 0, -1, "x"))
+        assertEquals("new", DocxEdits.replaceRange(para("hi"), 0, 6, "new").text)
+    }
+
+    @Test
     fun findsCaseVariants() {
         assertEquals(listOf(0..4, 6..10), DocxEdits.matchesIn("Hello hello", "hello", true))
         assertEquals(listOf(6..10), DocxEdits.matchesIn("Hello hello", "hello", false))

@@ -837,6 +837,10 @@
     <string name="docx_first_page_sub">No header or footer on a section\'s first page</string>
     <string name="docx_even_odd">Different odd and even pages</string>
     <string name="docx_even_odd_sub">Even pages use their own headers and footers</string>
+    <!-- Phase 3: Page Setup mode feedback + section-break placement hint. -->
+    <string name="docx_pagesetup_view">View mode — showing the saved page setup. Enter Edit Mode to change it.</string>
+    <string name="docx_pagesetup_readonly">This document is read-only — page setup is shown, not editable.</string>
+    <string name="docx_section_target">Section breaks insert before your current paragraph; paragraphs inside tables are skipped.</string>
     <string name="docx_header">Header</string>
     <string name="docx_footer">Footer</string>
     <string name="docx_variant_default">Default</string>

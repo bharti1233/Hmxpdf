@@ -1040,6 +1040,10 @@
     <string name="docx_first_page_sub">Nessuna intestazione o piè di pagina sulla prima pagina della sezione</string>
     <string name="docx_even_odd">Pari e dispari diversi</string>
     <string name="docx_even_odd_sub">Le pagine pari usano intestazioni e piè di pagina propri</string>
+    <!-- Fase 3: impostazioni Page Setup + nota di inserimento delle interruzioni. -->
+    <string name="docx_pagesetup_view">Modalità visualizzazione — mostra le impostazioni salvate. Attiva la modalità di modifica per cambiarle.</string>
+    <string name="docx_pagesetup_readonly">Questo documento è di sola lettura — l\'impaginazione viene mostrata, non è modificabile.</string>
+    <string name="docx_section_target">Le interruzioni di sezione si inseriscono prima del paragrafo corrente; i paragrafi nelle tabelle vengono ignorati.</string>
     <string name="docx_header">Intestazione</string>
     <string name="docx_footer">Piè di pagina</string>
     <string name="docx_variant_default">Predefinito</string>

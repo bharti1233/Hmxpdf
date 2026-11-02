@@ -1040,6 +1040,10 @@
     <string name="docx_first_page_sub">Без колонтитулов на первой странице раздела</string>
     <string name="docx_even_odd">Разные колонтитулы для чётных и нечётных</string>
     <string name="docx_even_odd_sub">Чётные страницы используют свои колонтитулы</string>
+    <!-- Этап 3: параметры Page Setup + заметка о вставке разрывов. -->
+    <string name="docx_pagesetup_view">Режим просмотра — показаны сохранённые параметры. Включите режим правки, чтобы изменить их.</string>
+    <string name="docx_pagesetup_readonly">Документ только для чтения — параметры страницы показаны, но не изменяются.</string>
+    <string name="docx_section_target">Разрывы разделов вставляются перед текущим абзацем; абзацы внутри таблиц пропускаются.</string>
     <string name="docx_header">Верхний колонтитул</string>
     <string name="docx_footer">Нижний колонтитул</string>
     <string name="docx_variant_default">Обычный</string>

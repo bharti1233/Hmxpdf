@@ -1035,6 +1035,10 @@
     <string name="docx_first_page_sub">Sin encabezado ni pie en la primera página de la sección</string>
     <string name="docx_even_odd">Pares e impares distintos</string>
     <string name="docx_even_odd_sub">Las páginas pares usan sus propios encabezados y pies</string>
+    <!-- Fase 3: ajustes de Page Setup + nota de inserción de saltos. -->
+    <string name="docx_pagesetup_view">Modo de vista — se muestran los ajustes guardados. Entra en modo de edición para cambiarlos.</string>
+    <string name="docx_pagesetup_readonly">Este documento es de solo lectura — la configuración de página se muestra, no es editable.</string>
+    <string name="docx_section_target">Los saltos de sección se insertan antes del párrafo actual; los párrafos dentro de tablas se omiten.</string>
     <string name="docx_header">Encabezado</string>
     <string name="docx_footer">Pie de página</string>
     <string name="docx_variant_default">Predeterminado</string>

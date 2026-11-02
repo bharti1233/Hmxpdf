@@ -160,6 +160,13 @@ object DocxWriter {
     /** Same, with a caller-chosen id (the document's section reference is written with it in the same commit). */
     private fun addRelWithId(rels: String?, type: String, target: String, id: String): String {
         val base = rels ?: newRels()
+        // An id already pointing at the same type/target pair is a no-op; pointing elsewhere is a
+        // collision — emitting a duplicate Id corrupts the relationships part, so fail the write loud.
+        val existing = Regex("<Relationship Id=\"(?:$id)\"[^>]*>").find(base)?.value
+        if (existing != null) {
+            if (existing.contains("Type=\"$type\"") && existing.contains("Target=\"$target\"")) return base
+            throw IllegalStateException("Relationship id $id is already used for a different relationship")
+        }
         val close = base.lastIndexOf("</")
         return base.substring(0, close) + "<Relationship Id=\"$id\" Type=\"$type\" Target=\"$target\"/>" + base.substring(close)
     }

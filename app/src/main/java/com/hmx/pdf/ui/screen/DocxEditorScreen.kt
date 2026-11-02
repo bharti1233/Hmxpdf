@@ -290,6 +290,28 @@ internal fun flatten(blocks: List<DocBlock>, styles: DocxStyles, splitParas: Boo
     var lastStyle: String? = null
     var lastContextual = false
 
+    // Section-boundary page breaks: a sectPr-bearing paragraph ends its section, but whether the
+    // page breaks AFTER it is decided by the FOLLOWING section's terminator w:type (ECMA-376
+    // §17.6.22 — the holder's own type describes how its section started). One ordered pass pairs
+    // each holder with that decision; an absent type defaults to a fresh page.
+    val followType = HashMap<Long, Boolean>()
+    var holder: Long? = null
+    for (b in blocks) {
+        val sect = when (b) {
+            is DocPara -> Props.child(b.pPr, "sectPr")
+            is DocRaw -> if (b.xml.trimStart().startsWith("<w:sectPr")) b.xml else null
+            else -> null
+        }
+        if (sect != null) {
+            val h = holder
+            if (h != null) {
+                followType[h] = DocxPageLayout.sectionType(sect) != "continuous"
+                holder = null
+            }
+            if (b is DocPara) holder = b.id
+        }
+    }
+
     fun breakHere() { if (inked) pending = true }
     fun beforeContent() {
         if (!pending) return
@@ -358,8 +380,9 @@ internal fun flatten(blocks: List<DocBlock>, styles: DocxStyles, splitParas: Boo
                     lastPara = null
                 }
                 if (trailing) breakHere()
-                val sect = Props.child(b.pPr, "sectPr")
-                if (sect != null && !sect.contains("continuous")) breakHere()
+                // # ponytail: top-level bound only — sectPr paragraphs inside DocRaw previews don't
+                // page-break (Word ignores nested section breaks anyway).
+                if (followType[b.id] == true) breakHere()
             }
             is DocTable -> {
                 lastPara = null
@@ -967,7 +990,7 @@ private fun DocxEditorContent(
                             }
                         }
                 ) {
-                    val page = pkg.page
+                    val page = viewModel.livePage()
                     val pageWidthPt = (page.width / 20f).coerceAtLeast(72f)
                     val fit = ((maxWidth - DeskGutter * 2).value / pageWidthPt).coerceAtLeast(0.1f)
                     val dpPerPt = fit * zoom
@@ -1100,7 +1123,7 @@ private fun DocxEditorContent(
                     GlassToolButton(Icons.Rounded.BorderColor, stringResource(R.string.docx_highlight), panel == DocPanel.HIGHLIGHT, { panel = if (panel == DocPanel.HIGHLIGHT) DocPanel.NONE else DocPanel.HIGHLIGHT }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.RateReview, stringResource(R.string.docx_add_comment), panel == DocPanel.COMMENTS, { panel = if (panel == DocPanel.COMMENTS) DocPanel.NONE else DocPanel.COMMENTS }, enabled = has, accent = accent)
                     GlassToolButton(Icons.Rounded.ChangeHistory, stringResource(R.string.docx_revisions), panel == DocPanel.REVISIONS, { panel = if (panel == DocPanel.REVISIONS) DocPanel.NONE else DocPanel.REVISIONS }, enabled = has, accent = accent)
-                    GlassToolButton(Icons.Rounded.Settings, stringResource(R.string.docx_page_setup), panel == DocPanel.LAYOUT, { panel = if (panel == DocPanel.LAYOUT) DocPanel.NONE else DocPanel.LAYOUT }, enabled = has, accent = accent)
+                    GlassToolButton(Icons.Rounded.Settings, stringResource(R.string.docx_page_setup), panel == DocPanel.LAYOUT, { panel = if (panel == DocPanel.LAYOUT) DocPanel.NONE else DocPanel.LAYOUT }, enabled = pkg != null, accent = accent)
                     GlassToolButton(
                         when (align) {
                             "center" -> Icons.Rounded.FormatAlignCenter
@@ -1501,7 +1524,8 @@ private fun DocxEditorContent(
 
             fun commitIf(txt: String, value: Int, valid: (Int) -> Boolean, apply: (Int) -> PageSetup, key: String) {
                 if (txt.lastOrNull()?.isDigit() != true) return
-                val parsed = txt.toDoubleOrNull()?.let { (it * 1440).roundToInt() } ?: return
+                // Decimal separators arrive as ',' on some keyboards; normalize before parsing.
+                val parsed = txt.replace(',', '.').toDoubleOrNull()?.let { (it * 1440).roundToInt() } ?: return
                 if (valid(parsed) && parsed != value) {
                     viewModel.setSectionSetup(section, apply(parsed), key)
                 }
@@ -1514,6 +1538,10 @@ private fun DocxEditorContent(
                 title = stringResource(R.string.docx_page_setup)
             ) {
                 Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    if (!live) BasicText(
+                        stringResource(if (viewModel.editable) R.string.docx_pagesetup_view else R.string.docx_pagesetup_readonly),
+                        style = TextStyle(sub, 12.sp, FontWeight.Medium)
+                    )
                     if (sections.size > 1) {
                         for ((i, s) in sections.withIndex()) {
                             val sum = DocxPageLayout.pageSetupOf(s.sectPr)
@@ -1542,16 +1570,20 @@ private fun DocxEditorContent(
                             if (live && v != cur.landscape) {
                                 viewModel.setSectionSetup(section, cur.copy(width = cur.height, height = cur.width, landscape = v), "pg:orient")
                             }
-                        }, backdrop = screenBackdrop.glass)
+                        }, backdrop = screenBackdrop.glass, enabled = live)
                     }
-                    // Paper presets (real twip dims; the orientation flag rides along).
+                    // Paper presets (real twip dims): a landscape section gets the preset's
+                    // long side on the width, so A4-in-landscape is a real landscape A4 — not
+                    // portrait dims wearing the landscape flag; the highlight compares the
+                    // normalized pair so it survives orientation swaps.
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         for (preset in listOf(
                             Triple(stringResource(R.string.docx_paper_a4), 11906, 16838),
                             Triple(stringResource(R.string.docx_paper_letter), 12240, 15840),
                             Triple(stringResource(R.string.docx_paper_legal), 12240, 20160)
                         )) {
-                            val chosen = cur.width == preset.second && cur.height == preset.third
+                            val (w, h) = if (cur.landscape) preset.third to preset.second else preset.second to preset.third
+                            val chosen = cur.width == w && cur.height == h
                             BasicText(
                                 preset.first,
                                 style = TextStyle(if (chosen) accent else text, 13.sp, FontWeight.Medium),
@@ -1559,11 +1591,7 @@ private fun DocxEditorContent(
                                     .clip(RoundedCornerShape(10.dp))
                                     .background(text.copy(alpha = if (chosen) 0.16f else 0.08f))
                                     .clickable(remember { MutableInteractionSource() }, indication = null, enabled = live) {
-                                        viewModel.setSectionSetup(
-                                            section,
-                                            cur.copy(width = preset.second, height = preset.third),
-                                            "pg:paper"
-                                        )
+                                        viewModel.setSectionSetup(section, cur.copy(width = w, height = h), "pg:paper")
                                     }
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
                             )
@@ -1582,33 +1610,40 @@ private fun DocxEditorContent(
                     ).withIndex()) {
                         val f = field.first
                         var txt by remember(sel, f.second, i) { mutableStateOf(twIn(f.second)) }
+                        // Values the kernel would reject (or that no longer parse) paint the danger
+                        // ink on the field: a numeric keyboard can't flag it any other way, and the
+                        // commit never fires, so this is honest per-keystroke feedback, not a popup.
+                        val norm = txt.replace(',', '.')
+                        val num = norm.toDoubleOrNull()
+                        val bad = txt.isNotBlank() && (num == null || !field.second((num * 1440).roundToInt()))
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            BasicText(f.first, style = TextStyle(text, 13.sp), modifier = Modifier.weight(0.55f))
+                            BasicText(f.first, style = TextStyle(if (!live) sub else text, 13.sp), modifier = Modifier.weight(0.55f))
                             BasicTextField(
                                 value = txt,
                                 onValueChange = {
                                     txt = it
                                     commitIf(txt, f.second, field.second, f.third, "pg:m$i")
                                 },
+                                enabled = live,
                                 singleLine = true,
-                                textStyle = TextStyle(text, 14.sp, FontWeight.Medium),
+                                textStyle = TextStyle(if (bad) LiquidGlassColors.danger(paperDark) else if (!live) sub else text, 14.sp, FontWeight.Medium),
                                 cursorBrush = SolidColor(accent),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 modifier = Modifier
                                     .weight(0.45f)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(text.copy(0.07f))
+                                    .background(if (bad) LiquidGlassColors.Red.copy(0.12f) else text.copy(0.07f))
                                     .padding(horizontal = 10.dp, vertical = 8.dp)
                             )
                         }
                     }
-                    // Breaks: a real page break object into the focused paragraph, or a section
-                    // break before the first body-level paragraph (Word ignores section breaks
-                    // inside table cells).
+                    // Breaks: a real page break object into the focused paragraph; a section break
+                    // before the focused top-level paragraph (the only place Word hosts one — table
+                    // paragraphs are skipped), falling back to the document's first paragraph.
                     if (live) {
                         val pid = focusedField ?: viewModel.firstEditableId()
                         val caret = if (focusedField != null) (activeValue.selection.min - 1).coerceAtLeast(0) else 0
-                        val sbid = viewModel.firstBodyId()
+                        val sbid = focusedField?.takeIf { viewModel.isBodyLevel(it) } ?: viewModel.firstBodyLevelId()
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             BasicText(
                                 stringResource(R.string.docx_insert_page_break),
@@ -1640,6 +1675,7 @@ private fun DocxEditorContent(
                                 )
                             }
                         }
+                        BasicText(stringResource(R.string.docx_section_target), style = TextStyle(sub, 11.sp))
                     }
                     // Variants: different first page (this section), odd/even (global settings.xml).
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -1649,7 +1685,7 @@ private fun DocxEditorContent(
                         }
                         LiquidToggle(selected = { DocxPageLayout.titlePg(section.sectPr) }, onSelect = { v ->
                             if (live) viewModel.setFirstPageDifferent(section, v)
-                        }, backdrop = screenBackdrop.glass)
+                        }, backdrop = screenBackdrop.glass, enabled = live)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Column(Modifier.weight(1f)) {
@@ -1658,7 +1694,7 @@ private fun DocxEditorContent(
                         }
                         LiquidToggle(selected = { viewModel.evenOddHeaders() }, onSelect = { v ->
                             if (live) viewModel.setEvenOddHeaders(v)
-                        }, backdrop = screenBackdrop.glass)
+                        }, backdrop = screenBackdrop.glass, enabled = live)
                     }
                     // Header/footer rows: edit or create the referenced part; the cross removes it.
                     for (kind in listOf(true, false)) {

@@ -105,16 +105,20 @@ object DocxEdits {
      * deletions of other ids just drop from their list (the text was deleted again).
      */
     fun replaceRange(p: DocPara, start: Int, end: Int, newText: String, revId: Int? = null, meta: RevMeta? = null): DocPara {
+        if (start < 0 || start >= end) return p
+        // A match can go stale (find is debounced up to ~160 ms): the paragraph may have shrunk
+        // below the collected range by replace time — no-op, never a StringIndexOutOfBounds crash.
         val top = minOf(end, p.text.length)
-        if (start >= end || (start until top).any { p.text[it] == OBJ_CHAR }) return p
+        if (start >= top || start >= p.fmts.size) return p
+        if ((start until top).any { p.text[it] == OBJ_CHAR }) return p
         if (revId == null) {
-            val text = p.text.substring(0, start) + newText + p.text.substring(end)
+            val text = p.text.substring(0, start) + newText + p.text.substring(top)
             val fmts = ArrayList<CharFmt>(text.length)
             for (i in 0 until start) fmts.add(p.fmts[i])
             repeat(newText.length) { fmts.add(p.fmts[start]) }
-            for (i in end until p.text.length) fmts.add(p.fmts[i])
-            val delta = newText.length - (end - start)
-            val marks = p.marks.map { m -> if (m < start) m else if (m >= end) m + delta else start }.distinct()
+            for (i in top until p.text.length) fmts.add(p.fmts[i])
+            val delta = newText.length - (top - start)
+            val marks = p.marks.map { m -> if (m < start) m else if (m >= top) m + delta else start }.distinct()
             return p.edited(text = text, fmts = fmts, marks = marks)
         }
         val text = StringBuilder(p.text.length + newText.length)
@@ -130,12 +134,12 @@ object DocxEdits {
             }
         }
         for (c in newText) { text.append(c); fmts.add(p.fmts[start].copy(rev = Rev(true, revId))) }
-        for (i in end until p.text.length) { text.append(p.text[i]); fmts.add(p.fmts[i]) }
+        for (i in top until p.text.length) { text.append(p.text[i]); fmts.add(p.fmts[i]) }
         val out = text.toString()
         val marks = p.marks.map { m ->
             when {
                 m < start -> m
-                m >= end -> m + (out.length - p.text.length)
+                m >= top -> m + (out.length - p.text.length)
                 else -> start
             }
         }.distinct()

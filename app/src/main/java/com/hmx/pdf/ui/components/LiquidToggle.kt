@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -52,7 +53,8 @@ fun LiquidToggle(
     selected: () -> Boolean,
     onSelect: (Boolean) -> Unit,
     backdrop: Backdrop,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val isDarkMode = LocalIsDarkMode.current
     val isLightTheme = !isDarkMode
@@ -79,23 +81,27 @@ fun LiquidToggle(
             pressedScale = 1.5f,
             onDragStarted = {},
             onDragStopped = {
-                if (didDrag) {
-                    fraction = if (targetValue >= 0.5f) 1f else 0f
-                    onSelect(fraction == 1f)
-                    didDrag = false
-                } else {
-                    fraction = if (selected()) 0f else 1f
-                    onSelect(fraction == 1f)
+                if (enabled) {
+                    if (didDrag) {
+                        fraction = if (targetValue >= 0.5f) 1f else 0f
+                        onSelect(fraction == 1f)
+                        didDrag = false
+                    } else {
+                        fraction = if (selected()) 0f else 1f
+                        onSelect(fraction == 1f)
+                    }
                 }
             },
             onDrag = { _, dragAmount ->
-                if (!didDrag) {
-                    didDrag = dragAmount.x != 0f
+                if (enabled) {
+                    if (!didDrag) {
+                        didDrag = dragAmount.x != 0f
+                    }
+                    val delta = dragAmount.x / dragWidth
+                    fraction =
+                        if (isLtr) (fraction + delta).fastCoerceIn(0f, 1f)
+                        else (fraction - delta).fastCoerceIn(0f, 1f)
                 }
-                val delta = dragAmount.x / dragWidth
-                fraction =
-                    if (isLtr) (fraction + delta).fastCoerceIn(0f, 1f)
-                    else (fraction - delta).fastCoerceIn(0f, 1f)
             }
         )
     }
@@ -130,12 +136,13 @@ fun LiquidToggle(
     // fire onSelect twice (toggle on, then straight back off).
     Box(
         modifier
+            .alpha(if (enabled) 1f else 0.55f)
             .clip(Capsule)
             .then(dampedDragAnimation.modifier)
             .semantics {
                 role = Role.Switch
                 toggleableState = ToggleableState(selected())
-                onClick {
+                onClick(enabled) {
                     onSelect(!selected())
                     true
                 }

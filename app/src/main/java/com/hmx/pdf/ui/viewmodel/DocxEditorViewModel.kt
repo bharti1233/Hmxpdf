@@ -85,7 +85,14 @@ class DocxEditorViewModel : ViewModel() {
     var restoreEpoch by mutableStateOf(0)
         private set
 
-    val dirty: Boolean get() = doc != null && doc !== saved
+    /**
+     * True when closing would lose work. Body edits change [doc]; package-side edits live *beside*
+     * it (`wantSettings`, `hfChanged`) and never touch `doc`, so dirty compares them against the
+     * last save/load markers ([packageSavedSettings], [packageSavedHf]) too.
+     */
+    val dirty: Boolean get() = doc != null && doc !== saved ||
+        wantSettings != packageSavedSettings ||
+        hfChanged.any { (path, st) -> st !== packageSavedHf[path] }
     // The test-mirror half sits alone: unparenthesized, the elvis binds to the getter's left side
     // (`(mirror ?: uri) == "file"`) and any forced Boolean would compare against "file" as false.
     val editable: Boolean get() = pkg?.writable == true && (testFileMirror ?: (meta.fileUri?.scheme == "file"))
@@ -447,12 +454,11 @@ class DocxEditorViewModel : ViewModel() {
     /** The first editable paragraph (the breaks and page-setup fallback target), or null. */
     fun firstEditableId(): Long? = doc?.blocks?.let { firstEditable(it)?.id }
 
-    /** The first body-level editable paragraph — the only valid place for a section break. */
-    fun firstBodyId(): Long? {
-        val d = doc ?: return null
-        for (b in d.blocks) if (b is DocPara && b.editable) return b.id
-        return null
-    }
+    /** True when [id] addresses a top-level paragraph — the only place Word hosts a section break. */
+    fun isBodyLevel(id: Long): Boolean = doc?.blocks?.any { it is DocPara && it.id == id } == true
+
+    /** The first top-level editable paragraph — the section-break fallback target (table paras never). */
+    fun firstBodyLevelId(): Long? = doc?.blocks?.firstOrNull { it is DocPara && it.editable }?.id
 
     /** The first editable paragraph (the add-comment anchor fallback), or null. */
     private fun firstEditable(blocks: List<com.hmx.pdf.docx.DocBlock>): DocPara? {
@@ -490,25 +496,37 @@ class DocxEditorViewModel : ViewModel() {
         return DocxPageLayout.sections(d)
     }
 
-    private fun commitSect(section: DocxPageLayout.Section, sectPr: String) {
+    /**
+     * Applies one section-kernel edit against the section's CURRENT terminator: the captured
+     * [section] object may predate other panel edits this session (page setup then titlePg,
+     * header then footer), and rebuilding on its stale string would silently drop those. The
+     * [rebase] transform builds content from the fresh sectPr; a rebase that changes nothing
+     * (double-taps, stale captures) commits nothing — no phantom undo step, no re-serialized
+     * para. A captured synthetic section that has since materialized is gone: refuse instead of
+     * double-splicing a second trailing sectPr (Word repair bait).
+     */
+    private fun commitSect(section: DocxPageLayout.Section, key: String? = null, rebase: (String) -> String) {
         if (!editMode || !editable) return
         val d = doc ?: return
-        val next = DocxPageLayout.withSect(d, section, sectPr)
-        if (next.blocks !== d.blocks) { lastKey = null; commit(next) }
+        val fresh = DocxPageLayout.sections(d).firstOrNull {
+            it.paraId == section.paraId && it.rawId == section.rawId
+        } ?: (if (section.paraId == null && section.rawId == null) return else section)
+        val content = rebase(fresh.sectPr)
+        if (content == fresh.sectPr) return
+        val next = DocxPageLayout.withSect(d, fresh, content)
+        if (next.blocks !== d.blocks) commit(next, key)
     }
 
     /** One section's page setup, orientation included. [key] coalesces field-by-field undo steps. */
     fun setSectionSetup(section: DocxPageLayout.Section, s: PageSetup, key: String? = null) {
         if (s == DocxPageLayout.pageSetupOf(section.sectPr)) return
         if (!editMode || !editable) return
-        val d = doc ?: return
-        lastKey = key
-        commit(DocxPageLayout.withSect(d, section, DocxPageLayout.withPageSetup(section.sectPr, s)), key)
+        commitSect(section, key) { fresh -> DocxPageLayout.withPageSetup(fresh, s) }
     }
 
     fun setFirstPageDifferent(section: DocxPageLayout.Section, on: Boolean) {
         if (on == DocxPageLayout.titlePg(section.sectPr)) return
-        commitSect(section, DocxPageLayout.withTitlePg(section.sectPr, on))
+        commitSect(section) { fresh -> DocxPageLayout.withTitlePg(fresh, on) }
     }
 
     /** Inserts a section break paragraph before [beforeId] ("nextPage"/"continuous"/"evenPage"/"oddPage"). */
@@ -541,13 +559,20 @@ class DocxEditorViewModel : ViewModel() {
     /** Toggles the settings-level odd/even headers flag (settings.xml is spliced at save). */
     fun setEvenOddHeaders(on: Boolean) {
         if (!editMode || !editable) return
-        if (on == evenOddHeaders()) return
-        // Turning the flag off in a package without a settings part is a no-op (nothing to remove).
-        if (!on && pkg?.settings == null) return
-        val want = DocxPageLayout.withEvenOdd(pkg?.settings, on)
-        if (want == pkg?.settings) return
-        settingsChanged = true
-        wantSettings = want
+        val current = wantSettings ?: pkg?.settings
+        if (on == DocxPageLayout.hasEvenOdd(current)) return
+        if (on) {
+            settingsChanged = true
+            wantSettings = DocxPageLayout.withEvenOdd(current, true)
+        } else if (pkg?.settings == null) {
+            // No settings part ever: Word's "off" here is back to the loaded package state itself —
+            // not an empty <w:settings> shell written just to hold a removed flag.
+            wantSettings = null
+            settingsChanged = false
+        } else {
+            settingsChanged = true
+            wantSettings = DocxPageLayout.withEvenOdd(current, false)
+        }
         lastKey = null
     }
 
@@ -560,6 +585,10 @@ class DocxEditorViewModel : ViewModel() {
     private var settingsChanged = false
     /** The spliced settings.xml once the even/odd toggle is on (DocxPackage has no copy()). */
     private var wantSettings: String? = null
+
+    /** What the last save made durable (or the load put in `pkg`): the dirty baseline for package edits. */
+    private var packageSavedSettings: String? = null
+    private val packageSavedHf = HashMap<String, DocState>()
 
     /** Saved-parse cache per part path: paragraph ids stay stable across recompositions. */
     private val hfCache = HashMap<String, DocState>()
@@ -608,22 +637,31 @@ class DocxEditorViewModel : ViewModel() {
         hfChanged[path] = DocState(listOf(para))
         val id = freeRelId()
         hfRelIds[path] = id
-        commitSect(section, DocxPageLayout.withReference(section.sectPr, header, variant, id))
+        commitSect(section) { fresh -> DocxPageLayout.withReference(fresh, header, variant, id) }
         return path
     }
 
     /** Removes this section's reference to a header/footer variant; other variants/sections untouched. */
     fun hfRemove(section: DocxPageLayout.Section, header: Boolean, variant: String) {
         if (!editMode || !editable) return
-        if (DocxPageLayout.reference(section.sectPr, header, variant) == null) return
-        commitSect(section, DocxPageLayout.withReference(section.sectPr, header, variant, null))
+        val rid = DocxPageLayout.reference(section.sectPr, header, variant) ?: return
+        commitSect(section) { fresh -> DocxPageLayout.withReference(fresh, header, variant, null) }
+        // A part no section references any more stops being carried: purge its session text/rel
+        // claim so the save writes neither the part nor its relationship (writer skips unlisted paths).
+        val d = doc ?: return
+        if (DocxPageLayout.sections(d).any { it.sectPr.contains("r:id=\"$rid\"") }) return
+        val path = hfRelIds.entries.firstOrNull { it.value == rid }?.key ?: hfPathOf(rid)
+        if (path != null) { hfChanged.remove(path); hfRelIds.remove(path) }
     }
 
     private fun freeRelId(): String {
-        val ids = Regex("Id=\"(rId\\d+)\"").findAll(pkg?.relsXml ?: "").mapNotNull { m ->
+        // Session-claimed ids are invisible to the loaded rels string; counting both is what keeps
+        // a second hfCreate in one session from reusing the first create's id (duplicate Id = repair).
+        val fromRels = Regex("Id=\"(rId\\d+)\"").findAll(pkg?.relsXml ?: "").mapNotNull { m ->
             m.groupValues[1].removePrefix("rId").toIntOrNull()
         }
-        return "rId${(ids.maxOrNull() ?: 0) + 1}"
+        val fromSession = hfRelIds.values.mapNotNull { it.removePrefix("rId").toIntOrNull() }
+        return "rId${((fromRels + fromSession).maxOrNull() ?: 0) + 1}"
     }
 
     /**
@@ -638,6 +676,10 @@ class DocxEditorViewModel : ViewModel() {
     /** Package-level layout state belongs to one document: clearing at every (re)load. */
     private fun resetPageLayoutExtras() {
         hfChanged.clear(); hfRelIds.clear(); hfCache.clear(); settingsChanged = false; wantSettings = null
+        // The loaded settings/hfs ARE the saved baseline: edits that land back on the loaded value
+        // (a toggle on then off) compare equal here and stop counting as dirty.
+        packageSavedSettings = pkg?.settings
+        packageSavedHf.clear()
     }
 
     /** The package half of save: header/footer parts and settings ride along with the body patch. */
@@ -646,6 +688,17 @@ class DocxEditorViewModel : ViewModel() {
         hfRelIds = hfRelIds.toMap(),
         settings = if (settingsChanged) wantSettings else null
     )
+
+    /** Test seam: the same payload [save] hands the writer, so JVM tests cover what a save writes. */
+    internal fun writerExtras() = extras()
+
+    /** The save succeeded: body and package snapshots become the dirty baseline (also a test seam). */
+    internal fun recordSaved(snapshot: DocState) {
+        saved = snapshot
+        packageSavedSettings = wantSettings
+        packageSavedHf.clear()
+        packageSavedHf.putAll(hfChanged)
+    }
 
     private fun buildPatched(context: Context): File? {
         val p = pkg ?: return null
@@ -670,7 +723,8 @@ class DocxEditorViewModel : ViewModel() {
     }
 
     fun save(context: Context, target: Uri?, onDone: (SaveResult) -> Unit) {
-        if (meta.saving || !editable) return
+        if (meta.saving) return onDone(SaveResult.Failed("A save is already in progress."))
+        if (!editable) return onDone(SaveResult.Failed("This document is read-only and can't be saved."))
         val dest = target ?: meta.sourceUri ?: return onDone(SaveResult.NeedsSaveAs)
         val snapshot = doc
         meta = meta.copy(saving = true)
@@ -695,7 +749,7 @@ class DocxEditorViewModel : ViewModel() {
                 }
             }
             meta = meta.copy(saving = false)
-            if (result is SaveResult.Saved) saved = snapshot
+            if (result is SaveResult.Saved) recordSaved(snapshot)
             onDone(result)
         }
     }
@@ -783,7 +837,7 @@ class DocxEditorViewModel : ViewModel() {
     /** The edited document (or the original when unedited) as a file uri. Null if an edited copy failed. */
     fun currentFile(context: Context, onDone: (Uri?) -> Unit) {
         val uri = meta.fileUri ?: return onDone(null)
-        val hasEdits = doc !== original
+        val hasEdits = doc !== original || settingsChanged || hfChanged.isNotEmpty()
         if (!hasEdits) return onDone(officeShareSource(false, uri) { null })
         viewModelScope.launch {
             val out = withContext(Dispatchers.IO) { buildPatched(context)?.let { Uri.fromFile(it) } }

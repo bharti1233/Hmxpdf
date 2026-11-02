@@ -1010,6 +1010,10 @@
     <string name="docx_first_page_sub">بلا ترويسة أو تذييل في أول صفحة من القسم</string>
     <string name="docx_even_odd">اختلاف الصفحات الفردية والزوجية</string>
     <string name="docx_even_odd_sub">تستخدم الصفحات الزوجية ترويساتها وتذييلاتها الخاصة</string>
+    <!-- المرحلة 3: إعدادات إعداد الصفحة + ملاحظة إدراج الفواصل. -->
+    <string name="docx_pagesetup_view">وضع العرض: تُعرض الإعدادات المحفوظة. انتقل إلى وضع التحرير لتغييرها.</string>
+    <string name="docx_pagesetup_readonly">هذا المستند للقراءة فقط: إعدادات الصفحة تُعرض ولا يمكن تعديلها.</string>
+    <string name="docx_section_target">تُدرج فواصل الأقسام قبل الفقرة الحالية؛ ويتم تجاهل الفقرات داخل الجداول.</string>
     <string name="docx_header">الترويسة</string>
     <string name="docx_footer">التذييل</string>
     <string name="docx_variant_default">الافتراضي</string>

@@ -1033,6 +1033,10 @@
     <string name="docx_first_page_sub">Sem cabeçalho nem rodapé na primeira página da secção</string>
     <string name="docx_even_odd">Pares e ímpares diferentes</string>
     <string name="docx_even_odd_sub">As páginas pares usam cabeçalhos e rodapés próprios</string>
+    <!-- Fase 3: configurações de Page Setup + nota de inserção de quebras. -->
+    <string name="docx_pagesetup_view">Modo de visualização — mostra as configurações salvas. Entre no modo de edição para alterá-las.</string>
+    <string name="docx_pagesetup_readonly">Este documento é somente leitura — a configuração da página é exibida, não editável.</string>
+    <string name="docx_section_target">As quebras de seção são inseridas antes do parágrafo atual; parágrafos em tabelas são ignorados.</string>
     <string name="docx_header">Cabeçalho</string>
     <string name="docx_footer">Rodapé</string>
     <string name="docx_variant_default">Predefinido</string>

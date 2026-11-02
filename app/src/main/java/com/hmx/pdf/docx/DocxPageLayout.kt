@@ -143,23 +143,35 @@ object DocxPageLayout {
     }
 
     /**
-     * Inserts a section-break paragraph (carrying [source]'s sectPr plus [type]) before [beforeId]:
-     * the content before the break becomes its own section; Word's trailing sectPr semantics keep
-     * the rest under the next section. One empty, editable paragraph — typical for a wide table.
-     * [beforeId] must be a body-level paragraph: Word ignores section breaks inside table cells.
+     * Inserts a section-break paragraph carrying a byte-copy of [source]'s `sectPr` before
+     * [beforeId]: that copy *ends* the section now holding everything before the break, so it keeps
+     * the section's original start type untouched. The following section — the one the user is
+     * actually splitting — keeps its own terminator ([source]'s sectPr, wherever it lives) and
+     * gains the chosen [type] **there**: per ECMA-376/ISO 29500 §17.6.22, `w:type` says how the
+     * section *holding* that sectPr starts. A null [type] ("Next Page") also strips a non-default
+     * type the following section carried, returning its start to Word's default fresh page; a
+     * document without any sectPr yet materializes a body-level one when a type is chosen.
+     * One empty, editable paragraph — typical for a wide table. [beforeId] must be a body-level
+     * paragraph: Word ignores section breaks inside table cells.
      */
     fun insertSectionBreak(state: DocState, beforeId: Long, source: Section, type: String?): DocState? {
         if (state.blocks.none { it is DocPara && it.id == beforeId }) return null
-        val sectPr = withType(source.sectPr, type)
         val np = DocPara(
             id = DocIds.next(), origin = null, openTag = "<w:p>",
-            pPr = Props.setP("", "sectPr", sectPr), extras = "", text = "", fmts = emptyList(), editable = true
+            // The boundary ends the pre-break section: it must carry the source's own properties
+            // (a valid two-section split even when the source is the synthetic empty sectPr of a
+            // doc with none). Never stamped with the user's type — that belongs to the FOLLOWING
+            // terminator, whether [type] is given or "Next Page" stripping is asked for.
+            pPr = Props.setP("", "sectPr", source.sectPr.ifEmpty { "<w:sectPr/>" }), extras = "", text = "", fmts = emptyList(), editable = true
         )
         val blocks = mapContainerOf(state.blocks, beforeId) { list ->
             val i = list.indexOfFirst { it is DocPara && it.id == beforeId }
             list.toMutableList().apply { add(i, np) }
         } ?: return null
-        return DocState(blocks)
+        if (source.sectPr.isEmpty() && type == null) return DocState(blocks)
+        // The chosen type belongs on the terminator that follows the break, never on the boundary
+        // copy: the copy keeps the pre-break section's own start type (it was one section until now).
+        return withSect(DocState(blocks), source, withType(source.sectPr, type))
     }
 
     /** The break object the reader already models: the full `w:br type="page"` run as an OBJ_CHAR fmt. */
